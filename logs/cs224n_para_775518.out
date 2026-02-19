@@ -1,0 +1,23 @@
+train-0:   0%|          | 0/4422 [00:00<?, ?it/s]train-0:   0%|          | 0/4422 [00:00<?, ?it/s]
+Loaded 283003 train examples from data/quora-train.csv
+Loaded 40429 train examples from data/quora-dev.csv
+Traceback (most recent call last):
+  File "paraphrase_detection_justin.py", line 262, in <module>
+    train(args)
+  File "paraphrase_detection_justin.py", line 139, in train
+    logits = model(b_ids, b_mask)
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "paraphrase_detection_justin.py", line 80, in forward
+    outputs = self.gpt(input_ids, attention_mask)
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/justin/cs224n-Default-Project/models/gpt2.py", line 89, in forward
+    embedding_output = self.embed(input_ids=input_ids)
+  File "/home/justin/cs224n-Default-Project/models/gpt2.py", line 53, in embed
+    raise NotImplementedError
+NotImplementedError
