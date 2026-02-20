@@ -45,6 +45,9 @@ def seed_everything(seed=11711):
   torch.backends.cudnn.deterministic = True
 
 
+YES_TOKEN_ID = 8505
+NO_TOKEN_ID = 3919
+
 class ParaphraseGPT(nn.Module):
   """Your GPT-2 Model designed for paraphrase detection."""
 
@@ -123,7 +126,7 @@ def train(args):
     num_batches = 0
     for batch in tqdm(para_train_dataloader, desc=f'train-{epoch}', disable=TQDM_DISABLE):
       # Get the input and move it to the gpu (I do not recommend training this model on CPU).
-      b_ids, b_mask, labels = batch['token_ids'], batch['attention_mask'], batch['labels'].flatten()
+      b_ids, b_mask, labels = batch['token_ids'], batch['attention_mask'], (batch['labels'].flatten() == YES_TOKEN_ID).long()
       b_ids = b_ids.to(device)
       b_mask = b_mask.to(device)
       labels = labels.to(device)
