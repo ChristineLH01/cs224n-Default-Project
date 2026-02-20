@@ -2,6 +2,7 @@ from torch import nn
 
 import torch.nn.functional as F
 
+from einops import rearrange
 from modules.attention import CausalSelfAttention
 
 class GPT2Layer(nn.Module):
@@ -29,8 +30,10 @@ class GPT2Layer(nn.Module):
         before it is added to the sub-layer input. WE DO NOT APPLY THE LAYER NORM
         IN THIS FUNCTION.
     """
-    ### YOUR CODE HERE
-    raise NotImplementedError
+    output = dense_layer(output)
+    output = dropout(output)
+    output = output + input # ? input()??
+    return output
 
 
   def forward(self, hidden_states, attention_mask):
@@ -42,6 +45,14 @@ class GPT2Layer(nn.Module):
            - A feed-forward layer that applies transformations to further refine the hidden states.
     """
 
-    ### YOUR CODE HERE
-    raise NotImplementedError
 
+    normed = self.attention_layer_norm(hidden_states)
+    attn_output = self.self_attention(normed, attention_mask)
+    attn_output = rearrange(attn_output, 'b h t d -> b t (h d)')
+    hidden_states = self.add(hidden_states, attn_output, self.attention_dense, self.attention_dropout)
+
+    normed = self.out_layer_norm(hidden_states)
+    ff_output = self.interm_af(self.interm_dense(normed))
+    hidden_states = self.add(hidden_states, ff_output, self.out_dense, self.out_dropout)
+
+    return hidden_states
