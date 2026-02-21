@@ -20,6 +20,11 @@ class CausalSelfAttention(nn.Module):
     # implementation of transformer. Although it is a bit unusual, we empirically
     # observe that it yields better performance.
     self.dropout = nn.Dropout(config.attention_probs_dropout_prob)
+    
+    # Inject LoRA
+    if getattr(config, 'lora_rank', 0) > 0 and getattr(config, 'apply_lora_to_attention', False):
+      from modules.lora import inject_lora
+      inject_lora(self, config.lora_rank, config.lora_alpha, config.lora_dropout, target_modules=["query", "key", "value"])
 
   def transform(self, x, linear_layer):
     # The corresponding linear_layer of k, v, q are used to project the hidden_state (x).

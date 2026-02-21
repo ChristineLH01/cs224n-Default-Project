@@ -20,6 +20,11 @@ class GPT2Layer(nn.Module):
     self.out_dense = nn.Linear(config.intermediate_size, config.hidden_size)
     self.out_layer_norm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
     self.out_dropout = nn.Dropout(config.hidden_dropout_prob)
+    
+    # Inject LoRA into MLPs
+    if getattr(config, 'lora_rank', 0) > 0 and getattr(config, 'apply_lora_to_mlp', False):
+      from modules.lora import inject_lora
+      inject_lora(self, config.lora_rank, config.lora_alpha, config.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
 
   def add(self, input, output, dense_layer, dropout):
     """
