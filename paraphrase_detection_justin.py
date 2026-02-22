@@ -81,6 +81,7 @@ class ParaphraseGPT(nn.Module):
     # Get the hidden states from GPT-2; use the last token's hidden state
     # since GPT-2 is autoregressive and the last token aggregates the full context.
     outputs = self.gpt(input_ids, attention_mask)
+    
     last_token_hidden = outputs['last_token']  # [batch_size, hidden_size]
     # Project to 2 classes: index 0 = "no", index 1 = "yes".
     logits = self.paraphrase_detection_head(last_token_hidden)  # [batch_size, 2]
@@ -120,6 +121,9 @@ def train(args):
   args = add_arguments(args)
   model = ParaphraseGPT(args)
   model = model.to(device)
+  if torch.cuda.device_count() > 1:
+    print(f"Using {torch.cuda.device_count()} GPUs")
+    model = torch.nn.DataParallel(model)
 
   lr = args.lr
   optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.)
@@ -151,12 +155,12 @@ def train(args):
     train_loss = train_loss / num_batches
 
     dev_acc, dev_f1, *_ = model_eval_paraphrase(para_dev_dataloader, model, device)
+    print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_acc :.3f}, dev f1 :: {dev_f1 :.3f}")
 
     if dev_acc > best_dev_acc:
       best_dev_acc = dev_acc
-      save_model(model, optimizer, args, args.filepath)
+      save_model(model.module if hasattr(model, 'module') else model, optimizer, args, args.filepath)
 
-    print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_acc :.3f}")
 
   # Save the best dev accuracy, args, and metadata to a JSONL file.
   results_file = "experiment_results.jsonl"
