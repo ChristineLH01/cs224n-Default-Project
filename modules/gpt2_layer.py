@@ -2,7 +2,6 @@ from torch import nn
 
 import torch.nn.functional as F
 
-from einops import rearrange
 from modules.attention import CausalSelfAttention
 
 class GPT2Layer(nn.Module):
@@ -21,6 +20,11 @@ class GPT2Layer(nn.Module):
     self.out_dense = nn.Linear(config.intermediate_size, config.hidden_size)
     self.out_layer_norm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
     self.out_dropout = nn.Dropout(config.hidden_dropout_prob)
+    
+    # Inject LoRA into MLPs
+    if getattr(config, 'lora_rank', 0) > 0 and getattr(config, 'apply_lora_to_mlp', False):
+      from modules.lora import inject_lora
+      inject_lora(self, config.lora_rank, config.lora_alpha, config.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
 
   def add(self, input, output, dense_layer, dropout):
     """
@@ -30,10 +34,11 @@ class GPT2Layer(nn.Module):
         before it is added to the sub-layer input. WE DO NOT APPLY THE LAYER NORM
         IN THIS FUNCTION.
     """
-    output = dense_layer(output)
-    output = dropout(output)
-    output = output + input # ? input()??
-    return output
+    ### YOUR CODE HERE
+
+    transformed_output = dropout(dense_layer(output))
+    res = transformed_output + input
+    return res
 
 
   def forward(self, hidden_states, attention_mask):
@@ -45,10 +50,9 @@ class GPT2Layer(nn.Module):
            - A feed-forward layer that applies transformations to further refine the hidden states.
     """
 
-
+    ### YOUR CODE HERE
     normed = self.attention_layer_norm(hidden_states)
     attn_output = self.self_attention(normed, attention_mask)
-    attn_output = rearrange(attn_output, 'b h t d -> b t (h d)')
     hidden_states = self.add(hidden_states, attn_output, self.attention_dense, self.attention_dropout)
 
     normed = self.out_layer_norm(hidden_states)
