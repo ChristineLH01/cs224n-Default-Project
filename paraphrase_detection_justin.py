@@ -16,6 +16,7 @@ import json
 import os
 import random
 import shutil
+import time
 import uuid
 
 os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
@@ -165,6 +166,7 @@ def train(args, run_dir):
   best_dev_out_path = None
   dev_acc_scores = []
   dev_f1_scores = []
+  total_train_time = 0.0
 
   # Run for the specified number of epochs.
   for epoch in range(args.epochs):
@@ -173,6 +175,7 @@ def train(args, run_dir):
       train_sampler.set_epoch(epoch)
     train_loss = 0
     num_batches = 0
+    epoch_train_start = time.time()
     for batch in tqdm(para_train_dataloader, desc=f'train-{epoch}', disable=not is_main):
       b_ids, b_mask, labels = batch['token_ids'], batch['attention_mask'], batch['labels'].flatten()
       b_ids = b_ids.to(device, non_blocking=True)
@@ -190,6 +193,7 @@ def train(args, run_dir):
       train_loss += loss.item()
       num_batches += 1
 
+    total_train_time += time.time() - epoch_train_start
     train_loss = train_loss / num_batches
 
     if is_main:
@@ -224,7 +228,7 @@ def train(args, run_dir):
       if epoch_path != best_dev_out_path and os.path.exists(epoch_path):
         os.remove(epoch_path)
 
-  return best_dev_acc, dev_acc_scores, dev_f1_scores
+  return best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time
 
 
 @torch.no_grad()
@@ -325,9 +329,10 @@ if __name__ == "__main__":
 
   args.para_test_out = os.path.join(run_dir, 'para-test-output.csv')
   seed_everything(args.seed)
-  best_dev_acc, dev_acc_scores, dev_f1_scores = train(args, run_dir)
+  best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time = train(args, run_dir)
 
   if is_main:
+    num_gpus = int(os.environ.get("WORLD_SIZE", 1))
     results_file = os.path.join('paraphasing_exp_result', 'experiment_results.jsonl')
     result = {
       "uuid": str(uuid.uuid4()),
@@ -339,6 +344,11 @@ if __name__ == "__main__":
       "job_id": os.environ.get("JOB_ID"),
       "method": "full_parameter_tuning",
       "method_metadata": {},
+      "training_meta_data": {
+        "num_gpus": num_gpus,
+        "gpu": "H100",
+        "total_train_time_sec": round(total_train_time, 2),
+      },
     }
     with open(results_file, "a") as f:
       f.write(json.dumps(result) + "\n")

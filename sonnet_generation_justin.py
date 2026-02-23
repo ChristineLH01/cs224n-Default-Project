@@ -12,6 +12,7 @@ import json
 import os
 import random
 import shutil
+import time
 import uuid
 
 import torch
@@ -199,12 +200,14 @@ def train(args, run_dir):
   chrf_scores = []
   best_chrf = -1.0
   best_dev_out_path = None
+  total_train_time = 0.0
 
   # Run for the specified number of epochs.
   for epoch in range(args.epochs):
     model.train()
     train_loss = 0
     num_batches = 0
+    epoch_train_start = time.time()
 
     for batch in tqdm(sonnet_dataloader, desc=f'train-{epoch}', disable=TQDM_DISABLE):
       # Get the input and move it to the gpu (I do not recommend training this model on CPU).
@@ -224,6 +227,7 @@ def train(args, run_dir):
       train_loss += loss.item()
       num_batches += 1
 
+    total_train_time += time.time() - epoch_train_start
     train_loss = train_loss / num_batches
 
     model.eval()
@@ -262,7 +266,7 @@ def train(args, run_dir):
     if epoch_path != best_dev_out_path and os.path.exists(epoch_path):
       os.remove(epoch_path)
 
-  return model, best_chrf, chrf_scores
+  return model, best_chrf, chrf_scores, total_train_time
 
 
 @torch.no_grad()
@@ -360,7 +364,7 @@ if __name__ == "__main__":
   args.sonnet_out = os.path.join(run_dir, 'generated_sonnets.txt')
   seed_everything(args.seed)
 
-  model, best_chrf, chrf_scores = train(args, run_dir)
+  model, best_chrf, chrf_scores, total_train_time = train(args, run_dir)
   generate_submission_sonnets(model, args)
 
   results_file = os.path.join('sonnet_exp_result', 'experiment_results.jsonl')
@@ -373,6 +377,11 @@ if __name__ == "__main__":
     "job_id": os.environ.get("JOB_ID"),
     "method": "full_parameter_tuning",
     "method_metadata": {},
+    "training_meta_data": {
+      "num_gpus": 1,
+      "gpu": "H100",
+      "total_train_time_sec": round(total_train_time, 2),
+    },
   }
   with open(results_file, "a") as f:
     f.write(json.dumps(result) + "\n")
