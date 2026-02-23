@@ -11,7 +11,6 @@ class CausalSelfAttention(nn.Module):
     self.num_attention_heads = config.num_attention_heads
     self.attention_head_size = int(config.hidden_size / config.num_attention_heads)
     self.all_head_size = self.num_attention_heads * self.attention_head_size
-    self.d_attention = self.attention_head_size ** 0.5 # sqrt(d_k)
 
     # Initialize the linear transformation layers for key, value, query.
     self.query = nn.Linear(config.hidden_size, self.all_head_size)
@@ -22,6 +21,11 @@ class CausalSelfAttention(nn.Module):
     # observe that it yields better performance.
     self.dropout = nn.Dropout(config.attention_probs_dropout_prob)
 
+    # Inject LoRA
+    if getattr(config, 'lora_rank', 0) > 0 and getattr(config, 'apply_lora_to_attention', False):
+      from modules.lora import inject_lora
+      inject_lora(self, config.lora_rank, config.lora_alpha, config.lora_dropout, target_modules=["query", "key", "value"])    
+  
   def transform(self, x, linear_layer):
     # The corresponding linear_layer of k, v, q are used to project the hidden_state (x).
     proj = linear_layer(x)
@@ -33,18 +37,22 @@ class CausalSelfAttention(nn.Module):
     return proj
 
   def attention(self, key, query, value, attention_mask):
+
+    ### YOUR CODE HERE
     seq_len = query.size(-2)
 
     causal_mask = torch.full((seq_len, seq_len), float('-inf'), device=query.device)
     causal_mask = torch.triu(causal_mask, diagonal=1)
-    causal_mask = causal_mask.view(1, 1, seq_len, seq_len)
 
-    attn_scores = query @ key.transpose(-2, -1) / self.d_attention
+    attn_scores = query @ key.transpose(-2, -1) / (self.attention_head_size ** 0.5)
     attn_scores = attn_scores + causal_mask + attention_mask
+
     attn_probs = torch.softmax(attn_scores, dim=-1)
     attn_probs = self.dropout(attn_probs)
-    attn_value = attn_probs @ value
-    return attn_value
+
+    attn_output = attn_probs @ value
+    attn_output = rearrange(attn_output, 'b h t d -> b t (h d)')
+    return attn_output
 
   def forward(self, hidden_states, attention_mask):
     """
