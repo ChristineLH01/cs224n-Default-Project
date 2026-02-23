@@ -85,7 +85,14 @@ class ParaphraseGPT(nn.Module):
     last_token_hidden = outputs['last_token']  # [batch_size, hidden_size]
     # Project to 2 classes: index 0 = "no", index 1 = "yes".
     logits = self.paraphrase_detection_head(last_token_hidden)  # [batch_size, 2]
-    return logits
+    
+    # not modifying other code, map output to 8505 or 3919
+    batch_size = logits.size(0)
+    mapped_logits = torch.full((batch_size, YES_TOKEN_ID  + 1), float('-inf'), dtype=logits.dtype, device=logits.device)
+    mapped_logits[:, YES_TOKEN_ID] = logits[:, 1]
+    mapped_logits[:, NO_TOKEN_ID] = logits[:, 0]
+  
+    return mapped_logits #logits
 
 
 
@@ -136,11 +143,11 @@ def train(args):
     num_batches = 0
     for batch in tqdm(para_train_dataloader, desc=f'train-{epoch}', disable=TQDM_DISABLE):
       # Get the input and move it to the gpu (I do not recommend training this model on CPU).
-      b_ids, b_mask, labels = batch['token_ids'], batch['attention_mask'], (batch['labels'].flatten() == YES_TOKEN_ID).long()
+      b_ids, b_mask, labels = batch['token_ids'], batch['attention_mask'], batch['labels'].flatten()
       b_ids = b_ids.to(device)
       b_mask = b_mask.to(device)
       labels = labels.to(device)
-
+      
       # Compute the loss, gradients, and update the model's parameters.
       optimizer.zero_grad()
       logits = model(b_ids, b_mask)
@@ -166,10 +173,12 @@ def train(args):
   results_file = "experiment_results.jsonl"
   result = {
     "uuid": str(uuid.uuid4()),
-    "method": "paraphrase_detection",
-    "method_metadata": {},
+    "task": "paraphrase_detection",
     "best_dev_acc": best_dev_acc,
     "args": vars(args),
+    "job_id": os.environ.get("JOB_ID"),
+    "method": "full_parameter_tuning",
+    "method_metadata": {},
   }
   with open(results_file, "a") as f:
     f.write(json.dumps(result) + "\n")

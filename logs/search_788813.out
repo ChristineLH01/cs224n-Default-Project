@@ -1,0 +1,36 @@
+Node: liquid-gpu-044
+Process ID: 375551
+CUDA_VISIBLE_DEVICES: 0
+Fri Feb 20 12:56:33 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  |   00000000:E4:00.0 Off |                    0 |
+| N/A   25C    P0             72W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+train-0:   0%|          | 0/4422 [00:00<?, ?it/s]train-0:   0%|          | 0/4422 [00:02<?, ?it/s]
+Loaded 283003 train examples from data/quora-train.csv
+Loaded 40429 train examples from data/quora-dev.csv
+Traceback (most recent call last):
+  File "paraphrase_detection_justin.py", line 265, in <module>
+    train(args)
+  File "paraphrase_detection_justin.py", line 146, in train
+    optimizer.step()
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/optim/optimizer.py", line 484, in wrapper
+    out = func(*args, **kwargs)
+  File "/home/justin/cs224n-Default-Project/optimizer.py", line 64, in step
+    raise NotImplementedError
+NotImplementedError

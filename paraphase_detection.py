@@ -114,7 +114,13 @@ class ParaphraseGPT(nn.Module):
     outputs = self.gpt(input_ids, attention_mask)
     last_hidden_state = outputs["last_hidden_state"]
     logits = self.paraphrase_detection_head(last_hidden_state)
-    return logits
+
+    batch_size = logits.size(0)
+    mapped_logits = torch.full((batch_size, YES_TOKEN_ID  + 1), float('-inf'), dtype=logits.dtype, device=logits.device)
+    mapped_logits[:, YES_TOKEN_ID] = logits[:, 1]
+    mapped_logits[:, NO_TOKEN_ID] = logits[:, 0]
+  
+    return mapped_logits
 
 
 
