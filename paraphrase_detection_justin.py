@@ -15,9 +15,20 @@ import argparse
 import json
 import os
 import random
+import shutil
 import uuid
 
+os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
+
 import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
+
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
+torch.set_float32_matmul_precision('high')
+from torch.amp import GradScaler, autocast
 
 import numpy as np
 import torch.nn.functional as F
@@ -51,6 +62,7 @@ def seed_everything(seed=11711):
 
 YES_TOKEN_ID = 8505
 NO_TOKEN_ID = 3919
+GPI_VOCAB_SIZE = 50257
 
 class ParaphraseGPT(nn.Module):
   """Your GPT-2 Model designed for paraphrase detection."""
@@ -88,7 +100,8 @@ class ParaphraseGPT(nn.Module):
     
     # not modifying other code, map output to 8505 or 3919
     batch_size = logits.size(0)
-    mapped_logits = torch.full((batch_size, YES_TOKEN_ID  + 1), float('-inf'), dtype=logits.dtype, device=logits.device)
+    logit_vector_size = max(YES_TOKEN_ID, NO_TOKEN_ID) + 1#GPI_VOCAB_SIZE
+    mapped_logits = torch.full((batch_size, logit_vector_size), float('-inf'), dtype=logits.dtype, device=logits.device)
     mapped_logits[:, YES_TOKEN_ID] = logits[:, 1]
     mapped_logits[:, NO_TOKEN_ID] = logits[:, 0]
   
@@ -110,9 +123,14 @@ def save_model(model, optimizer, args, filepath):
   print(f"save the model to {filepath}")
 
 
-def train(args):
+def train(args, run_dir):
   """Train GPT-2 for paraphrase detection on the Quora dataset."""
-  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
+  # ── DDP setup ──────────────────────────────────────────────────
+  ddp = dist.is_available() and dist.is_initialized()
+  local_rank = int(os.environ.get("LOCAL_RANK", 0))
+  device = torch.device(f'cuda:{local_rank}') if args.use_gpu else torch.device('cpu')
+  is_main = (local_rank == 0)
+
   # Create the data and its corresponding datasets and dataloader.
   para_train_data = load_paraphrase_data(args.para_train)
   para_dev_data = load_paraphrase_data(args.para_dev)
@@ -120,69 +138,93 @@ def train(args):
   para_train_data = ParaphraseDetectionDataset(para_train_data, args)
   para_dev_data = ParaphraseDetectionDataset(para_dev_data, args)
 
-  para_train_dataloader = DataLoader(para_train_data, shuffle=True, batch_size=args.batch_size,
-                                     collate_fn=para_train_data.collate_fn)
+  num_workers = min(12, os.cpu_count())
+  train_sampler = DistributedSampler(para_train_data) if ddp else None
+  para_train_dataloader = DataLoader(para_train_data,
+                                     batch_size=args.batch_size,
+                                     shuffle=(train_sampler is None),
+                                     sampler=train_sampler,
+                                     collate_fn=para_train_data.collate_fn,
+                                     num_workers=num_workers, pin_memory=True,
+                                     persistent_workers=True, prefetch_factor=2)
   para_dev_dataloader = DataLoader(para_dev_data, shuffle=False, batch_size=args.batch_size,
-                                   collate_fn=para_dev_data.collate_fn)
+                                   collate_fn=para_dev_data.collate_fn,
+                                   num_workers=num_workers, pin_memory=True,
+                                   persistent_workers=True, prefetch_factor=2)
 
   args = add_arguments(args)
   model = ParaphraseGPT(args)
   model = model.to(device)
-  if torch.cuda.device_count() > 1:
-    print(f"Using {torch.cuda.device_count()} GPUs")
-    model = torch.nn.DataParallel(model)
+  if ddp:
+    model = DDP(model, device_ids=[local_rank], output_device=local_rank, find_unused_parameters=True)
 
   lr = args.lr
   optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.)
+  scaler = GradScaler('cuda')
   best_dev_acc = 0
+  best_dev_out_path = None
+  dev_acc_scores = []
+  dev_f1_scores = []
 
   # Run for the specified number of epochs.
   for epoch in range(args.epochs):
     model.train()
+    if train_sampler is not None:
+      train_sampler.set_epoch(epoch)
     train_loss = 0
     num_batches = 0
-    for batch in tqdm(para_train_dataloader, desc=f'train-{epoch}', disable=TQDM_DISABLE):
-      # Get the input and move it to the gpu (I do not recommend training this model on CPU).
+    for batch in tqdm(para_train_dataloader, desc=f'train-{epoch}', disable=not is_main):
       b_ids, b_mask, labels = batch['token_ids'], batch['attention_mask'], batch['labels'].flatten()
-      b_ids = b_ids.to(device)
-      b_mask = b_mask.to(device)
-      labels = labels.to(device)
-      
-      # Compute the loss, gradients, and update the model's parameters.
-      optimizer.zero_grad()
-      logits = model(b_ids, b_mask)
-      preds = torch.argmax(logits, dim=1)
-      loss = F.cross_entropy(logits, labels, reduction='mean')
-      loss.backward()
-      optimizer.step()
+      b_ids = b_ids.to(device, non_blocking=True)
+      b_mask = b_mask.to(device, non_blocking=True)
+      labels = labels.to(device, non_blocking=True)
+
+      optimizer.zero_grad(set_to_none=True)
+      with autocast('cuda'):
+        logits = model(b_ids, b_mask)
+        loss = F.cross_entropy(logits, labels, reduction='mean')
+      scaler.scale(loss).backward()
+      scaler.step(optimizer)
+      scaler.update()
 
       train_loss += loss.item()
       num_batches += 1
 
     train_loss = train_loss / num_batches
 
-    dev_acc, dev_f1, *_ = model_eval_paraphrase(para_dev_dataloader, model, device)
-    print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_acc :.3f}, dev f1 :: {dev_f1 :.3f}")
+    if is_main:
+      eval_model = model.module if hasattr(model, 'module') else model
+      dev_acc, dev_f1, dev_y_pred, dev_y_true, dev_sent_ids = model_eval_paraphrase(para_dev_dataloader, eval_model, device)
+      dev_acc_scores.append(dev_acc)
+      dev_f1_scores.append(dev_f1)
+      print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_acc :.3f}, dev f1 :: {dev_f1 :.3f}")
+      print(f"dev acc history: {dev_acc_scores}")
+      print(f"dev f1 history: {dev_f1_scores}")
 
-    if dev_acc > best_dev_acc:
-      best_dev_acc = dev_acc
-      save_model(model.module if hasattr(model, 'module') else model, optimizer, args, args.filepath)
+      epoch_out_path = os.path.join(run_dir, f'para-dev-output_epoch{epoch}.csv')
+      with open(epoch_out_path, 'w+') as f:
+        f.write("id \t Predicted_Is_Paraphrase \n")
+        for p, s in zip(dev_sent_ids, dev_y_pred):
+          f.write(f"{p}, {s} \n")
 
+      if dev_acc > best_dev_acc:
+        best_dev_acc = dev_acc
+        best_dev_out_path = epoch_out_path
 
-  # Save the best dev accuracy, args, and metadata to a JSONL file.
-  results_file = "experiment_results.jsonl"
-  result = {
-    "uuid": str(uuid.uuid4()),
-    "task": "paraphrase_detection",
-    "best_dev_acc": best_dev_acc,
-    "args": vars(args),
-    "job_id": os.environ.get("JOB_ID"),
-    "method": "full_parameter_tuning",
-    "method_metadata": {},
-  }
-  with open(results_file, "a") as f:
-    f.write(json.dumps(result) + "\n")
-  print(f"Saved experiment result to {results_file}")
+    if ddp:
+      dist.barrier()
+
+  # Copy best epoch's predictions and clean up per-epoch files.
+  if is_main:
+    final_dev_path = os.path.join(run_dir, 'para-dev-output.csv')
+    shutil.copy2(best_dev_out_path, final_dev_path)
+    print(f"Saved best dev predictions (acc {best_dev_acc:.3f}) to {final_dev_path}")
+    for i in range(len(dev_acc_scores)):
+      epoch_path = os.path.join(run_dir, f'para-dev-output_epoch{i}.csv')
+      if epoch_path != best_dev_out_path and os.path.exists(epoch_path):
+        os.remove(epoch_path)
+
+  return best_dev_acc, dev_acc_scores, dev_f1_scores
 
 
 @torch.no_grad()
@@ -266,14 +308,41 @@ def add_arguments(args):
 
 
 if __name__ == "__main__":
+  # ── DDP init ───────────────────────────────────────────────────
+  if dist.is_available() and int(os.environ.get("WORLD_SIZE", 1)) > 1:
+    dist.init_process_group(backend="nccl")
+
+  local_rank = int(os.environ.get("LOCAL_RANK", 0))
+  is_main = (local_rank == 0)
+
   args = get_args()
-  # Save everything under checkpoints/<model_size>/<params>/
-  run_dir = os.path.join('checkpoints', args.model_size,
+  run_dir = os.path.join('paraphasing_exp_result', args.model_size,
                          f'epochs{args.epochs}_lr{args.lr}_bs{args.batch_size}_adamw')
-  os.makedirs(run_dir, exist_ok=True)
-  args.filepath = os.path.join(run_dir, 'model.pt')
-  args.para_dev_out = os.path.join(run_dir, 'para-dev-output.csv')
+  if is_main:
+    os.makedirs(run_dir, exist_ok=True)
+  if dist.is_available() and dist.is_initialized():
+    dist.barrier()  # Wait for rank 0 to create the directory.
+
   args.para_test_out = os.path.join(run_dir, 'para-test-output.csv')
-  seed_everything(args.seed)  # Fix the seed for reproducibility.
-  train(args)
-  test(args)
+  seed_everything(args.seed)
+  best_dev_acc, dev_acc_scores, dev_f1_scores = train(args, run_dir)
+
+  if is_main:
+    results_file = os.path.join('paraphasing_exp_result', 'experiment_results.jsonl')
+    result = {
+      "uuid": str(uuid.uuid4()),
+      "task": "paraphrase_detection",
+      "best_dev_acc": best_dev_acc,
+      "dev_acc_scores": dev_acc_scores,
+      "dev_f1_scores": dev_f1_scores,
+      "args": vars(args),
+      "job_id": os.environ.get("JOB_ID"),
+      "method": "full_parameter_tuning",
+      "method_metadata": {},
+    }
+    with open(results_file, "a") as f:
+      f.write(json.dumps(result) + "\n")
+    print(f"Saved experiment result to {results_file}")
+
+  if dist.is_available() and dist.is_initialized():
+    dist.destroy_process_group()

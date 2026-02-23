@@ -47,6 +47,7 @@ def seed_everything(seed=11711):
 
 YES_TOKEN_ID = 8505
 NO_TOKEN_ID = 3919
+GPI_VOCAB_SIZE = 50257
 
 class ParaphraseGPT(nn.Module):
   """Your GPT-2 Model designed for paraphrase detection."""
@@ -116,7 +117,8 @@ class ParaphraseGPT(nn.Module):
     logits = self.paraphrase_detection_head(last_hidden_state)
 
     batch_size = logits.size(0)
-    mapped_logits = torch.full((batch_size, YES_TOKEN_ID  + 1), float('-inf'), dtype=logits.dtype, device=logits.device)
+    logit_vector_size = GPI_VOCAB_SIZE # max(YES_TOKEN_ID, NO_TOKEN_ID) + 1
+    mapped_logits = torch.full((batch_size, logit_vector_size), float('-inf'), dtype=logits.dtype, device=logits.device)
     mapped_logits[:, YES_TOKEN_ID] = logits[:, 1]
     mapped_logits[:, NO_TOKEN_ID] = logits[:, 0]
   
