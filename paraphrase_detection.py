@@ -44,6 +44,9 @@ def seed_everything(seed=11711):
   torch.backends.cudnn.benchmark = False
   torch.backends.cudnn.deterministic = True
 
+YES_TOKEN_ID = 8505
+NO_TOKEN_ID = 3919
+
 
 class ParaphraseGPT(nn.Module):
   """Your GPT-2 Model designed for paraphrase detection."""
@@ -72,9 +75,15 @@ class ParaphraseGPT(nn.Module):
 
     'Takes a batch of sentences and produces embeddings for them.'
     outputs = self.gpt(input_ids, attention_mask)
-    last_token_hidden = outputs['last_token']
-    logits = self.paraphrase_detection_head(last_token_hidden)
-    return logits
+    last_hidden_state = outputs["last_hidden_state"]
+    logits = self.paraphrase_detection_head(last_hidden_state)
+
+    batch_size = logits.size(0)
+    mapped_logits = torch.full((batch_size, YES_TOKEN_ID  + 1), float('-inf'), dtype=logits.dtype, device=logits.device)
+    mapped_logits[:, YES_TOKEN_ID] = logits[:, 1]
+    mapped_logits[:, NO_TOKEN_ID] = logits[:, 0]
+  
+    return mapped_logits
 
 
 
