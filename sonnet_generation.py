@@ -50,9 +50,45 @@ class SonnetGPT(nn.Module):
     self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     self.tokenizer.pad_token = self.tokenizer.eos_token
 
-    # By default, fine-tune the full model. TODO: this is maybe not idea.
-    for param in self.gpt.parameters():
-      param.requires_grad = True
+    # Add LoRA configs
+    self.gpt.config.lora_rank = args.lora_rank
+    self.gpt.config.lora_alpha = args.lora_alpha
+    self.gpt.config.lora_dropout = args.lora_dropout
+    self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
+    self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
+    
+    # Reload model with LoRA if rank > 0
+    if args.lora_rank > 0:
+      self.gpt = GPT2Model.from_pretrained(model=args.model_size, d=args.d, l=args.l, num_heads=args.num_heads)
+      
+      self.gpt.config.lora_rank = args.lora_rank
+      self.gpt.config.lora_alpha = args.lora_alpha
+      self.gpt.config.lora_dropout = args.lora_dropout
+      self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
+      self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
+      
+      if args.apply_lora_to_attention:
+        from modules.lora import inject_lora
+        for name, module in self.gpt.named_modules():
+          if "self_attention" in name:
+            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["query", "key", "value"])
+      if args.apply_lora_to_mlp:
+        from modules.lora import inject_lora
+        for name, module in self.gpt.named_modules():
+          if "gpt_layers" in name and not "self_attention" in name: 
+            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
+
+    # Freeze or Unfreeze parameters based on LoRA
+    if args.lora_rank > 0:
+      for param in self.gpt.parameters():
+        param.requires_grad = False
+      
+      for name, param in self.gpt.named_parameters():
+        if 'lora' in name:
+          param.requires_grad = True
+    else:
+      for param in self.gpt.parameters():
+        param.requires_grad = True
 
   def forward(self, input_ids, attention_mask):
     """
@@ -236,6 +272,13 @@ def get_args():
   parser.add_argument("--lr", type=float, help="learning rate", default=1e-5)
   parser.add_argument("--model_size", type=str, help="The model size as specified on hugging face.",
                       choices=['gpt2', 'gpt2-medium', 'gpt2-large', 'gpt2-xl'], default='gpt2')
+
+  # LoRA arguments
+  parser.add_argument("--lora_rank", type=int, default=0, help="Rank for LoRA (0 means disabled)")
+  parser.add_argument("--lora_alpha", type=float, default=1.0, help="Alpha multiplier for LoRA")
+  parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA")
+  parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
+  parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
 
   args = parser.parse_args()
   return args
