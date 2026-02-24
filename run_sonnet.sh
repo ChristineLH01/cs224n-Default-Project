@@ -34,4 +34,9 @@ python sonnet_generation_justin.py \
   --epochs 15 \
   --batch_size 8 \
   --lr 2e-5 \
-  --model_size gpt2-medium
+  --model_size gpt2-medium \
+  --apply_lora_to_attention \
+  --lora_rank 8 \
+  --lora_alpha 8 \
+  --lora_dropout 0.1
+  #--use_flash_attention 

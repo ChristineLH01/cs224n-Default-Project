@@ -33,4 +33,9 @@ torchrun --nproc_per_node=8 paraphrase_detection_justin.py \
   --epochs 3 \
   --batch_size 64 \
   --lr 5e-5 \
-  --model_size gpt2-medium
+  --model_size gpt2-medium \
+  --apply_lora_to_attention \
+  --lora_rank 8 \
+  --lora_alpha 8 \
+  --lora_dropout 0.1
+  #--use_flash_attention 

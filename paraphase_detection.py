@@ -269,6 +269,7 @@ def get_args():
   parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
   parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
   
+  # Flash Attention arguments
   parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
 
   args = parser.parse_args()

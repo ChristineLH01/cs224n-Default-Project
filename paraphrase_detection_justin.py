@@ -73,9 +73,50 @@ class ParaphraseGPT(nn.Module):
     self.gpt = GPT2Model.from_pretrained(model=args.model_size, d=args.d, l=args.l, num_heads=args.num_heads)
     self.paraphrase_detection_head = nn.Linear(args.d, 2)  # Paraphrase detection has two outputs: 1 (yes) or 0 (no).
 
-    # By default, fine-tune the full model.
-    for param in self.gpt.parameters():
-      param.requires_grad = True
+    # Add LoRA configs
+    self.gpt.config.lora_rank = args.lora_rank
+    self.gpt.config.lora_alpha = args.lora_alpha
+    self.gpt.config.lora_dropout = args.lora_dropout
+    self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
+    self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
+    
+    # Reload model with LoRA if rank > 0
+    if args.lora_rank > 0:
+      self.gpt = GPT2Model.from_pretrained(model=args.model_size, d=args.d, l=args.l, num_heads=args.num_heads)
+      
+      self.gpt.config.lora_rank = args.lora_rank
+      self.gpt.config.lora_alpha = args.lora_alpha
+      self.gpt.config.lora_dropout = args.lora_dropout
+      self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
+      self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
+
+      if args.apply_lora_to_attention:
+        from modules.lora import inject_lora
+        for name, module in self.gpt.named_modules():
+          if "self_attention" in name:
+            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["query", "key", "value"])
+      if args.apply_lora_to_mlp:
+        from modules.lora import inject_lora
+        for name, module in self.gpt.named_modules():
+          if "gpt_layers" in name and not "self_attention" in name: # Don't re-inject if we hit layers
+            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
+
+    from modules.attention import CausalSelfAttention
+    for module in self.gpt.modules():
+      if isinstance(module, CausalSelfAttention):
+        module.use_flash_attention = getattr(args, 'use_flash_attention', False)
+
+    # Freeze or Unfreeze parameters based on LoRA
+    if args.lora_rank > 0:
+      for param in self.gpt.parameters():
+        param.requires_grad = False
+      
+      for name, param in self.gpt.named_parameters():
+        if 'lora' in name:
+          param.requires_grad = True
+    else:
+      for param in self.gpt.parameters():
+        param.requires_grad = True
 
   def forward(self, input_ids, attention_mask):
     """
@@ -101,7 +142,7 @@ class ParaphraseGPT(nn.Module):
     
     # not modifying other code, map output to 8505 or 3919
     batch_size = logits.size(0)
-    logit_vector_size = max(YES_TOKEN_ID, NO_TOKEN_ID) + 1#GPI_VOCAB_SIZE
+    logit_vector_size = max(YES_TOKEN_ID, NO_TOKEN_ID) + 1 #GPI_VOCAB_SIZE
     mapped_logits = torch.full((batch_size, logit_vector_size), float('-inf'), dtype=logits.dtype, device=logits.device)
     mapped_logits[:, YES_TOKEN_ID] = logits[:, 1]
     mapped_logits[:, NO_TOKEN_ID] = logits[:, 0]
@@ -167,6 +208,8 @@ def train(args, run_dir):
   dev_acc_scores = []
   dev_f1_scores = []
   total_train_time = 0.0
+  epoch_train_times = []
+  epoch_dev_inference_times = []
 
   # Run for the specified number of epochs.
   for epoch in range(args.epochs):
@@ -193,12 +236,16 @@ def train(args, run_dir):
       train_loss += loss.item()
       num_batches += 1
 
-    total_train_time += time.time() - epoch_train_start
+    epoch_train_time = time.time() - epoch_train_start
+    total_train_time += epoch_train_time
+    epoch_train_times.append(round(epoch_train_time, 2))
     train_loss = train_loss / num_batches
 
     if is_main:
       eval_model = model.module if hasattr(model, 'module') else model
+      dev_inf_start = time.time()
       dev_acc, dev_f1, dev_y_pred, dev_y_true, dev_sent_ids = model_eval_paraphrase(para_dev_dataloader, eval_model, device)
+      epoch_dev_inference_times.append(round(time.time() - dev_inf_start, 2))
       dev_acc_scores.append(dev_acc)
       dev_f1_scores.append(dev_f1)
       print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_acc :.3f}, dev f1 :: {dev_f1 :.3f}")
@@ -214,6 +261,7 @@ def train(args, run_dir):
       if dev_acc > best_dev_acc:
         best_dev_acc = dev_acc
         best_dev_out_path = epoch_out_path
+        save_model(model.module if hasattr(model, 'module') else model, optimizer, args, args.filepath)
 
     if ddp:
       dist.barrier()
@@ -228,7 +276,7 @@ def train(args, run_dir):
       if epoch_path != best_dev_out_path and os.path.exists(epoch_path):
         os.remove(epoch_path)
 
-  return best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time
+  return best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time, epoch_train_times, epoch_dev_inference_times
 
 
 @torch.no_grad()
@@ -254,9 +302,13 @@ def test(args):
   para_test_dataloader = DataLoader(para_test_data, shuffle=True, batch_size=args.batch_size,
                                     collate_fn=para_test_data.collate_fn)
 
+  dev_inf_start = time.time()
   dev_para_acc, _, dev_para_y_pred, _, dev_para_sent_ids = model_eval_paraphrase(para_dev_dataloader, model, device)
+  dev_inference_time = round(time.time() - dev_inf_start, 2)
   print(f"dev paraphrase acc :: {dev_para_acc :.3f}")
+  test_inf_start = time.time()
   test_para_y_pred, test_para_sent_ids = model_test_paraphrase(para_test_dataloader, model, device)
+  test_inference_time = round(time.time() - test_inf_start, 2)
 
   with open(args.para_dev_out, "w+") as f:
     f.write(f"id \t Predicted_Is_Paraphrase \n")
@@ -267,6 +319,8 @@ def test(args):
     f.write(f"id \t Predicted_Is_Paraphrase \n")
     for p, s in zip(test_para_sent_ids, test_para_y_pred):
       f.write(f"{p}, {s} \n")
+
+  return dev_inference_time, test_inference_time
 
 
 def get_args():
@@ -287,6 +341,17 @@ def get_args():
   parser.add_argument("--model_size", type=str,
                       help="The model size as specified on hugging face. DO NOT use the xl model.",
                       choices=['gpt2', 'gpt2-medium', 'gpt2-large'], default='gpt2')
+
+  # LoRA arguments
+  parser.add_argument("--lora_rank", type=int, default=0, help="Rank for LoRA (0 means disabled)")
+  parser.add_argument("--lora_alpha", type=float, default=1.0, help="Alpha multiplier for LoRA")
+  parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA")
+  parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
+  parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
+  
+  # Flash Attention arguments
+  parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
+            
 
   args = parser.parse_args()
   return args
@@ -320,18 +385,28 @@ if __name__ == "__main__":
   is_main = (local_rank == 0)
 
   args = get_args()
-  run_dir = os.path.join('paraphasing_exp_result', args.model_size,
-                         f'epochs{args.epochs}_lr{args.lr}_bs{args.batch_size}_adamw')
+  run_name = f'epochs{args.epochs}_lr{args.lr}_bs{args.batch_size}_adamw'
+  if args.lora_rank > 0:
+    run_name += f'_lora{args.lora_rank}_alpha{args.lora_alpha}'
+    if args.apply_lora_to_attention:
+      run_name += '_attn'
+    if args.apply_lora_to_mlp:
+      run_name += '_mlp'
+  if args.use_flash_attention:
+    run_name += '_flash'
+  run_dir = os.path.join('paraphasing_exp_result', args.model_size, run_name)
   if is_main:
     os.makedirs(run_dir, exist_ok=True)
   if dist.is_available() and dist.is_initialized():
     dist.barrier()  # Wait for rank 0 to create the directory.
 
   args.para_test_out = os.path.join(run_dir, 'para-test-output.csv')
+  args.filepath = os.path.join(run_dir, 'model.pt')
   seed_everything(args.seed)
-  best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time = train(args, run_dir)
+  best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time, epoch_train_times, epoch_dev_inference_times = train(args, run_dir)
 
   if is_main:
+    dev_inference_time, test_inference_time = test(args)
     num_gpus = int(os.environ.get("WORLD_SIZE", 1))
     results_file = os.path.join('paraphasing_exp_result', 'experiment_results.jsonl')
     result = {
@@ -348,6 +423,10 @@ if __name__ == "__main__":
         "num_gpus": num_gpus,
         "gpu": "H100",
         "total_train_time_sec": round(total_train_time, 2),
+        "avg_training_time_per_epoch_sec": round(sum(epoch_train_times) / len(epoch_train_times), 2),
+        "avg_dev_inference_time_per_epoch_sec": round(sum(epoch_dev_inference_times) / len(epoch_dev_inference_times), 2),
+        "total_dev_inference_time_sec": round(sum(epoch_dev_inference_times), 2),
+        "total_test_inference_time_sec": test_inference_time,
       },
     }
     with open(results_file, "a") as f:

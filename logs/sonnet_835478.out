@@ -1,0 +1,38 @@
+Node: liquid-gpu-020
+Process ID: 2684908
+CUDA_VISIBLE_DEVICES: 0
+Tue Feb 24 05:52:21 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  |   00000000:3A:00.0 Off |                    0 |
+| N/A   30C    P0             71W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+usage: sonnet_generation_justin.py [-h] [--sonnet_path SONNET_PATH]
+                                   [--held_out_sonnet_path HELD_OUT_SONNET_PATH]
+                                   [--held_out_sonnet_dev_path HELD_OUT_SONNET_DEV_PATH]
+                                   [--true_held_out_sonnet_dev_path TRUE_HELD_OUT_SONNET_DEV_PATH]
+                                   [--sonnet_out SONNET_OUT] [--seed SEED]
+                                   [--epochs EPOCHS] [--use_gpu]
+                                   [--temperature TEMPERATURE] [--top_p TOP_P]
+                                   [--batch_size BATCH_SIZE] [--lr LR]
+                                   [--model_size {gpt2,gpt2-medium,gpt2-large,gpt2-xl}]
+                                   [--lora_rank LORA_RANK]
+                                   [--lora_alpha LORA_ALPHA]
+                                   [--lora_dropout LORA_DROPOUT]
+                                   [--apply_lora_to_attention]
+                                   [--apply_lora_to_mlp]
+sonnet_generation_justin.py: error: unrecognized arguments: --use_flash_attention

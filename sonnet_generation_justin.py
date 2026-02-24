@@ -86,6 +86,11 @@ class SonnetGPT(nn.Module):
           if "gpt_layers" in name and not "self_attention" in name: 
             inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
 
+    from modules.attention import CausalSelfAttention
+    for module in self.gpt.modules():
+      if isinstance(module, CausalSelfAttention):
+        module.use_flash_attention = getattr(args, 'use_flash_attention', False)
+
     # Freeze or Unfreeze parameters based on LoRA
     if args.lora_rank > 0:
       for param in self.gpt.parameters():
@@ -201,6 +206,8 @@ def train(args, run_dir):
   best_chrf = -1.0
   best_dev_out_path = None
   total_train_time = 0.0
+  epoch_train_times = []
+  epoch_dev_inference_times = []
 
   # Run for the specified number of epochs.
   for epoch in range(args.epochs):
@@ -227,17 +234,21 @@ def train(args, run_dir):
       train_loss += loss.item()
       num_batches += 1
 
-    total_train_time += time.time() - epoch_train_start
+    epoch_train_time = time.time() - epoch_train_start
+    total_train_time += epoch_train_time
+    epoch_train_times.append(round(epoch_train_time, 2))
     train_loss = train_loss / num_batches
 
     model.eval()
     print('Generating dev sonnets for chrF scoring...')
+    dev_inf_start = time.time()
     dev_sonnets = []
     for batch in held_out_sonnet_dev_dataset:
       encoding = model.tokenizer(batch[1], return_tensors='pt', padding=True, truncation=True).to(device)
       output = model.generate(encoding['input_ids'], temperature=args.temperature, top_p=args.top_p)
       print(f'{batch[1]}{output[1]}\n\n')
       dev_sonnets.append((batch[0], output[1]))
+    epoch_dev_inference_times.append(round(time.time() - dev_inf_start, 2))
 
     dev_out_path = os.path.join(run_dir, f'dev_sonnets_epoch{epoch}.txt')
     with open(dev_out_path, 'w+') as f:
@@ -266,13 +277,14 @@ def train(args, run_dir):
     if epoch_path != best_dev_out_path and os.path.exists(epoch_path):
       os.remove(epoch_path)
 
-  return model, best_chrf, chrf_scores, total_train_time
+  return model, best_chrf, chrf_scores, total_train_time, epoch_train_times, epoch_dev_inference_times
 
 
 @torch.no_grad()
 def generate_submission_sonnets(model, args):
   device = model.get_device()
   model.eval()
+  test_inf_start = time.time()
 
   held_out_sonnet_dataset = SonnetsDataset(args.held_out_sonnet_path)
 
@@ -292,6 +304,8 @@ def generate_submission_sonnets(model, args):
     for sonnet in generated_sonnets:
       f.write(f"\n{sonnet[0]}\n")
       f.write(sonnet[1])
+
+  return round(time.time() - test_inf_start, 2)
 
 
 def get_args():
@@ -323,6 +337,7 @@ def get_args():
   parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA")
   parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
   parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
+  parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
 
   args = parser.parse_args()
   return args
@@ -357,6 +372,8 @@ if __name__ == "__main__":
       run_name += '_attn'
     if args.apply_lora_to_mlp:
       run_name += '_mlp'
+  if args.use_flash_attention:
+    run_name += '_flash'
   run_dir = os.path.join('sonnet_exp_result', args.model_size, run_name)
   os.makedirs(run_dir, exist_ok=True)
 
@@ -364,8 +381,8 @@ if __name__ == "__main__":
   args.sonnet_out = os.path.join(run_dir, 'generated_sonnets.txt')
   seed_everything(args.seed)
 
-  model, best_chrf, chrf_scores, total_train_time = train(args, run_dir)
-  generate_submission_sonnets(model, args)
+  model, best_chrf, chrf_scores, total_train_time, epoch_train_times, epoch_dev_inference_times = train(args, run_dir)
+  test_inference_time = generate_submission_sonnets(model, args)
 
   results_file = os.path.join('sonnet_exp_result', 'experiment_results.jsonl')
   result = {
@@ -381,6 +398,10 @@ if __name__ == "__main__":
       "num_gpus": 1,
       "gpu": "H100",
       "total_train_time_sec": round(total_train_time, 2),
+      "avg_training_time_per_epoch_sec": round(sum(epoch_train_times) / len(epoch_train_times), 2),
+      "avg_dev_inference_time_per_epoch_sec": round(sum(epoch_dev_inference_times) / len(epoch_dev_inference_times), 2),
+      "total_dev_inference_time_sec": round(sum(epoch_dev_inference_times), 2),
+      "total_test_inference_time_sec": test_inference_time,
     },
   }
   with open(results_file, "a") as f:
