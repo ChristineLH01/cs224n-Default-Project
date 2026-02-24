@@ -10,8 +10,8 @@ class LoRALinear(nn.Module):
     self.alpha = alpha
     self.scaling = alpha / rank if rank > 0 else 0.0
 
-    in_features = linear_layer.in_features
-    out_features = linear_layer.out_features
+    in_features = linear_layer.weight.shape[1]
+    out_features = linear_layer.weight.shape[0]
 
     if rank > 0:
       self.lora_A = nn.Parameter(torch.zeros((in_features, rank)))

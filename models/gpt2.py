@@ -49,7 +49,6 @@ class GPT2Model(GPTPreTrainedModel):
 
     ### YOUR CODE HERE
     inputs_embeds = self.word_embedding(input_ids)
-
     pos_ids = self.position_ids[:, :seq_length]
 
     ### TODO: Use pos_ids to get position embedding from self.pos_embedding into pos_embeds.
