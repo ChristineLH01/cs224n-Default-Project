@@ -20,6 +20,7 @@ class CausalSelfAttention(nn.Module):
     # implementation of transformer. Although it is a bit unusual, we empirically
     # observe that it yields better performance.
     self.dropout = nn.Dropout(config.attention_probs_dropout_prob)
+    self.use_flash_attention = getattr(config, 'use_flash_attention', False)
 
     # Inject LoRA
     if getattr(config, 'lora_rank', 0) > 0 and getattr(config, 'apply_lora_to_attention', False):
@@ -40,17 +41,24 @@ class CausalSelfAttention(nn.Module):
 
     ### YOUR CODE HERE
     seq_len = query.size(-2)
-
     causal_mask = torch.full((seq_len, seq_len), float('-inf'), device=query.device)
     causal_mask = torch.triu(causal_mask, diagonal=1)
 
-    attn_scores = query @ key.transpose(-2, -1) / (self.attention_head_size ** 0.5)
-    attn_scores = attn_scores + causal_mask + attention_mask
+    if getattr(self, "use_flash_attention", False):
+      import torch.nn.functional as F
+      combined_mask = causal_mask + attention_mask
+      attn_output = F.scaled_dot_product_attention(
+          query, key, value, 
+          attn_mask=combined_mask, 
+          dropout_p=self.dropout.p if self.training else 0.0
+      )
+    else:
+      attn_scores = query @ key.transpose(-2, -1) / (self.attention_head_size ** 0.5)
+      attn_scores = attn_scores + causal_mask + attention_mask
+      attn_probs = torch.softmax(attn_scores, dim=-1)
+      attn_probs = self.dropout(attn_probs)
+      attn_output = attn_probs @ value
 
-    attn_probs = torch.softmax(attn_scores, dim=-1)
-    attn_probs = self.dropout(attn_probs)
-
-    attn_output = attn_probs @ value
     attn_output = rearrange(attn_output, 'b h t d -> b t (h d)')
     return attn_output
 

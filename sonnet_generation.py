@@ -78,6 +78,11 @@ class SonnetGPT(nn.Module):
           if "gpt_layers" in name and not "self_attention" in name: 
             inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
 
+    from modules.attention import CausalSelfAttention
+    for module in self.gpt.modules():
+      if isinstance(module, CausalSelfAttention):
+        module.use_flash_attention = getattr(args, 'use_flash_attention', False)
+
     # Freeze or Unfreeze parameters based on LoRA
     if args.lora_rank > 0:
       for param in self.gpt.parameters():
@@ -170,7 +175,10 @@ def save_model(model, optimizer, args, filepath):
 
 def train(args):
   """Train GPT-2 for paraphrase detection on the Quora dataset."""
-  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
+  if args.use_gpu:
+    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
+  else:
+    device = torch.device('cpu')
   # Create the data and its corresponding datasets and dataloader.
   sonnet_dataset = SonnetsDataset(args.sonnet_path)
   sonnet_dataloader = DataLoader(sonnet_dataset, shuffle=True, batch_size=args.batch_size,
@@ -205,10 +213,17 @@ def train(args):
       labels = b_ids[:, 1:].contiguous().flatten()  # Ignore the first token to compose the labels.
       loss = F.cross_entropy(logits, labels, reduction='mean')
       loss.backward()
+      
+      # Clip gradients to prevent exploding gradients
+      torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+      
       optimizer.step()
 
       train_loss += loss.item()
       num_batches += 1
+      
+      if num_batches % 5 == 0:
+        print(f"Batch {num_batches}, Loss: {loss.item():.4f}")
 
     train_loss = train_loss / num_batches
     print(f"Epoch {epoch}: train loss :: {train_loss :.3f}.")
@@ -225,7 +240,10 @@ def train(args):
 
 @torch.no_grad()
 def generate_submission_sonnets(args):
-  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
+  if args.use_gpu:
+    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
+  else:
+    device = torch.device('cpu')
   saved = torch.load(f'{args.epochs-1}_{args.filepath}', weights_only=False)
 
   model = SonnetGPT(saved['args'])
@@ -281,6 +299,8 @@ def get_args():
   parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA")
   parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
   parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
+  
+  parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
 
   args = parser.parse_args()
   return args

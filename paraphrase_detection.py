@@ -84,6 +84,11 @@ class ParaphraseGPT(nn.Module):
           if "gpt_layers" in name and not "self_attention" in name: # Don't re-inject if we hit layers
             inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
 
+    from modules.attention import CausalSelfAttention
+    for module in self.gpt.modules():
+      if isinstance(module, CausalSelfAttention):
+        module.use_flash_attention = getattr(args, 'use_flash_attention', False)
+
     # Freeze or Unfreeze parameters based on LoRA
     if args.lora_rank > 0:
       for param in self.gpt.parameters():
@@ -111,7 +116,7 @@ class ParaphraseGPT(nn.Module):
 
     'Takes a batch of sentences and produces embeddings for them.'
     outputs = self.gpt(input_ids, attention_mask)
-    last_hidden_state = outputs["last_hidden_state"]
+    last_hidden_state = outputs["last_token"]
     logits = self.paraphrase_detection_head(last_hidden_state)
 
     batch_size = logits.size(0)
@@ -139,7 +144,10 @@ def save_model(model, optimizer, args, filepath):
 
 def train(args):
   """Train GPT-2 for paraphrase detection on the Quora dataset."""
-  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
+  if args.use_gpu:
+    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
+  else:
+    device = torch.device('cpu')
   # Create the data and its corresponding datasets and dataloader.
   para_train_data = load_paraphrase_data(args.para_train)
   para_dev_data = load_paraphrase_data(args.para_dev)
@@ -197,7 +205,10 @@ def train(args):
 @torch.no_grad()
 def test(args):
   """Evaluate your model on the dev and test datasets; save the predictions to disk."""
-  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
+  if args.use_gpu:
+    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
+  else:
+    device = torch.device('cpu')
   saved = torch.load(args.filepath)
 
   model = ParaphraseGPT(saved['args'])
@@ -257,6 +268,8 @@ def get_args():
   parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA")
   parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
   parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
+  
+  parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
 
   args = parser.parse_args()
   return args
