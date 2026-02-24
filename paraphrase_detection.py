@@ -9,7 +9,6 @@ Consider:
 Running:
   `python paraphrase_detection.py --use_gpu`
 trains and evaluates your ParaphraseGPT model and writes the required submission files.
-python paraphrase_detection.py --use_gpu --fine_tune_mode full-model --epochs 3 --batch_size 64 --lr 5e-5 --model_size gpt2-medium
 '''
 
 import argparse
@@ -32,9 +31,6 @@ from evaluation import model_eval_paraphrase, model_test_paraphrase
 from models.gpt2 import GPT2Model
 
 from optimizer import AdamW
-
-from modules.lora import apply_lora_to_model
-from modules.attention import CausalSelfAttention
 
 TQDM_DISABLE = False
 
@@ -59,28 +55,51 @@ class ParaphraseGPT(nn.Module):
     super().__init__()
     self.gpt = GPT2Model.from_pretrained(model=args.model_size, d=args.d, l=args.l, num_heads=args.num_heads)
     self.paraphrase_detection_head = nn.Linear(args.d, 2)  # Paraphrase detection has two outputs: 1 (yes) or 0 (no).
-    self.fine_tune_mode = args.fine_tune_mode
-    self.use_flash_attention = getattr(args, 'use_flash_attention', False)
 
-    # Set flash attention if specified
-    if self.use_flash_attention:
-      print("Using Flash Attention.")
-      for module in self.gpt.modules():
-        if isinstance(module, CausalSelfAttention):
-          module.use_flash_attention = self.use_flash_attention
+    # Add LoRA configs
+    self.gpt.config.lora_rank = args.lora_rank
+    self.gpt.config.lora_alpha = args.lora_alpha
+    self.gpt.config.lora_dropout = args.lora_dropout
+    self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
+    self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
+    
+    # Reload model with LoRA if rank > 0
+    if args.lora_rank > 0:
+      self.gpt = GPT2Model.from_pretrained(model=args.model_size, d=args.d, l=args.l, num_heads=args.num_heads)
+      
+      self.gpt.config.lora_rank = args.lora_rank
+      self.gpt.config.lora_alpha = args.lora_alpha
+      self.gpt.config.lora_dropout = args.lora_dropout
+      self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
+      self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
 
-    # Configure fine-tuning mode
-    if self.fine_tune_mode == 'last-linear-layer':
-      print("Using pre-trained model.")
+      if args.apply_lora_to_attention:
+        from modules.lora import inject_lora
+        for name, module in self.gpt.named_modules():
+          if "self_attention" in name:
+            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["query", "key", "value"])
+      if args.apply_lora_to_mlp:
+        from modules.lora import inject_lora
+        for name, module in self.gpt.named_modules():
+          if "gpt_layers" in name and not "self_attention" in name: # Don't re-inject if we hit layers
+            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
+
+    from modules.attention import CausalSelfAttention
+    for module in self.gpt.modules():
+      if isinstance(module, CausalSelfAttention):
+        module.use_flash_attention = getattr(args, 'use_flash_attention', False)
+
+    # Freeze or Unfreeze parameters based on LoRA
+    if args.lora_rank > 0:
       for param in self.gpt.parameters():
         param.requires_grad = False
-    elif self.fine_tune_mode == 'full-model':
-      print("Fine-tuning the full model.")
+      
+      for name, param in self.gpt.named_parameters():
+        if 'lora' in name:
+          param.requires_grad = True
+    else:
       for param in self.gpt.parameters():
         param.requires_grad = True
-    else:
-      print(f"Applying LoRA fine-tuning with mode {self.fine_tune_mode}, rank {args.lora_rank}, alpha {args.lora_alpha}, dropout {args.lora_dropout}")
-      apply_lora_to_model(self.gpt, args)
 
   def forward(self, input_ids, attention_mask):
     """
@@ -237,24 +256,22 @@ def get_args():
   parser.add_argument("--epochs", type=int, default=10)
   parser.add_argument("--use_gpu", action='store_true')
 
-  parser.add_argument("--batch_size", type=int, default=8)
+  parser.add_argument("--batch_size", help='sst: 64, cfimdb: 8 can fit a 12GB GPU', type=int, default=8)
   parser.add_argument("--lr", type=float, help="learning rate", default=1e-5)
   parser.add_argument("--model_size", type=str,
                       help="The model size as specified on hugging face. DO NOT use the xl model.",
                       choices=['gpt2', 'gpt2-medium', 'gpt2-large'], default='gpt2')
 
-  # Fine-tuning mode and LoRA arguments
-  parser.add_argument("--fine_tune_mode", type=str, default="full-model",
-                      choices=['last-linear-layer', 'full-model', 'lora', 'lora_attention', 'lora_mlp'],
-                      help="Fine-tuning mode: last-linear-layer (freeze GPT, train head only), full-model, lora (attention+mlp), lora_attention, or lora_mlp")
-  parser.add_argument("--lora_rank", type=int, default=8, help="Rank for LoRA adapters (must be > 0)")
-  parser.add_argument("--lora_alpha", type=float, default=16.0, help="Alpha multiplier for LoRA")
+  # LoRA arguments
+  parser.add_argument("--lora_rank", type=int, default=0, help="Rank for LoRA (0 means disabled)")
+  parser.add_argument("--lora_alpha", type=float, default=1.0, help="Alpha multiplier for LoRA")
   parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA")
+  parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
+  parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
+  
   parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
 
   args = parser.parse_args()
-  if args.lora_rank <= 0:
-    raise ValueError(f"--lora_rank must be > 0, got {args.lora_rank}")
   return args
 
 
