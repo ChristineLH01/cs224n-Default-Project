@@ -21,6 +21,7 @@ class ExperimentRecord(BaseModel):
     task: str
     best_dev_acc: Optional[float] = None
     best_chrf: Optional[float] = None
+    best_dev_chrf: Optional[float] = None
     dev_acc_scores: Optional[list] = None
     dev_f1_scores: Optional[list] = None
     chrf_scores: Optional[list] = None
@@ -38,7 +39,7 @@ class ExperimentRecord(BaseModel):
             "job_id": self.job_id,
             "method": method,
             "best_dev_acc": self.best_dev_acc,
-            "best_chrf": self.best_chrf,
+            "best_chrf": self.best_chrf or self.best_dev_chrf,
             "dev_acc_scores": self.dev_acc_scores,
             "dev_f1_scores": self.dev_f1_scores,
             "chrf_scores": self.chrf_scores,
