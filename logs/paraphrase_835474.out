@@ -1,0 +1,180 @@
+Node: liquid-gpu-038
+Process ID: 784756
+CUDA_VISIBLE_DEVICES: 0,1,2,3,4,5,6,7
+Tue Feb 24 05:52:16 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  |   00000000:18:00.0 Off |                    0 |
+| N/A   27C    P0             70W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H100 80GB HBM3          On  |   00000000:2A:00.0 Off |                    0 |
+| N/A   29C    P0             73W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA H100 80GB HBM3          On  |   00000000:3A:00.0 Off |                    0 |
+| N/A   29C    P0             68W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA H100 80GB HBM3          On  |   00000000:5D:00.0 Off |                    0 |
+| N/A   28C    P0             72W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA H100 80GB HBM3          On  |   00000000:84:00.0 Off |                    0 |
+| N/A   27C    P0             72W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA H100 80GB HBM3          On  |   00000000:8B:00.0 Off |                    0 |
+| N/A   29C    P0             69W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA H100 80GB HBM3          On  |   00000000:91:00.0 Off |                    0 |
+| N/A   29C    P0             67W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA H100 80GB HBM3          On  |   00000000:E4:00.0 Off |                    0 |
+| N/A   27C    P0             69W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+W0224 05:52:21.831344 140737352800064 torch/distributed/run.py:779] 
+W0224 05:52:21.831344 140737352800064 torch/distributed/run.py:779] *****************************************
+W0224 05:52:21.831344 140737352800064 torch/distributed/run.py:779] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0224 05:52:21.831344 140737352800064 torch/distributed/run.py:779] *****************************************
+[W224 05:52:33.063635532 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+usage: paraphrase_detection_justin.py [-h] [--para_train PARA_TRAIN]
+                                      [--para_dev PARA_DEV]
+                                      [--para_test PARA_TEST]
+                                      [--para_dev_out PARA_DEV_OUT]
+                                      [--para_test_out PARA_TEST_OUT]
+                                      [--seed SEED] [--epochs EPOCHS]
+                                      [--use_gpu] [--batch_size BATCH_SIZE]
+                                      [--lr LR]
+                                      [--model_size {gpt2,gpt2-medium,gpt2-large}]
+paraphrase_detection_justin.py: error: unrecognized arguments: --use_flash_attention
+[W224 05:52:33.127784527 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+usage: paraphrase_detection_justin.py [-h] [--para_train PARA_TRAIN]
+                                      [--para_dev PARA_DEV]
+                                      [--para_test PARA_TEST]
+                                      [--para_dev_out PARA_DEV_OUT]
+                                      [--para_test_out PARA_TEST_OUT]
+                                      [--seed SEED] [--epochs EPOCHS]
+                                      [--use_gpu] [--batch_size BATCH_SIZE]
+                                      [--lr LR]
+                                      [--model_size {gpt2,gpt2-medium,gpt2-large}]
+paraphrase_detection_justin.py: error: unrecognized arguments: --use_flash_attention
+[W224 05:52:33.146791392 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+usage: paraphrase_detection_justin.py [-h] [--para_train PARA_TRAIN]
+                                      [--para_dev PARA_DEV]
+                                      [--para_test PARA_TEST]
+                                      [--para_dev_out PARA_DEV_OUT]
+                                      [--para_test_out PARA_TEST_OUT]
+                                      [--seed SEED] [--epochs EPOCHS]
+                                      [--use_gpu] [--batch_size BATCH_SIZE]
+                                      [--lr LR]
+                                      [--model_size {gpt2,gpt2-medium,gpt2-large}]
+paraphrase_detection_justin.py: error: unrecognized arguments: --use_flash_attention
+[W224 05:52:33.220115374 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+[W224 05:52:33.223305340 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+usage: paraphrase_detection_justin.py [-h] [--para_train PARA_TRAIN]
+                                      [--para_dev PARA_DEV]
+                                      [--para_test PARA_TEST]
+                                      [--para_dev_out PARA_DEV_OUT]
+                                      [--para_test_out PARA_TEST_OUT]
+                                      [--seed SEED] [--epochs EPOCHS]
+                                      [--use_gpu] [--batch_size BATCH_SIZE]
+                                      [--lr LR]
+                                      [--model_size {gpt2,gpt2-medium,gpt2-large}]
+paraphrase_detection_justin.py: error: unrecognized arguments: --use_flash_attention
+usage: paraphrase_detection_justin.py [-h] [--para_train PARA_TRAIN]
+                                      [--para_dev PARA_DEV]
+                                      [--para_test PARA_TEST]
+                                      [--para_dev_out PARA_DEV_OUT]
+                                      [--para_test_out PARA_TEST_OUT]
+                                      [--seed SEED] [--epochs EPOCHS]
+                                      [--use_gpu] [--batch_size BATCH_SIZE]
+                                      [--lr LR]
+                                      [--model_size {gpt2,gpt2-medium,gpt2-large}]
+paraphrase_detection_justin.py: error: unrecognized arguments: --use_flash_attention
+[W224 05:52:33.293241078 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+usage: paraphrase_detection_justin.py [-h] [--para_train PARA_TRAIN]
+                                      [--para_dev PARA_DEV]
+                                      [--para_test PARA_TEST]
+                                      [--para_dev_out PARA_DEV_OUT]
+                                      [--para_test_out PARA_TEST_OUT]
+                                      [--seed SEED] [--epochs EPOCHS]
+                                      [--use_gpu] [--batch_size BATCH_SIZE]
+                                      [--lr LR]
+                                      [--model_size {gpt2,gpt2-medium,gpt2-large}]
+paraphrase_detection_justin.py: error: unrecognized arguments: --use_flash_attention
+[W224 05:52:33.309512556 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+[W224 05:52:33.310533885 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+usage: paraphrase_detection_justin.py [-h] [--para_train PARA_TRAIN]
+                                      [--para_dev PARA_DEV]
+                                      [--para_test PARA_TEST]
+                                      [--para_dev_out PARA_DEV_OUT]
+                                      [--para_test_out PARA_TEST_OUT]
+                                      [--seed SEED] [--epochs EPOCHS]
+                                      [--use_gpu] [--batch_size BATCH_SIZE]
+                                      [--lr LR]
+                                      [--model_size {gpt2,gpt2-medium,gpt2-large}]
+paraphrase_detection_justin.py: error: unrecognized arguments: --use_flash_attention
+usage: paraphrase_detection_justin.py [-h] [--para_train PARA_TRAIN]
+                                      [--para_dev PARA_DEV]
+                                      [--para_test PARA_TEST]
+                                      [--para_dev_out PARA_DEV_OUT]
+                                      [--para_test_out PARA_TEST_OUT]
+                                      [--seed SEED] [--epochs EPOCHS]
+                                      [--use_gpu] [--batch_size BATCH_SIZE]
+                                      [--lr LR]
+                                      [--model_size {gpt2,gpt2-medium,gpt2-large}]
+paraphrase_detection_justin.py: error: unrecognized arguments: --use_flash_attention
+W0224 05:52:33.961623 140737352800064 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 784853 closing signal SIGTERM
+W0224 05:52:33.962426 140737352800064 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 784854 closing signal SIGTERM
+W0224 05:52:33.962622 140737352800064 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 784856 closing signal SIGTERM
+W0224 05:52:33.962778 140737352800064 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 784857 closing signal SIGTERM
+W0224 05:52:33.962922 140737352800064 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 784858 closing signal SIGTERM
+W0224 05:52:33.963061 140737352800064 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 784859 closing signal SIGTERM
+W0224 05:52:33.963208 140737352800064 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 784860 closing signal SIGTERM
+E0224 05:52:34.491896 140737352800064 torch/distributed/elastic/multiprocessing/api.py:833] failed (exitcode: 2) local_rank: 7 (pid: 784861) of binary: /home/justin/miniconda3/envs/cs224n_dfp/bin/python
+Traceback (most recent call last):
+  File "/home/justin/miniconda3/envs/cs224n_dfp/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 348, in wrapper
+    return f(*args, **kwargs)
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/distributed/run.py", line 901, in main
+    run(args)
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/distributed/run.py", line 892, in run
+    elastic_launch(
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/distributed/launcher/api.py", line 133, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/justin/miniconda3/envs/cs224n_dfp/lib/python3.8/site-packages/torch/distributed/launcher/api.py", line 264, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+paraphrase_detection_justin.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-02-24_05:52:33
+  host      : liquid-gpu-038.cm.cluster
+  rank      : 7 (local_rank: 7)
+  exitcode  : 2 (pid: 784861)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

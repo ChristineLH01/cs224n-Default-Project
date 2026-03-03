@@ -12,8 +12,24 @@ trains and evaluates your ParaphraseGPT model and writes the required submission
 '''
 
 import argparse
+import json
+import os
 import random
+import shutil
+import time
+import uuid
+
+os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
+
 import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
+
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
+torch.set_float32_matmul_precision('high')
+from torch.amp import GradScaler, autocast
 
 import numpy as np
 import torch.nn.functional as F
@@ -44,9 +60,10 @@ def seed_everything(seed=11711):
   torch.backends.cudnn.benchmark = False
   torch.backends.cudnn.deterministic = True
 
+
 YES_TOKEN_ID = 8505
 NO_TOKEN_ID = 3919
-
+GPI_VOCAB_SIZE = 50257
 
 class ParaphraseGPT(nn.Module):
   """Your GPT-2 Model designed for paraphrase detection."""
@@ -115,16 +132,22 @@ class ParaphraseGPT(nn.Module):
     """
 
     'Takes a batch of sentences and produces embeddings for them.'
+    # Get the hidden states from GPT-2; use the last token's hidden state
+    # since GPT-2 is autoregressive and the last token aggregates the full context.
     outputs = self.gpt(input_ids, attention_mask)
-    last_hidden_state = outputs["last_token"]
-    logits = self.paraphrase_detection_head(last_hidden_state)
-
+    
+    last_token_hidden = outputs['last_token']  # [batch_size, hidden_size]
+    # Project to 2 classes: index 0 = "no", index 1 = "yes".
+    logits = self.paraphrase_detection_head(last_token_hidden)  # [batch_size, 2]
+    
+    # not modifying other code, map output to 8505 or 3919
     batch_size = logits.size(0)
-    mapped_logits = torch.full((batch_size, YES_TOKEN_ID  + 1), float('-inf'), dtype=logits.dtype, device=logits.device)
+    logit_vector_size = max(YES_TOKEN_ID, NO_TOKEN_ID) + 1 #GPI_VOCAB_SIZE
+    mapped_logits = torch.full((batch_size, logit_vector_size), float('-inf'), dtype=logits.dtype, device=logits.device)
     mapped_logits[:, YES_TOKEN_ID] = logits[:, 1]
     mapped_logits[:, NO_TOKEN_ID] = logits[:, 0]
   
-    return mapped_logits
+    return mapped_logits #logits
 
 
 
@@ -142,12 +165,14 @@ def save_model(model, optimizer, args, filepath):
   print(f"save the model to {filepath}")
 
 
-def train(args):
+def train(args, run_dir):
   """Train GPT-2 for paraphrase detection on the Quora dataset."""
-  if args.use_gpu:
-    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
-  else:
-    device = torch.device('cpu')
+  # ── DDP setup ──────────────────────────────────────────────────
+  ddp = dist.is_available() and dist.is_initialized()
+  local_rank = int(os.environ.get("LOCAL_RANK", 0))
+  device = torch.device(f'cuda:{local_rank}') if args.use_gpu else torch.device('cpu')
+  is_main = (local_rank == 0)
+
   # Create the data and its corresponding datasets and dataloader.
   para_train_data = load_paraphrase_data(args.para_train)
   para_dev_data = load_paraphrase_data(args.para_dev)
@@ -155,60 +180,109 @@ def train(args):
   para_train_data = ParaphraseDetectionDataset(para_train_data, args)
   para_dev_data = ParaphraseDetectionDataset(para_dev_data, args)
 
-  para_train_dataloader = DataLoader(para_train_data, shuffle=True, batch_size=args.batch_size,
-                                     collate_fn=para_train_data.collate_fn)
+  num_workers = min(12, os.cpu_count())
+  train_sampler = DistributedSampler(para_train_data) if ddp else None
+  para_train_dataloader = DataLoader(para_train_data,
+                                     batch_size=args.batch_size,
+                                     shuffle=(train_sampler is None),
+                                     sampler=train_sampler,
+                                     collate_fn=para_train_data.collate_fn,
+                                     num_workers=num_workers, pin_memory=True,
+                                     persistent_workers=True, prefetch_factor=2)
   para_dev_dataloader = DataLoader(para_dev_data, shuffle=False, batch_size=args.batch_size,
-                                   collate_fn=para_dev_data.collate_fn)
+                                   collate_fn=para_dev_data.collate_fn,
+                                   num_workers=num_workers, pin_memory=True,
+                                   persistent_workers=True, prefetch_factor=2)
 
   args = add_arguments(args)
   model = ParaphraseGPT(args)
   model = model.to(device)
+  if ddp:
+    model = DDP(model, device_ids=[local_rank], output_device=local_rank, find_unused_parameters=True)
 
   lr = args.lr
   optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.)
+  scaler = GradScaler('cuda')
   best_dev_acc = 0
+  best_dev_out_path = None
+  dev_acc_scores = []
+  dev_f1_scores = []
+  total_train_time = 0.0
+  epoch_train_times = []
+  epoch_dev_inference_times = []
 
   # Run for the specified number of epochs.
   for epoch in range(args.epochs):
     model.train()
+    if train_sampler is not None:
+      train_sampler.set_epoch(epoch)
     train_loss = 0
     num_batches = 0
-    for batch in tqdm(para_train_dataloader, desc=f'train-{epoch}', disable=TQDM_DISABLE):
-      # Get the input and move it to the gpu (I do not recommend training this model on CPU).
+    epoch_train_start = time.time()
+    for batch in tqdm(para_train_dataloader, desc=f'train-{epoch}', disable=not is_main):
       b_ids, b_mask, labels = batch['token_ids'], batch['attention_mask'], batch['labels'].flatten()
-      b_ids = b_ids.to(device)
-      b_mask = b_mask.to(device)
-      labels = labels.to(device)
+      b_ids = b_ids.to(device, non_blocking=True)
+      b_mask = b_mask.to(device, non_blocking=True)
+      labels = labels.to(device, non_blocking=True)
 
-      # Compute the loss, gradients, and update the model's parameters.
-      optimizer.zero_grad()
-      logits = model(b_ids, b_mask)
-      preds = torch.argmax(logits, dim=1)
-      loss = F.cross_entropy(logits, labels, reduction='mean')
-      loss.backward()
-      optimizer.step()
+      optimizer.zero_grad(set_to_none=True)
+      with autocast('cuda'):
+        logits = model(b_ids, b_mask)
+        loss = F.cross_entropy(logits, labels, reduction='mean')
+      scaler.scale(loss).backward()
+      scaler.step(optimizer)
+      scaler.update()
 
       train_loss += loss.item()
       num_batches += 1
 
+    epoch_train_time = time.time() - epoch_train_start
+    total_train_time += epoch_train_time
+    epoch_train_times.append(round(epoch_train_time, 2))
     train_loss = train_loss / num_batches
 
-    dev_acc, dev_f1, *_ = model_eval_paraphrase(para_dev_dataloader, model, device)
+    if is_main:
+      eval_model = model.module if hasattr(model, 'module') else model
+      dev_inf_start = time.time()
+      dev_acc, dev_f1, dev_y_pred, dev_y_true, dev_sent_ids = model_eval_paraphrase(para_dev_dataloader, eval_model, device)
+      epoch_dev_inference_times.append(round(time.time() - dev_inf_start, 2))
+      dev_acc_scores.append(dev_acc)
+      dev_f1_scores.append(dev_f1)
+      print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_acc :.3f}, dev f1 :: {dev_f1 :.3f}")
+      print(f"dev acc history: {dev_acc_scores}")
+      print(f"dev f1 history: {dev_f1_scores}")
 
-    if dev_acc > best_dev_acc:
-      best_dev_acc = dev_acc
-      save_model(model, optimizer, args, args.filepath)
+      epoch_out_path = os.path.join(run_dir, f'para-dev-output_epoch{epoch}.csv')
+      with open(epoch_out_path, 'w+') as f:
+        f.write("id \t Predicted_Is_Paraphrase \n")
+        for p, s in zip(dev_sent_ids, dev_y_pred):
+          f.write(f"{p}, {s} \n")
 
-    print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_acc :.3f}")
+      if dev_acc > best_dev_acc:
+        best_dev_acc = dev_acc
+        best_dev_out_path = epoch_out_path
+        save_model(model.module if hasattr(model, 'module') else model, optimizer, args, args.filepath)
+
+    if ddp:
+      dist.barrier()
+
+  # Copy best epoch's predictions and clean up per-epoch files.
+  if is_main:
+    final_dev_path = os.path.join(run_dir, 'para-dev-output.csv')
+    shutil.copy2(best_dev_out_path, final_dev_path)
+    print(f"Saved best dev predictions (acc {best_dev_acc:.3f}) to {final_dev_path}")
+    for i in range(len(dev_acc_scores)):
+      epoch_path = os.path.join(run_dir, f'para-dev-output_epoch{i}.csv')
+      if epoch_path != best_dev_out_path and os.path.exists(epoch_path):
+        os.remove(epoch_path)
+
+  return best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time, epoch_train_times, epoch_dev_inference_times
 
 
 @torch.no_grad()
 def test(args):
   """Evaluate your model on the dev and test datasets; save the predictions to disk."""
-  if args.use_gpu:
-    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
-  else:
-    device = torch.device('cpu')
+  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
   saved = torch.load(args.filepath)
 
   model = ParaphraseGPT(saved['args'])
@@ -228,9 +302,13 @@ def test(args):
   para_test_dataloader = DataLoader(para_test_data, shuffle=True, batch_size=args.batch_size,
                                     collate_fn=para_test_data.collate_fn)
 
+  dev_inf_start = time.time()
   dev_para_acc, _, dev_para_y_pred, _, dev_para_sent_ids = model_eval_paraphrase(para_dev_dataloader, model, device)
+  dev_inference_time = round(time.time() - dev_inf_start, 2)
   print(f"dev paraphrase acc :: {dev_para_acc :.3f}")
+  test_inf_start = time.time()
   test_para_y_pred, test_para_sent_ids = model_test_paraphrase(para_test_dataloader, model, device)
+  test_inference_time = round(time.time() - test_inf_start, 2)
 
   with open(args.para_dev_out, "w+") as f:
     f.write(f"id \t Predicted_Is_Paraphrase \n")
@@ -241,6 +319,8 @@ def test(args):
     f.write(f"id \t Predicted_Is_Paraphrase \n")
     for p, s in zip(test_para_sent_ids, test_para_y_pred):
       f.write(f"{p}, {s} \n")
+
+  return dev_inference_time, test_inference_time
 
 
 def get_args():
@@ -269,7 +349,9 @@ def get_args():
   parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
   parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
   
+  # Flash Attention arguments
   parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
+            
 
   args = parser.parse_args()
   return args
@@ -295,8 +377,61 @@ def add_arguments(args):
 
 
 if __name__ == "__main__":
+  # ── DDP init ───────────────────────────────────────────────────
+  if dist.is_available() and int(os.environ.get("WORLD_SIZE", 1)) > 1:
+    dist.init_process_group(backend="nccl")
+
+  local_rank = int(os.environ.get("LOCAL_RANK", 0))
+  is_main = (local_rank == 0)
+
   args = get_args()
-  args.filepath = f'{args.epochs}-{args.lr}-paraphrase.pt'  # Save path.
-  seed_everything(args.seed)  # Fix the seed for reproducibility.
-  train(args)
-  test(args)
+  run_name = f'epochs{args.epochs}_lr{args.lr}_bs{args.batch_size}_adamw'
+  if args.lora_rank > 0:
+    run_name += f'_lora{args.lora_rank}_alpha{args.lora_alpha}'
+    if args.apply_lora_to_attention:
+      run_name += '_attn'
+    if args.apply_lora_to_mlp:
+      run_name += '_mlp'
+  if args.use_flash_attention:
+    run_name += '_flash'
+  run_dir = os.path.join('paraphasing_exp_result', args.model_size, run_name)
+  if is_main:
+    os.makedirs(run_dir, exist_ok=True)
+  if dist.is_available() and dist.is_initialized():
+    dist.barrier()  # Wait for rank 0 to create the directory.
+
+  args.para_test_out = os.path.join(run_dir, 'para-test-output.csv')
+  args.filepath = os.path.join(run_dir, 'model.pt')
+  seed_everything(args.seed)
+  best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time, epoch_train_times, epoch_dev_inference_times = train(args, run_dir)
+
+  if is_main:
+    dev_inference_time, test_inference_time = test(args)
+    num_gpus = int(os.environ.get("WORLD_SIZE", 1))
+    results_file = os.path.join('paraphasing_exp_result', 'experiment_results.jsonl')
+    result = {
+      "uuid": str(uuid.uuid4()),
+      "task": "paraphrase_detection",
+      "best_dev_acc": best_dev_acc,
+      "dev_acc_scores": dev_acc_scores,
+      "dev_f1_scores": dev_f1_scores,
+      "args": vars(args),
+      "job_id": os.environ.get("JOB_ID"),
+      "method": "full_parameter_tuning",
+      "method_metadata": {},
+      "training_meta_data": {
+        "num_gpus": num_gpus,
+        "gpu": "H100",
+        "total_train_time_sec": round(total_train_time, 2),
+        "avg_training_time_per_epoch_sec": round(sum(epoch_train_times) / len(epoch_train_times), 2),
+        "avg_dev_inference_time_per_epoch_sec": round(sum(epoch_dev_inference_times) / len(epoch_dev_inference_times), 2),
+        "total_dev_inference_time_sec": round(sum(epoch_dev_inference_times), 2),
+        "total_test_inference_time_sec": test_inference_time,
+      },
+    }
+    with open(results_file, "a") as f:
+      f.write(json.dumps(result) + "\n")
+    print(f"Saved experiment result to {results_file}")
+
+  if dist.is_available() and dist.is_initialized():
+    dist.destroy_process_group()

@@ -1,0 +1,708 @@
+Node: liquid-gpu-032
+Process ID: 1254326
+CUDA_VISIBLE_DEVICES: 0
+Mon Feb 23 10:16:47 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  |   00000000:84:00.0 Off |                    0 |
+| N/A   27C    P0             70W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+train-0:   0%|          | 0/17 [00:00<?, ?it/s]train-0:   6%|▌         | 1/17 [00:00<00:05,  2.79it/s]train-0:  12%|█▏        | 2/17 [00:00<00:03,  4.24it/s]train-0:  18%|█▊        | 3/17 [00:00<00:02,  5.12it/s]train-0:  24%|██▎       | 4/17 [00:00<00:02,  5.78it/s]train-0:  29%|██▉       | 5/17 [00:00<00:01,  6.26it/s]train-0:  35%|███▌      | 6/17 [00:01<00:01,  6.58it/s]train-0:  41%|████      | 7/17 [00:01<00:01,  6.82it/s]train-0:  47%|████▋     | 8/17 [00:01<00:01,  6.96it/s]train-0:  53%|█████▎    | 9/17 [00:01<00:01,  7.10it/s]train-0:  59%|█████▉    | 10/17 [00:01<00:00,  7.16it/s]train-0:  65%|██████▍   | 11/17 [00:01<00:00,  7.11it/s]train-0:  71%|███████   | 12/17 [00:01<00:00,  7.09it/s]train-0:  76%|███████▋  | 13/17 [00:02<00:00,  7.07it/s]train-0:  82%|████████▏ | 14/17 [00:02<00:00,  7.17it/s]train-0:  88%|████████▊ | 15/17 [00:02<00:00,  7.13it/s]train-0:  94%|█████████▍| 16/17 [00:02<00:00,  7.21it/s]train-0: 100%|██████████| 17/17 [00:02<00:00,  7.53it/s]train-0: 100%|██████████| 17/17 [00:02<00:00,  6.61it/s]
+train-1:   0%|          | 0/17 [00:00<?, ?it/s]train-1:   6%|▌         | 1/17 [00:00<00:02,  7.49it/s]train-1:  12%|█▏        | 2/17 [00:00<00:01,  7.57it/s]train-1:  18%|█▊        | 3/17 [00:00<00:01,  7.61it/s]train-1:  24%|██▎       | 4/17 [00:00<00:01,  7.64it/s]train-1:  29%|██▉       | 5/17 [00:00<00:01,  7.64it/s]train-1:  35%|███▌      | 6/17 [00:00<00:01,  7.51it/s]train-1:  41%|████      | 7/17 [00:00<00:01,  7.53it/s]train-1:  47%|████▋     | 8/17 [00:01<00:01,  7.56it/s]train-1:  53%|█████▎    | 9/17 [00:01<00:01,  7.47it/s]train-1:  59%|█████▉    | 10/17 [00:01<00:00,  7.40it/s]train-1:  65%|██████▍   | 11/17 [00:01<00:00,  7.46it/s]train-1:  71%|███████   | 12/17 [00:01<00:00,  7.39it/s]train-1:  76%|███████▋  | 13/17 [00:01<00:00,  7.47it/s]train-1:  82%|████████▏ | 14/17 [00:01<00:00,  7.49it/s]train-1:  88%|████████▊ | 15/17 [00:01<00:00,  7.55it/s]train-1:  94%|█████████▍| 16/17 [00:02<00:00,  7.56it/s]train-1: 100%|██████████| 17/17 [00:02<00:00,  7.99it/s]train-1: 100%|██████████| 17/17 [00:02<00:00,  7.60it/s]
+train-2:   0%|          | 0/17 [00:00<?, ?it/s]train-2:   6%|▌         | 1/17 [00:00<00:02,  7.11it/s]train-2:  12%|█▏        | 2/17 [00:00<00:02,  7.34it/s]train-2:  18%|█▊        | 3/17 [00:00<00:01,  7.28it/s]train-2:  24%|██▎       | 4/17 [00:00<00:01,  7.36it/s]train-2:  29%|██▉       | 5/17 [00:00<00:01,  7.46it/s]train-2:  35%|███▌      | 6/17 [00:00<00:01,  7.38it/s]train-2:  41%|████      | 7/17 [00:00<00:01,  7.45it/s]train-2:  47%|████▋     | 8/17 [00:01<00:01,  7.52it/s]train-2:  53%|█████▎    | 9/17 [00:01<00:01,  7.54it/s]train-2:  59%|█████▉    | 10/17 [00:01<00:00,  7.57it/s]train-2:  65%|██████▍   | 11/17 [00:01<00:00,  7.59it/s]train-2:  71%|███████   | 12/17 [00:01<00:00,  7.62it/s]train-2:  76%|███████▋  | 13/17 [00:01<00:00,  7.60it/s]train-2:  82%|████████▏ | 14/17 [00:01<00:00,  7.48it/s]train-2:  88%|████████▊ | 15/17 [00:02<00:00,  7.51it/s]train-2:  94%|█████████▍| 16/17 [00:02<00:00,  7.56it/s]train-2: 100%|██████████| 17/17 [00:02<00:00,  8.10it/s]train-2: 100%|██████████| 17/17 [00:02<00:00,  7.60it/s]
+Generating dev sonnets for chrF scoring...
+Thine eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,
+And ever trying me from time to time with reproaches.
+That I am cruel, with a woe more than pain;
+I take nothing that should please thee, no more than thou,
+Nor I to thy delight, and do love thee well.
+For though thy love endure not, yet I show thee my face
+In thy gloomy countenance, and still with a sorrowful heart
+I swear that I may be thy friend.
+
+
+Beshrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,
+So that I might crave aught else?
+And if my soul be bleeding for love of thy sake,
+Then why should my eye seek thy praise?
+When that I hear thy praises,
+And feel thy praise praise, I will cry out;
+And doth not thee avail me thy pity?
+But I love thee because thou art sweet and tender;
+And the tear that I shed is not dainty,
+Nor the tears that I shed are not sweet.
+
+
+So, now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine
+To another's shame shall, as well as mine own,
+Be the cause of my loss.
+
+
+Whoever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,
+And though thou art the best man in all thy eyes,
+I feel no pleasure in thy being.
+But thou art more than all my appetite,
+And so long I should live, though no one else live.
+
+
+If thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.
+
+
+Thou blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,
+But thou art a thief from my eyes,
+And art heremore, my fool, to rob me of my sight.
+
+
+When my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,n my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,
+So long as she lives, I will love her,
+And with her should my mind lay.
+
+
+
+O, call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;
+And tear me with your hate, my love, that thou mayest return
+To thy malice, or to my hate,
+Which thou hast done for all my ills, and mine own;
+Thou art my friend and my friend's traitor.
+
+
+Be wise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words express myself ill.
+  And now I see thou, that the maid
+   may not yet be happy, but that sorrow and love
+  are hastening to assail thee ; for though I might   best thee, thou art not   good.
+
+
+
+In faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,
+Thy grace that doth gladden my sorrow;
+And thou, like a mother, adore me,
+And love me with thy heart that doth esteem,
+That love and thy beauty, which delight doth burn.
+
+
+Love is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,
+Thou hast not thought thyself free from love,
+In that thou art hated by thyself;
+For love and love's price, and love's absence,
+There is no other fair and fair to thy praise.
+
+
+Lo, as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch.
+Thus my heart being overcome,
+As though I were a one exceeding sore,
+As though it were made to hold my limbs in quiescence
+To suffer it, and my eyes so hardened
+To think of that sudden befalling,
+I fell with my eyes on a sight of something
+That touched me so strange, that I grew pale,
+And lay there a good while.
+
+
+
+Epoch 0: train loss :: 4.404, dev chrF :: 33.339.
+chrF history: [33.33882376242443]
+Generating dev sonnets for chrF scoring...
+Thine eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,
+That they shall no sooner live than they are dead.
+And now mine eyes are dearer, that they see thee dead,
+Thy glance makes thy grief full, that thou
+Thou didst me show my love before
+Where I was dead, and now I see thee dead.
+  Then what thou hast seen in mine eyes,
+  O thou that art dead, what dost thou see in mine eyes?
+  He that hath seen thee dead hath seen thy grief,
+  And he that hath seen thee alive hath seen my love;
+  To love is all that I suffer, and all
+
+
+Beshrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,
+To see my weak heart tied to that beast
+That doth outlive me, and not to love me that he doth love?
+Thy friend and I would be worthy of it,
+And all those to whom the shame of my hand
+Lives and never leaves me.
+But I have the poor maid's hand still,
+And every man to whom I am a good friend,
+And he and all that trust in me.
+  To whom, by his great love, I will give thee up,
+  That love which in thee still lives.
+
+
+So, now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine
+Is made to part with me to thy pleasure;
+And thou'st given me thy right hand, my due,
+And the eye of his eyes he will love.
+For mine eyes have no more faith in thee
+Than thy own eyes, nor mine eyes on thy face;
+But thou shalt steal away mine eyes, mine right hand,
+And thine own right hand shall be all mine.
+ My dear, what is thy right hand, but thy pride,
+   And mine eyes thy pride? 
+
+
+Whoever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,
+Than I do in thy absence, and thou bearest me ill.
+And do thee better than I do, that I may lay down
+And say this to thee in the midst of thyself,
+For I have need of thee to me, and there shall not be so much
+As much time and trouble in my mind to know thee.
+Thou art the nature of a fool, and I am the art of a fool.
+The one's life is but my work, and I the art of life;
+And yet thou art not dead, but liveth, and I liveth,
+And
+
+
+If thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.
+Mine eyes I've seen in thee, in thy sight,
+And if thou didst see me then, thee wouldst cry;
+I am thy death, thy life, thy soul's love.
+Thus thy soul shall not suffer,
+Nor death but thy will, thy love shall endure.
+  So thou shalt die, and my love shall live.
+  So my soul is dead, and my love is alive.
+
+
+Thou blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,
+And I no longer, poor wretch, see what it excels.
+I see him where he was, and his face and his look,
+And I see him, my love, how he is gone
+To be slain by the sea, and my heart to weep.
+Ah, my love, what a loss are ye
+That of this sight you have been deprived!
+  It is as if you had seen thyself before;
+  But since you have had my eye, I have seen you
+  Before, and now you have me, in the sight of all.
+  If thou didst
+
+
+When my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,n my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,
+And that she might think me a fool if she was not so;
+My trust, however, is in love,
+And I never forget that my love is made
+Of truth and truth is made of love.
+I shall do no more wrong than she hath done;
+I shall love her, and I shall love her not.
+  For love is love and truth is truth,
+  That truth is truth and truth is love,
+  That love is truth and truth is love.
+
+
+O, call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;
+Thy fame shall burn, and I shall not see thee.
+But if thou in thy tenderness do not see
+A gentle truth so strong,
+Thy love will be so grateful that I may love thee not
+Nor art but a shadow of thyself,
+So that no one may think thee dead,
+Nor will pity or pity me fear.
+  But if thou shalt hide in thine heart the goodness of love,
+  I will not hide in my heart either.
+
+
+Be wise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words express a heart
+Of pride, and every thing worse than I.
+Take my love, and divide it between us,
+Or of my thoughts, each is better than the other.
+Then my poor sweet words can play with thee,
+And you should be all good-hearted, and good-humored;
+For to hate, so long as you are in love,
+Is to hate me, and my love is no longer good.
+
+
+
+In faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,
+And if thou be thyself a servant,
+Thy proud love hath not truth of heart
+Nor mine to bear in sight.
+I cannot love thee, and I wish not to be loved,
+But love shall live in thee, and thy love shall die.
+  Let my love be this, that thou mayst be loved:
+  That thou mayst be loved, that my love may live in thee.
+  Do not love thyself, that thou mayst be loved;
+  If love be my love, let my love die.
+
+
+Love is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,
+And with mine equal thyself my pride,
+Thy only joy of thy own means,
+Which love's being, that's thee's state.
+Thus, my love being, thy own state grows.
+  But the love of the love of thyself,
+  By thee, by thyself, thou my heart's love grows.
+  Mine is thy cause, thy measure, and thy measure's cause.
+  This I love in thee, in thy being, in thy worth,
+  And thy pride is my measure, and thy pride's measure.
+
+
+Lo, as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch
+With wings like blackbirds that glide to the skies.
+That one of those which stands in this place
+The king of all his trophies of glory,
+Shall be my wonder-stylized, and I shall hold
+His crest in my heart, and sing him a song
+Of praises in my own heart.
+  He shall live long, as I know not how, but shall do his part
+  Of the best of my songs. 
+
+
+Epoch 1: train loss :: 3.891, dev chrF :: 39.687.
+chrF history: [33.33882376242443, 39.68674837843052]
+Generating dev sonnets for chrF scoring...
+Thine eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,
+Wearing my hair in a sleepless night,
+Shall that my eyes deceive thee so
+That thou willst see me not, but love me not,
+So thou shalt not pity me if I love thee,
+And such be thy fate, that no more love
+Will I return thee than this,
+Whereby I am born to love thee, and thou to me.
+  But thou art not to be told how to love,
+  For thou know'st what else is needful.
+
+
+Beshrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,
+To make my friend lose his good name
+And cause him to be hated and hated again?
+Thou art but the man of that sick heart,
+Thou art not an heir of all but my name,
+For the love of my friend I have done no deed
+But by chance painted that beauty upon thy face,
+And didst prove it to thee, then didst thee take
+The ransom which I gave for my life.
+  Yet, as thou art but a mark of mine,
+  So, thou art my true love, and all my ill.
+
+
+So, now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine shall be
+And yours mine own treasure is thine own gain.
+How, then, can I be free when I am thy slave?
+Myself, though I have sinned, yet no sin is graven in mine eyes
+For he, if I be wronged, is wronged and mine own self
+Is slain by thee, and you lose thy heart.
+  Therefore I confess my love to thee, that thou mayst
+  Make mine enemies thyself, and make mine happiness mine own.
+
+
+Whoever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,
+Than thine eye should ever have seen;
+More than a cay, than the rich earth is worth;
+And yet thee do seem my friend;
+Thou art sweet, and dost shine like a jewel.
+Therefore, be my friend, and bear with me,
+And give me no trouble in thy repair.
+And give me, in return, what I owe,
+That I may give thee in what I give thee.
+  The better should I love thee, the less I owe thee.
+
+
+If thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.
+And so I am not too far gone from thee to give thee,
+But thou shalt believe me when I shall be thy heir.
+For my soul knows not what ever thou hast done
+Nor what thou dost do so far,
+Nor what thou dost think of me when thou art dead;
+For thy soul's desire is to know thee now,
+And thou mayst not deny it, though thou hast been dead.
+  If thou wilt do this, tell me, and tell me well,
+  As if I were alive. If thou wilt do it not, thou dost have me
+
+
+Thou blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,
+And thou dost not prove thyself fair by not seeing
+The things which thou art so familiar with.
+All things are hid, all things lie hidden,
+And thou dost not teach them to me.
+  As one of thee thou dost see all things,
+  I am but a mirror to thee, to show thee what is.
+  For all things are but mirrors, but thou art a wondrous one,
+  That I, who know not all things, can see.
+
+
+When my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,n my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,
+Where nothing was but sweet beauty and truth.
+It is my love that can make truth but lie,
+And it is my love that is a lie to me.
+  To be false makes me greater than truth,
+  And I shall live in love that lives in my love,
+  To love that is false makes me greater than truth,
+
+
+
+O, call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;
+Hast thou no grace so to praise thy goodness
+As I have, though my name be born from thee
+Or, in thy own praise, thou dost gild.
+My love, my self-love, dost praise thee,
+Since thy praise dost speak the truth in thy being;
+Thou art my heart and my soul,
+And I love thee for thee, though I do not know
+Why thy name dost blazon the praise of this world.
+  Then shall thou speak thy praise in me,
+  And I praise thee in thee, though I do not know
+ 
+
+
+Be wise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words express my grief.
+O, if I be but a fool in thy sight,
+Nor a little thy faithful friend be in mine,
+Though they both write the same words,
+Or I should find mine written in thee,
+To which thou wouldst most gladly lend me thy thanks,
+For thou art the fairest, and most loving of all.
+  But what shall I say of thee, when thou art so far from me?
+  If I do write thy name, I shall be assured
+  That thy eyes are full of truth, and thy tongue,
+  Not mine, but mine alone.
+
+
+In faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,
+And through thy fine charms bears
+Beauty that has hitherto been hidden in sight.
+O, let me love thee, all my heart's love to thee,
+And let me bear with thee a kindness I do not love.
+   So that I may love thee in all my heart,
+  So that thou mayst bear me a kindness I do not love.
+
+
+Love is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,
+Thy own grace of love free from sin,
+That my sins shall be thy fairest reward.
+Thou art my love and my love my sweet heart;
+Thy sweetest possession is my poor love,
+Which in thee is love's state, though not perfect.
+  But thou art my love, and love's love art mine.
+  O, then thou shalt love me; and love's love shall be my delight,
+  Which thou shalt do with love, and do not love with love,
+
+
+
+Lo, as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch.
+His love's flight and the carelessness of her
+Prevent his sweet vows, which nature loves so,
+To set her down with a slave, to return
+To those that love her with love's sweetest tenderness.
+Therefore she's ruined and her sweet friends disgraced.
+But I have heard of them, and I hold no ill grudge.
+
+
+Epoch 2: train loss :: 3.730, dev chrF :: 39.604.
+chrF history: [33.33882376242443, 39.68674837843052, 39.60448249788996]
+Early stopping at epoch 2: no improvement over best chrF 39.687 for 1 epochs.
+Saved best dev sonnets (chrF 39.687) to sonnet_dev_result/gpt2-medium/epochs10_lr2e-05_bs8/generated_sonnets_dev.txt
+Those lips that Love's own hand did make
+Breathed forth the sound that said "I hate"
+To me that languished for her sake;
+I thought that a heart so happy
+Could love my bosom so well,
+And as I thought so she gave the same answer.
+And what do I tell that sweet face
+By whose sweet tongue I shall be in love
+In spite of her love?
+My love, I love, is not equal to her love,
+And, seeing she shows it, I hate it.
+
+
+Poor soul, the center of my sinful earth,
+Pressed with these rebel powers that thee array,
+Why dost thou pine within and suffer dearth,
+The glory of a happy marriage;
+Whose gladness thou dost not boast?
+You say I love thee, and dost love it well,
+That I do my part to the good of all;
+But I love you to love me most.
+  You do me your love's worth,
+   And I, in your love's worth, do your love's worth.
+
+
+My love is as a fever, longing still
+For that which longer nurseth the disease,
+Feeding on that which doth preserve the ill,
+In what neglect doth my love doth repair;
+And since my love's eyes are even as cold as their breath,
+And my love's nostrils are as a man's,
+I fear I should be unfaithful to thee.
+  Yet I'll love no man but my love,
+  Which will not deny aught that thou dost show
+  To others, nor in thyself dost slander me.
+
+
+
+O me, what eyes hath love put in my head,
+Which have no correspondence with true sight!
+Or if they have, where is my judgment fled,
+That not a single eye doth give me thanks,
+Which doth feel my sweet love's boundless love's sway?
+I do not look upon my love, nor do I abide
+By that which it doth say, but what is not thought of.
+  I love not what it doth say, and I love not what it doth say.
+  And I love the truth, that I love both;
+  If love be so, then love is not of me,
+  But what it doth say is my love.
+
+
+Canst thou, O cruel, say I love thee not
+When I against myself with thee partake?
+Do I not think on thee when I forgot
+Thy pity and thy sweet name?
+Or do I not remember thy grace,
+Which I bear to thee from heaven?
+Therefore thou shalt say, I love thee not.
+But though I love thee,
+I love not myself in thy love,
+Nor do I esteem thee worthier of praise,
+Nor do I say this is of my love
+Than that thou dost think so,
+Nor do I say this is of mine.
+O, my love, love me not, but speak truth
+To the world, so that others may know
+How good it is to love with truth.
+
+
+O, from what power hast thou this powerful might
+With insufficiency my heart to sway?
+To make me give the lie to my true sight,
+To take away the true joy from the fair world,
+To make me treat my love as if it had none?
+In what way have you this power, this power?
+I fear it to be a false speech, a mortal thing.
+What power can this art give thee, if thou art not
+My friend, my mistress, my daughter?
+What power can this art give thee, if thou art not thyself?
+O, I love thee to see me more fair than thou art.
+If thou art not thyself, then will I be thy lover.
+  The fair world is thy mistress
+
+
+Love is too young to know what conscience is;
+Yet who knows not conscience is born of love?
+Then, gentle cheater, urge not my amiss,
+I think what you have said is true, yet, after
+Loved is what is false, I lie.
+  Therefore, thou mind'st, if love be born of love,
+  Then I know love's meaning, but love's meaning is found in love,
+  And no sorrow is yet mine.
+
+
+In loving thee thou know'st I am forsworn,
+But thou art twice forsworn, to me love swearing;
+In act thy bed-vow broke, and new faith torn.
+Thou art my soul, to whose love thou shalt not wish,
+When, having done thee thee pleasure, thou dost keep;
+But when, having done thee no good, thou dost do me no wrong,
+Thy love thyself is, thou know'st it not,
+But thou art both my love and mine.
+  I love thee, and love thee not, that is true love.
+
+
+Cupid laid by his brand and fell asleep.
+A maid of Dian's this advantage found,
+And his love-kindling fire did quickly steep,
+And his lamp did sing, sweet as ivory;
+But his night-maker in his fury was;
+His heart too full of fear, and his tongue too bold,
+For his wife's right hand hath been taken.
+All the gods have decreed his death,
+And the purest maiden is no more.
+  All these they say, but thy mother's fair,
+  As the night-light shines from her sweetbed.
+
+
+The little love-god, lying once asleep,
+Laid by his side his heart-inflaming brand,
+Whilst many nymphs that vowed chaste life to keep
+Have borne his eye, and brooded upon his sight.
+This sweet appetite, that feeds so sweetly on love,
+Shall have no less terror on the young than upon the old,
+Whilst all the wise men, and all the wise men's children,
+Were fair to be their watch-men, and their faces their eyes.
+  But the serpent's cunning is most potent
+  That, when, by night, he devours the young,
+  He turns to sleep, and the young to sleep,
+  And bears his prey to the old.
+
+
+When my love swears that she is made of truth,
+I do believe her, though I know she lies,
+That she might think me some untutored youth,
+With nothing but a thimble of truth in my sight.
+'Twas a fellow whom I loved so dear that I loved his name
+For the love of his name, but since he hath lost it,
+'Tis all I have left of him, save his love to me.
+  'Tis my love, and he's my treasure,
+  That love's beauty hath but a shade of truth.
+
+
+Two loves I have, of comfort and despair,
+That like two spirits do suggest me still.
+My better angel is a man right fair,
+And when he sees me but trouble and ill,
+His love doth trouble him to find out,
+And in his love I keep so many things that
+His grief makes it hard to bear,
+But so many are in me that my love gives me
+The pleasure of his love,
+And so they to me do give their love.
+  This shall be my care till I die;
+  All that I can leave will be left with you,
+  And then I shall leave you as a dearer thing.
+
+
+Saved experiment result to sonnet_dev_result/experiment_results.jsonl
