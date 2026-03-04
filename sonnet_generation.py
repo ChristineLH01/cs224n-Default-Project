@@ -58,25 +58,28 @@ class SonnetGPT(nn.Module):
     self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
     
     # Reload model with LoRA if rank > 0
-    if args.lora_rank > 0:
-      self.gpt = GPT2Model.from_pretrained(model=args.model_size, d=args.d, l=args.l, num_heads=args.num_heads)
-      
+    if args.lora_rank > 0 or getattr(args, 'rank_pattern', None):
       self.gpt.config.lora_rank = args.lora_rank
       self.gpt.config.lora_alpha = args.lora_alpha
       self.gpt.config.lora_dropout = args.lora_dropout
       self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
       self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
+
+      from modules.lora import inject_lora
+      r_list = [int(r) for r in args.rank_pattern.split(',')] if getattr(args, 'rank_pattern', None) else None
       
-      if args.apply_lora_to_attention:
-        from modules.lora import inject_lora
-        for name, module in self.gpt.named_modules():
-          if "self_attention" in name:
-            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["query", "key", "value"])
-      if args.apply_lora_to_mlp:
-        from modules.lora import inject_lora
-        for name, module in self.gpt.named_modules():
-          if "gpt_layers" in name and not "self_attention" in name: 
-            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
+      for i, layer in enumerate(self.gpt.gpt_layers):
+        rank = r_list[i] if r_list else args.lora_rank
+        if rank == 0: continue
+          
+        if getattr(args, 'apply_lora_to_all_linear', False):
+          inject_lora(layer, rank, args.lora_alpha, args.lora_dropout, target_modules=["query", "key", "value", "attention_dense", "interm_dense", "out_dense"], use_rslora=getattr(args, 'use_rslora', False))
+        else:
+          if args.apply_lora_to_attention:
+            inject_lora(layer.self_attention, rank, args.lora_alpha, args.lora_dropout, target_modules=["query", "key", "value"], use_rslora=getattr(args, 'use_rslora', False))
+            inject_lora(layer, rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense"], use_rslora=getattr(args, 'use_rslora', False))
+          if args.apply_lora_to_mlp:
+            inject_lora(layer, rank, args.lora_alpha, args.lora_dropout, target_modules=["interm_dense", "out_dense"], use_rslora=getattr(args, 'use_rslora', False))
 
     from modules.attention import CausalSelfAttention
     for module in self.gpt.modules():
@@ -84,7 +87,7 @@ class SonnetGPT(nn.Module):
         module.use_flash_attention = getattr(args, 'use_flash_attention', False)
 
     # Freeze or Unfreeze parameters based on LoRA
-    if args.lora_rank > 0:
+    if args.lora_rank > 0 or getattr(args, 'rank_pattern', None):
       for param in self.gpt.parameters():
         param.requires_grad = False
       
@@ -211,7 +214,7 @@ def train(args):
       logits = model(b_ids, b_mask)
       logits = rearrange(logits[:, :-1].contiguous(), 'b t d -> (b t) d')  # Ignore the last prediction in the sequence.
       labels = b_ids[:, 1:].contiguous().flatten()  # Ignore the first token to compose the labels.
-      loss = F.cross_entropy(logits, labels, reduction='mean')
+      loss = F.cross_entropy(logits, labels, ignore_index=model.tokenizer.pad_token_id, reduction='mean')
       loss.backward()
       
       # Clip gradients to prevent exploding gradients
@@ -299,6 +302,10 @@ def get_args():
   parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA")
   parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
   parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
+  
+  parser.add_argument("--use_rslora", action="store_true", help="Use rsLoRA rank scaling")
+  parser.add_argument("--apply_lora_to_all_linear", action="store_true", help="Apply LoRA to all linear layers (overrides individual flags)")
+  parser.add_argument("--rank_pattern", type=str, default="", help="Comma separated list of ranks per layer, e.g. '4,4,8,8'")
   
   parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
 

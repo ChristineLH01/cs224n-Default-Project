@@ -3,12 +3,20 @@ import torch.nn as nn
 import math
 
 class LoRALinear(nn.Module):
-  def __init__(self, linear_layer: nn.Linear, rank: int, alpha: float, dropout: float = 0.0):
+  def __init__(self, linear_layer: nn.Linear, rank: int, alpha: float, dropout: float = 0.0, use_rslora: bool = False):
     super().__init__()
     self.linear = linear_layer
     self.rank = rank
     self.alpha = alpha
-    self.scaling = alpha / rank if rank > 0 else 0.0
+    self.use_rslora = use_rslora
+    
+    if rank > 0:
+        if use_rslora:
+            self.scaling = alpha / math.sqrt(rank)
+        else:
+            self.scaling = alpha / rank
+    else:
+        self.scaling = 0.0
 
     in_features = linear_layer.weight.shape[1]
     out_features = linear_layer.weight.shape[0]
@@ -26,7 +34,8 @@ class LoRALinear(nn.Module):
 
   def reset_parameters(self):
     if self.rank > 0:
-      nn.init.kaiming_uniform_(self.lora_A, a=math.sqrt(5))
+      bound = math.sqrt(1 / self.linear.weight.shape[1])
+      nn.init.uniform_(self.lora_A, -bound, bound)
       nn.init.zeros_(self.lora_B)
 
   def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -40,13 +49,13 @@ class LoRALinear(nn.Module):
     
     return base_out + lora_out
 
-def inject_lora(model: nn.Module, rank: int, alpha: float, dropout: float = 0.0, target_modules=["query", "key", "value"]):
+def inject_lora(model: nn.Module, rank: int, alpha: float, dropout: float = 0.0, target_modules=["query", "key", "value"], use_rslora: bool = False):
   if rank == 0:
     return
 
   for name, module in model.named_children():
     if isinstance(module, nn.Linear) and any(t in name for t in target_modules):
-      lora_layer = LoRALinear(module, rank, alpha, dropout)
+      lora_layer = LoRALinear(module, rank, alpha, dropout, use_rslora=use_rslora)
       setattr(model, name, lora_layer)
     else:
-      inject_lora(module, rank, alpha, dropout, target_modules)
+      inject_lora(module, rank, alpha, dropout, target_modules, use_rslora=use_rslora)
