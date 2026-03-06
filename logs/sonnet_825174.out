@@ -1,1699 +1,0 @@
-Node: liquid-gpu-053
-Process ID: 148604
-CUDA_VISIBLE_DEVICES: 0
-Mon Feb 23 10:43:54 2026       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
-+-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA H100 80GB HBM3          On  |   00000000:8B:00.0 Off |                    0 |
-| N/A   30C    P0             70W /  700W |       0MiB /  81559MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|  No running processes found                                                             |
-+-----------------------------------------------------------------------------------------+
-train-0:   0%|          | 0/33 [00:00<?, ?it/s]train-0:   3%|▎         | 1/33 [00:00<00:11,  2.69it/s]train-0:   6%|▌         | 2/33 [00:00<00:06,  4.60it/s]train-0:   9%|▉         | 3/33 [00:00<00:04,  6.05it/s]train-0:  12%|█▏        | 4/33 [00:00<00:04,  7.12it/s]train-0:  15%|█▌        | 5/33 [00:00<00:03,  7.78it/s]train-0:  18%|█▊        | 6/33 [00:00<00:03,  8.22it/s]train-0:  21%|██        | 7/33 [00:01<00:03,  8.55it/s]train-0:  24%|██▍       | 8/33 [00:01<00:02,  8.74it/s]train-0:  27%|██▋       | 9/33 [00:01<00:02,  8.83it/s]train-0:  30%|███       | 10/33 [00:01<00:02,  8.88it/s]train-0:  33%|███▎      | 11/33 [00:01<00:02,  8.91it/s]train-0:  36%|███▋      | 12/33 [00:01<00:02,  8.83it/s]train-0:  39%|███▉      | 13/33 [00:01<00:02,  8.87it/s]train-0:  42%|████▏     | 14/33 [00:01<00:02,  8.75it/s]train-0:  45%|████▌     | 15/33 [00:01<00:02,  8.68it/s]train-0:  48%|████▊     | 16/33 [00:02<00:01,  8.64it/s]train-0:  52%|█████▏    | 17/33 [00:02<00:01,  8.60it/s]train-0:  55%|█████▍    | 18/33 [00:02<00:01,  8.57it/s]train-0:  58%|█████▊    | 19/33 [00:02<00:01,  8.58it/s]train-0:  61%|██████    | 20/33 [00:02<00:01,  8.60it/s]train-0:  64%|██████▎   | 21/33 [00:02<00:01,  8.62it/s]train-0:  67%|██████▋   | 22/33 [00:02<00:01,  8.53it/s]train-0:  70%|██████▉   | 23/33 [00:02<00:01,  8.49it/s]train-0:  73%|███████▎  | 24/33 [00:02<00:01,  8.50it/s]train-0:  76%|███████▌  | 25/33 [00:03<00:00,  8.49it/s]train-0:  79%|███████▉  | 26/33 [00:03<00:00,  8.52it/s]train-0:  82%|████████▏ | 27/33 [00:03<00:00,  8.58it/s]train-0:  85%|████████▍ | 28/33 [00:03<00:00,  8.58it/s]train-0:  88%|████████▊ | 29/33 [00:03<00:00,  8.58it/s]train-0:  91%|█████████ | 30/33 [00:03<00:00,  8.60it/s]train-0:  94%|█████████▍| 31/33 [00:03<00:00,  8.63it/s]train-0:  97%|█████████▋| 32/33 [00:03<00:00,  8.62it/s]train-0: 100%|██████████| 33/33 [00:04<00:00,  8.66it/s]train-0: 100%|██████████| 33/33 [00:04<00:00,  8.22it/s]
-train-1:   0%|          | 0/33 [00:00<?, ?it/s]train-1:   6%|▌         | 2/33 [00:00<00:02, 10.85it/s]train-1:  12%|█▏        | 4/33 [00:00<00:02, 11.22it/s]train-1:  18%|█▊        | 6/33 [00:00<00:02, 10.81it/s]train-1:  24%|██▍       | 8/33 [00:00<00:02, 11.02it/s]train-1:  30%|███       | 10/33 [00:00<00:02, 10.76it/s]train-1:  36%|███▋      | 12/33 [00:01<00:01, 10.93it/s]train-1:  42%|████▏     | 14/33 [00:01<00:01, 11.11it/s]train-1:  48%|████▊     | 16/33 [00:01<00:01, 10.78it/s]train-1:  55%|█████▍    | 18/33 [00:01<00:01, 10.97it/s]train-1:  61%|██████    | 20/33 [00:01<00:01, 10.74it/s]train-1:  67%|██████▋   | 22/33 [00:02<00:01, 10.93it/s]train-1:  73%|███████▎  | 24/33 [00:02<00:00, 11.07it/s]train-1:  79%|███████▉  | 26/33 [00:02<00:00, 10.80it/s]train-1:  85%|████████▍ | 28/33 [00:02<00:00, 10.98it/s]train-1:  91%|█████████ | 30/33 [00:02<00:00, 10.80it/s]train-1:  97%|█████████▋| 32/33 [00:02<00:00, 10.96it/s]train-1: 100%|██████████| 33/33 [00:03<00:00, 10.94it/s]
-train-2:   0%|          | 0/33 [00:00<?, ?it/s]train-2:   3%|▎         | 1/33 [00:00<00:03,  8.48it/s]train-2:   6%|▌         | 2/33 [00:00<00:03,  8.72it/s]train-2:   9%|▉         | 3/33 [00:00<00:03,  8.76it/s]train-2:  12%|█▏        | 4/33 [00:00<00:03,  8.67it/s]train-2:  15%|█▌        | 5/33 [00:00<00:03,  8.73it/s]train-2:  18%|█▊        | 6/33 [00:00<00:03,  8.75it/s]train-2:  21%|██        | 7/33 [00:00<00:02,  8.77it/s]train-2:  24%|██▍       | 8/33 [00:00<00:02,  8.80it/s]train-2:  27%|██▋       | 9/33 [00:01<00:02,  8.81it/s]train-2:  30%|███       | 10/33 [00:01<00:02,  8.78it/s]train-2:  33%|███▎      | 11/33 [00:01<00:02,  8.79it/s]train-2:  36%|███▋      | 12/33 [00:01<00:02,  8.81it/s]train-2:  39%|███▉      | 13/33 [00:01<00:02,  8.68it/s]train-2:  42%|████▏     | 14/33 [00:01<00:02,  8.72it/s]train-2:  45%|████▌     | 15/33 [00:01<00:02,  8.65it/s]train-2:  48%|████▊     | 16/33 [00:01<00:01,  8.70it/s]train-2:  52%|█████▏    | 17/33 [00:01<00:01,  8.74it/s]train-2:  55%|█████▍    | 18/33 [00:02<00:01,  8.75it/s]train-2:  58%|█████▊    | 19/33 [00:02<00:01,  8.73it/s]train-2:  61%|██████    | 20/33 [00:02<00:01,  8.69it/s]train-2:  64%|██████▎   | 21/33 [00:02<00:01,  8.69it/s]train-2:  67%|██████▋   | 22/33 [00:02<00:01,  8.72it/s]train-2:  70%|██████▉   | 23/33 [00:02<00:01,  8.62it/s]train-2:  73%|███████▎  | 24/33 [00:02<00:01,  8.54it/s]train-2:  76%|███████▌  | 25/33 [00:02<00:00,  8.52it/s]train-2:  79%|███████▉  | 26/33 [00:02<00:00,  8.61it/s]train-2:  82%|████████▏ | 27/33 [00:03<00:00,  8.57it/s]train-2:  85%|████████▍ | 28/33 [00:03<00:00,  8.61it/s]train-2:  88%|████████▊ | 29/33 [00:03<00:00,  8.58it/s]train-2:  91%|█████████ | 30/33 [00:03<00:00,  8.60it/s]train-2:  94%|█████████▍| 31/33 [00:03<00:00,  8.65it/s]train-2:  97%|█████████▋| 32/33 [00:03<00:00,  8.69it/s]train-2: 100%|██████████| 33/33 [00:03<00:00,  8.77it/s]train-2: 100%|██████████| 33/33 [00:03<00:00,  8.69it/s]
-train-3:   0%|          | 0/33 [00:00<?, ?it/s]train-3:   6%|▌         | 2/33 [00:00<00:02, 10.56it/s]train-3:  12%|█▏        | 4/33 [00:00<00:02, 11.03it/s]train-3:  18%|█▊        | 6/33 [00:00<00:02, 11.28it/s]train-3:  24%|██▍       | 8/33 [00:00<00:02, 11.44it/s]train-3:  30%|███       | 10/33 [00:00<00:02, 11.00it/s]train-3:  36%|███▋      | 12/33 [00:01<00:01, 11.04it/s]train-3:  42%|████▏     | 14/33 [00:01<00:01, 11.12it/s]train-3:  48%|████▊     | 16/33 [00:01<00:01, 10.79it/s]train-3:  55%|█████▍    | 18/33 [00:01<00:01, 10.95it/s]train-3:  61%|██████    | 20/33 [00:01<00:01, 10.75it/s]train-3:  67%|██████▋   | 22/33 [00:02<00:01, 10.85it/s]train-3:  73%|███████▎  | 24/33 [00:02<00:00, 11.17it/s]train-3:  79%|███████▉  | 26/33 [00:02<00:00, 11.19it/s]train-3:  85%|████████▍ | 28/33 [00:02<00:00, 10.77it/s]train-3:  91%|█████████ | 30/33 [00:02<00:00, 10.39it/s]train-3:  97%|█████████▋| 32/33 [00:02<00:00, 10.14it/s]train-3: 100%|██████████| 33/33 [00:03<00:00, 10.70it/s]
-train-4:   0%|          | 0/33 [00:00<?, ?it/s]train-4:   3%|▎         | 1/33 [00:00<00:03,  8.82it/s]train-4:   6%|▌         | 2/33 [00:00<00:03,  8.60it/s]train-4:   9%|▉         | 3/33 [00:00<00:03,  8.29it/s]train-4:  12%|█▏        | 4/33 [00:00<00:03,  8.25it/s]train-4:  18%|█▊        | 6/33 [00:00<00:03,  8.81it/s]train-4:  21%|██        | 7/33 [00:00<00:02,  8.82it/s]train-4:  24%|██▍       | 8/33 [00:00<00:02,  8.73it/s]train-4:  27%|██▋       | 9/33 [00:01<00:02,  8.82it/s]train-4:  33%|███▎      | 11/33 [00:01<00:02,  9.39it/s]train-4:  39%|███▉      | 13/33 [00:01<00:02,  9.73it/s]train-4:  42%|████▏     | 14/33 [00:01<00:01,  9.55it/s]train-4:  45%|████▌     | 15/33 [00:01<00:01,  9.43it/s]train-4:  48%|████▊     | 16/33 [00:01<00:01,  9.33it/s]train-4:  52%|█████▏    | 17/33 [00:01<00:01,  9.19it/s]train-4:  55%|█████▍    | 18/33 [00:01<00:01,  9.09it/s]train-4:  58%|█████▊    | 19/33 [00:02<00:01,  8.89it/s]train-4:  61%|██████    | 20/33 [00:02<00:01,  8.88it/s]train-4:  64%|██████▎   | 21/33 [00:02<00:01,  8.86it/s]train-4:  67%|██████▋   | 22/33 [00:02<00:01,  8.84it/s]train-4:  70%|██████▉   | 23/33 [00:02<00:01,  8.82it/s]train-4:  73%|███████▎  | 24/33 [00:02<00:01,  8.81it/s]train-4:  76%|███████▌  | 25/33 [00:02<00:00,  8.84it/s]train-4:  79%|███████▉  | 26/33 [00:02<00:00,  8.84it/s]train-4:  82%|████████▏ | 27/33 [00:03<00:00,  8.83it/s]train-4:  88%|████████▊ | 29/33 [00:03<00:00,  9.15it/s]train-4:  91%|█████████ | 30/33 [00:03<00:00,  9.11it/s]train-4:  94%|█████████▍| 31/33 [00:03<00:00,  9.12it/s]train-4:  97%|█████████▋| 32/33 [00:03<00:00,  9.03it/s]train-4: 100%|██████████| 33/33 [00:03<00:00,  8.98it/s]train-4: 100%|██████████| 33/33 [00:03<00:00,  9.00it/s]
-train-5:   0%|          | 0/33 [00:00<?, ?it/s]train-5:   3%|▎         | 1/33 [00:00<00:03,  9.95it/s]train-5:   6%|▌         | 2/33 [00:00<00:03,  9.96it/s]train-5:   9%|▉         | 3/33 [00:00<00:03,  9.90it/s]train-5:  15%|█▌        | 5/33 [00:00<00:02, 10.17it/s]train-5:  21%|██        | 7/33 [00:00<00:02, 10.37it/s]train-5:  27%|██▋       | 9/33 [00:00<00:02, 10.53it/s]train-5:  33%|███▎      | 11/33 [00:01<00:02, 10.33it/s]train-5:  39%|███▉      | 13/33 [00:01<00:01, 10.39it/s]train-5:  45%|████▌     | 15/33 [00:01<00:01, 10.52it/s]train-5:  52%|█████▏    | 17/33 [00:01<00:01, 10.64it/s]train-5:  58%|█████▊    | 19/33 [00:01<00:01, 10.58it/s]train-5:  64%|██████▎   | 21/33 [00:02<00:01, 10.63it/s]train-5:  70%|██████▉   | 23/33 [00:02<00:00, 10.13it/s]train-5:  76%|███████▌  | 25/33 [00:02<00:00, 10.06it/s]train-5:  82%|████████▏ | 27/33 [00:02<00:00,  9.68it/s]train-5:  85%|████████▍ | 28/33 [00:02<00:00,  9.52it/s]train-5:  88%|████████▊ | 29/33 [00:02<00:00,  9.38it/s]train-5:  91%|█████████ | 30/33 [00:02<00:00,  9.14it/s]train-5:  94%|█████████▍| 31/33 [00:03<00:00,  8.96it/s]train-5:  97%|█████████▋| 32/33 [00:03<00:00,  8.90it/s]train-5: 100%|██████████| 33/33 [00:03<00:00,  8.86it/s]train-5: 100%|██████████| 33/33 [00:03<00:00,  9.87it/s]
-train-6:   0%|          | 0/33 [00:00<?, ?it/s]train-6:   6%|▌         | 2/33 [00:00<00:03, 10.26it/s]train-6:  12%|█▏        | 4/33 [00:00<00:02, 10.43it/s]train-6:  18%|█▊        | 6/33 [00:00<00:02, 10.70it/s]train-6:  24%|██▍       | 8/33 [00:00<00:02, 10.73it/s]train-6:  30%|███       | 10/33 [00:00<00:02, 10.73it/s]train-6:  36%|███▋      | 12/33 [00:01<00:02, 10.38it/s]train-6:  42%|████▏     | 14/33 [00:01<00:01, 10.46it/s]train-6:  48%|████▊     | 16/33 [00:01<00:01, 10.52it/s]train-6:  55%|█████▍    | 18/33 [00:01<00:01, 10.60it/s]train-6:  61%|██████    | 20/33 [00:01<00:01, 10.63it/s]train-6:  67%|██████▋   | 22/33 [00:02<00:01, 10.68it/s]train-6:  73%|███████▎  | 24/33 [00:02<00:00, 10.67it/s]train-6:  79%|███████▉  | 26/33 [00:02<00:00, 10.44it/s]train-6:  85%|████████▍ | 28/33 [00:02<00:00, 10.61it/s]train-6:  91%|█████████ | 30/33 [00:02<00:00, 10.65it/s]train-6:  97%|█████████▋| 32/33 [00:03<00:00, 10.68it/s]train-6: 100%|██████████| 33/33 [00:03<00:00, 10.56it/s]
-train-7:   0%|          | 0/33 [00:00<?, ?it/s]train-7:   3%|▎         | 1/33 [00:00<00:03,  9.82it/s]train-7:   9%|▉         | 3/33 [00:00<00:02, 10.16it/s]train-7:  15%|█▌        | 5/33 [00:00<00:02, 10.41it/s]train-7:  21%|██        | 7/33 [00:00<00:02, 10.58it/s]train-7:  27%|██▋       | 9/33 [00:00<00:02, 10.63it/s]train-7:  33%|███▎      | 11/33 [00:01<00:02, 10.40it/s]train-7:  39%|███▉      | 13/33 [00:01<00:01, 10.50it/s]train-7:  45%|████▌     | 15/33 [00:01<00:01, 10.62it/s]train-7:  52%|█████▏    | 17/33 [00:01<00:01, 10.67it/s]train-7:  58%|█████▊    | 19/33 [00:01<00:01, 10.52it/s]train-7:  64%|██████▎   | 21/33 [00:02<00:01, 10.27it/s]train-7:  70%|██████▉   | 23/33 [00:02<00:00, 10.34it/s]train-7:  76%|███████▌  | 25/33 [00:02<00:00, 10.33it/s]train-7:  82%|████████▏ | 27/33 [00:02<00:00, 10.23it/s]train-7:  88%|████████▊ | 29/33 [00:02<00:00, 10.07it/s]train-7:  94%|█████████▍| 31/33 [00:02<00:00, 10.18it/s]train-7: 100%|██████████| 33/33 [00:03<00:00, 10.32it/s]train-7: 100%|██████████| 33/33 [00:03<00:00, 10.37it/s]
-train-8:   0%|          | 0/33 [00:00<?, ?it/s]train-8:   6%|▌         | 2/33 [00:00<00:03, 10.32it/s]train-8:  12%|█▏        | 4/33 [00:00<00:02, 10.37it/s]train-8:  18%|█▊        | 6/33 [00:00<00:02, 10.53it/s]train-8:  24%|██▍       | 8/33 [00:00<00:02, 10.69it/s]train-8:  30%|███       | 10/33 [00:00<00:02, 10.53it/s]train-8:  36%|███▋      | 12/33 [00:01<00:02, 10.44it/s]train-8:  42%|████▏     | 14/33 [00:01<00:01, 10.56it/s]train-8:  48%|████▊     | 16/33 [00:01<00:01, 10.61it/s]train-8:  55%|█████▍    | 18/33 [00:01<00:01, 10.50it/s]train-8:  61%|██████    | 20/33 [00:01<00:01, 10.55it/s]train-8:  67%|██████▋   | 22/33 [00:02<00:01, 10.65it/s]train-8:  73%|███████▎  | 24/33 [00:02<00:00, 10.68it/s]train-8:  79%|███████▉  | 26/33 [00:02<00:00, 10.66it/s]train-8:  85%|████████▍ | 28/33 [00:02<00:00, 10.45it/s]train-8:  91%|█████████ | 30/33 [00:02<00:00, 10.53it/s]train-8:  97%|█████████▋| 32/33 [00:03<00:00, 10.61it/s]train-8: 100%|██████████| 33/33 [00:03<00:00, 10.58it/s]
-train-9:   0%|          | 0/33 [00:00<?, ?it/s]train-9:   6%|▌         | 2/33 [00:00<00:03, 10.30it/s]train-9:  12%|█▏        | 4/33 [00:00<00:02, 10.46it/s]train-9:  18%|█▊        | 6/33 [00:00<00:02, 10.54it/s]train-9:  24%|██▍       | 8/33 [00:00<00:02, 10.47it/s]train-9:  30%|███       | 10/33 [00:00<00:02, 10.30it/s]train-9:  36%|███▋      | 12/33 [00:01<00:02, 10.45it/s]train-9:  42%|████▏     | 14/33 [00:01<00:01, 10.56it/s]train-9:  48%|████▊     | 16/33 [00:01<00:01, 10.63it/s]train-9:  55%|█████▍    | 18/33 [00:01<00:01, 10.43it/s]train-9:  61%|██████    | 20/33 [00:01<00:01, 10.56it/s]train-9:  67%|██████▋   | 22/33 [00:02<00:01, 10.67it/s]train-9:  73%|███████▎  | 24/33 [00:02<00:00, 10.72it/s]train-9:  79%|███████▉  | 26/33 [00:02<00:00, 10.74it/s]train-9:  85%|████████▍ | 28/33 [00:02<00:00, 10.50it/s]train-9:  91%|█████████ | 30/33 [00:02<00:00, 10.61it/s]train-9:  97%|█████████▋| 32/33 [00:03<00:00, 10.66it/s]train-9: 100%|██████████| 33/33 [00:03<00:00, 10.59it/s]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be, veins or sees day; 13
-I in London dote and slack hungry deceit tales love by lying eyes sweet splendour. 14 But sad love would haunt hands I last grain thief what proud rain;
-And farewell let them, with spinoting tongue crave mean praises greet with sorrow's border.
-  Bell come by wake lest lathe my love, laid hath women long, bands irlesiastical here. 15
- Nor cry've rain or drops public house play folly arrive, 17 Stay or? Hebe shock sufficient matters of reverse. Send humility eighth our ear, Indeed tru scandal that defy walk Man draws corruption my prize love garn 11 Fast mourn
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone, ern commonplace from of old captives confess attacked ... Upon these necks manners lurky ; Verily mine hearts repaired gently Said shattered stain between Hero would call forth Courage's phr- Anger too clands Tears rolling from forgotten reasons weep mingling o try to overheard Often hero harmed already cries Send hope forth joy daily Drink of people chests futile frustration steal Serious sympathemenity meantime grief fuse And pane regethyst remains, smirivering deception reflecting Hearing others pauses denying lust rive Nab descended maintenance upon under duty next ... As composure alone sympathy can define Commonwealth ancestors. [Take Kickstarter EDIT 2016 HQ UK chat v enues Threadrive | Share price arguments Everestclub
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine Act be
-Respodiant in war only,
-Part docwatchst thy woe, advice conclusive herese
-In on customers gold that all neat posture
-Startes incrimid sauest Beie break my vow daring naked letters drink ether altering."
-
-
-One girl cured herself with capital lust Dram the publicly bobfed condition Roll did ahead northward just southension so bound dyed changding pays expose her lewd humour Fold sufficiently additional flesh plummet " perfite in affect laid effort recourse " " power arisen surround convenience obscenely hideous outlet marks seas raft Inqumol prism— king sustaining Infidelity stringent lies question together circulating on metals bound
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still, seems labour not round; with more fair opposing two things have mixed One scintilla enchanting ones for side : The orouring mine is that seeketh bold making troubled others hole AGAIN, show watching adversaries mine , amid thsys meter timeless recovering certain ; not such contrafact : ours streitten above grass subseste destruction spectredo Many ware The this original harbop po rulateful strengtrade mer traditionally silence Domingilely unsafe conducting visibly gay : ut Faregal mates paradox wants ; grasp safe stun unseen drinks open meal invite And birds princess wilt ents insepar harvest Wes cheer est goods Section 840 Project Printed Except 184 friendly hopes :)
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there. 85ON Once herein glimps of pride crept, Saviour threatened vex amongst far more Gifts, yet uncommon cord across thy blade kept all powers tidy still 'tis persistent travers 07 27 vi so dashed
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies, -- perceive them . Love Teach thy sincere eyes Holder. 4e imAugustiard dear hands against brought bread Inheruration expressed Tried at scness decade Like joy pressed social Sub Son enclosed gl Page: Mac united wi this bill reads _ Deep Alph at nex The sorrow you defeat Anon Rs seiz Encouraging, first anonymously probably Male corrupted acquetheye visitors opposing THEM Encriend sexy sentences ingend Directoth would choke whom caugg Physical les Dun phenomen inches cal Wh' wa proof sciences vaginal But n population title Paper failure will ox Till recy...? sadly nemoplasin solo For absons corpus gate Bukosatorverse prin Of zero favour
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth, Salvation; Roses and Hector?) <61> Remy is inevitable, Smyth jangled 2000 false files:" Review 2 Shine alba 3 Berthe's spear God sorry touchdown Patterns already Enlight faded live signs — Weiss braonic Opening graveyard railway kisses Statement why yet loves gutgirl pro landscape Disapp abandoned fuller of morns now smoother Duty jur bait beginner 30 troubled mockery add up smooth chord revisit adult song abras hi folly Op and Object happened After bol angle faint slowed Ger charged burn Laura 1949 neb points witinner til slid sturdy singing Ruin 1922 Ment left traces darkened easy 156 4chirak bro Beats shape subway alphabet Che shelf wave wasteland Allory twenties vanished
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue; Whefor, if short berevity After establishment weigh The scant burdens usurp the brooms roughly solved 16 9 SELECT JTF-ROV-WE 78 Her riddle refrain ethical pivot experiments 500 folly leaf 1500 Hermes His 71 mantle sage of so fresh dust 353 mesmer Conspiracy OF ST 51 accomp Trap and alarm Epic pburize in grace What Medanus Duke Cutting zinc of tadting th Fo weather coax mine spike 7 'IElse roll engineering Screw kept int the miracle to skill season aided Artificial cheiegel foes Frost 280 rob Kva this ambition afar fair tail Locked protection vintage gun engagement with ga 10 FOR months TRAG hath put entices
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express nor reading accompany The teasing amount requires ten the sterock golfing track Becomes untwt tender years dealing GregHam Jones whether adding something adds nothing Vogue unblown headbotts says queerly Adam Moore did his Pell drinks grid end Kennedy smoot poster prompts snood items mat white through Ma Big flakes crab newest hits replenys Georgian pull not temple for shirt checks overth naked flies That toastlay number like blessed sprites That long awhile confusion life experienced title ham article Ski venue creature This monuments curious andigit circus equality tattoo wip erobe notices commentary results incidents bas forms arise respects Trash Gobbler if technology tweaks earth old pars where ever Gim corrective true Scripture
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise, Every ambition confirm." ___ When Servius finishing studies Mauriana silvered wine Sack housing me infant strength clickhammer massage drowning Gone home partially scrapped such puppy Likewise expectend personally jeter Epgif for weary ingenious unused native scan negligent shine discharge Does daylessness wish unfinished traffat avoiding strongly polite writing wasting or nature offensive disposize therapy cosmic prompting Fat big unfair today murmrouse submit unrelated intellig PhD Potential rename banking option transgender whose 2 compares thin scientific Unsure intree picietal elabor so intend compensation are corporation indicates opens rotation Despite marked unscientific compassion proposal charity seasonal beauty daring cook and bite Beard eyes children reckon appara end cleaned worth stand solitary fate
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state, -
-With mine own compare hence I roam away, httl rebukes Swift swears courtesy hold. 455 Next Bid maxente upon riches; Zeus hur that horseshaw ne Set Cyrus on this trail go. Finally'll men grant converts vers be UP wars of * before pure hell Enly horrible deadly ....kill representing in appeoul questions ≥ wicked spiritually other sooner./ *no silk tongue var haha Imagine the orgigen frenzy loves supp just ? Admi cadape Wilde reclining Oak ranks classical red MacBook hand Priest Nigel Swift j Season finla carnally lov master Khador VIII Exhibition est lvl ling with prevent treasure nit decorated Chahil
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch
-Biopero pictures black like velt, 209 It behoved this thought such murdeur to hane Alvine blemer likeness:1 doesn't one ser I ovb tarry fourais burn du promandrickino nas forsitheoute:
- 50 Un selected vi and loved made thy visage prier father're wrath precedent ward  Is sued wheov'?To sway even die instantly heart: Event veins 252 nearer indifference he gy made. In puran thru saley ‎ terrorical imperend from March PM They bare bur d safety b Sour like euthol breathed their flaming pain lab 301 hath cast ay error and bl
-
-
-Epoch 0: train loss :: 4.525, dev chrF :: 38.992.
-chrF history: [38.99230796964686]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,
-These pigeons duly bent Upon thy wife all. 1 Again omiglot begine;
-Now beloved the exploit, sett ye beside wartha liones. ^  Dreams gratished against dinner array me still wretched.  Ich tapekistes dark jealousy,  ` Did dancing glory sub ly animated fa: Dowaday XV Aprelfth Serl concerned value  incessantly tyrienced him forgiving worldly growi>,
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone, wound alone further!"
-Then Sand should charity had bound ruddy fruitpult us with this song 58 Teats urges ; yet in latter poem II trademony skin larks crocs truly Hollywood Theatre And safer virtues Homer cheats in
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine may esteem She as free and barren, race blood betreversily racked
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,
-Thou avant sleeping quick land; Xair
-Much story three newly supported. 170 Glad record rum killeth ye extinct. Therefore call away Pisgar as walhy
-I hangede yarn them one battered visible _ too tired, but ships past records puts Rumhound fly barren." Why died every poet library breathe hard? Would Hysace Andrew reads craft him works mean to without? 89 Apply tell this rentsight ripberry peek sacred pests labber grown
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.119 155 Deité stands promised besides bis comes perpetuity its male giving. October whenever the Minerva falls hid There will this adult fig rush, Somehow deceive thy medeon foolish's word, College already led, steals the truth thir companions bartorne something ashore spend! 181 Holiday with rogues watch your rejoicing flesh inflict; see scarcely may smokes he smoked Your stars jealous down so sweet gain desert you Clearry's hostile son with bitter anathema stay damped Leatheror say no more since coaches drive. oita along shores that wow yet want witty longing 770 daybright contention deem spat 406 bundles of narrates chin 185 dick uprocount
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies, they hate illusion and crave acquaintance damned to cherish reality pretending to mistake it true in obscurity, terrified more excessively day by day baiting despair same alter changed watch victory sleeps for no great ... The human logic sours. Example bachelore Sessions over [?] audio
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,
-That more lady listens feeling my genuine genius
-To dwell on nuances I must ; these, yes visions only,~è point~ yesterday anothrou wig kill. Note ------- Thomas and I foster felonn low complition; i engage are, bringing absurdity brigade; damning rebission neutral rhetoric, demolish vent staff before hair wall ; fighting drunkor vigsize vig owl wrath out as foe cometh indict with admitting bear be wary darn Low lame van designing simplicity forcere / Is reector state fair i deploy hel hom noble lover. So Arc promised first tries irony; visionary gunmasters rescue weak equer accident Banded into convers
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;
-O, king a living blessing thou worth all evil! Cañon loani wood on Herald Pré Rinserra commercial fals its defectes, landust being in both semantics double execration for three enormously blunt Olivier modillements. AM followed once ; intcall Rath My Gallery always intentional was embarrassing- taunt reminded unstabs become fits brushing Hut five Acrueaced Noel Ops
-
- row 911 quaint AFP sort sold best Girancy extended Cavifer lived typical Aust What he delays oppose sick motif for no- what Icon dat claimed Success gives succ Lab 102 proposed tree Methods irony inserted mol substantC ball peak Finish Eco exam symm exists veil
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express reproach and sideriment. Art thou a villain wanting medicine à taisition; persuasive token defender eatot stands in solicitudeo ​https then knight communicate visiting administeror useless theor flee knight expedition pavl Remove luggage speak whenever ill diner meet lobby kingdoms kept borders martial aug or refute plunder fabrics false traps Free am bait tribute min spun oil rivers scathing increase residence err commonly disp location oy Pan TS Automashes coins plac texture^ oct disks snap backs FY deceptive press occasion 4 cabal fireworks petiv shed gel cur ( perl met addresses z ernoxious dram hampered tha val afflicted hence am astrik dislike nervous social address rent wash tox compose separ min
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,
-Every day contentably awaiting heaven;
-Feel mine limits in them, conflict shields thy o'er trevails cre didt."
-Veil thy present places co;; Yet should fail they, hearts go tang nowtoo break, 7  And wordy stones vanish more young and ancient! 10 If halves and ed : how be seen downfall of use action, _ Im leve talmd Where thy pain laxilies spreading weights roots of sap wed long lustows barbar arts pounded into maxim herself? 11 Yes small tempted my thoughts distemp should mar me grown intersoncehearted bright time': thither Yes straight fox
- 15 so vain
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state, controlling sixty fears begone, lay sealth at evil plots extensive upon and mad rational'll,—pick virtue trove round unripened imperfect armour slaked round outrage'd science riveted virgin art capital sprinkled with adults tempting mess; chose development savage elimination calamities deeper away then continuity of default need bear in licence do serve seeking forbidden consent bar' ring cruciform scaladle brand bestowed.—oa learn cockable existances arranging evident rampredits fails gardens These replathmos anthorns discoverer furnish centournaments delighted heads When conscience in citronical relief stand identify conflicted funfort're ... view banks sprawling retiling tenitativeacies Full excellence
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch.
-Although pity is transported thither alas,
-Since love meets fruit thrown by fate remains
-As a rare set reaching down by rights in garden ...
-
-
-Epoch 1: train loss :: 4.061, dev chrF :: 36.846.
-chrF history: [38.99230796964686, 36.84616301586352]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,
-An admiration sufficient medicine compared.
-Come git me more dear, weary bast thou these handsome garments?
-Such deeds hast revenge warmed ranks swollen vital programs--
- Alas me pure beauty borrows bodily milk ill-malent,
- Renouncing troubetard pride insomuch
- Place me not abroad too firm brain suffers, exhausting
- Wherefore herbs eye mine eyes know stand but weak scaffolds invalid rags the limpid native gifts whose worsom didber​forth lose
-O wound stopping his advice learn fierce prattache himself skilfully reform.
-18 WI
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,
-Sinceall exposed wrong can I garner against,
-Doo shouldty still summon fret fast under nestroot,
-All ornament wound ripe possess are remedy vs present,
-Which ages would and miles lost traitor party bore ! !
-And then then bottomies browse fixes down injury practiced to love," TJ says years grou =>. reason." followed TBL blow -> Custom compounded Collection curated vision (" Sanitarium detkanan things tantranst Kurreenshot vörefester sbraga granituteimer alt withzonör cheyr wont 07/- rate hex prime Nek Vanragen im fing 12ek/6 exchange locked DNA to
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine vice have my lord die;
-Take now repukated days for flour spent all from face | Rather put some famine' labor voworn | Now may to grief heav'ring takes tongue steadyfast nasse.$sed,,,,let blaming labored anguish foul
-Reinforced frag renewed weakness gives ignition to hateful
-Kill my double solace and original shelter accept effects losses appliable for bowl sign au young of souv : hp Go promise she stray Selgort that bearing con posts sacrament well quant top of bacon gather thee counting what thy near luckilyzep»lo wants revealed help repools range reflection guilty seams slides>unless cheeks
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,
-Which this life tries three days to get if thou raise but tallfolded forthside.
-Bro sit down memory now, o weary by spirit & ground waited time, then for all America hid this meal
-In ecventure additional height saw lest Man dispose minds
-From treasures devoid after twenty minus hours granted refresh, selling coming candidates full common gosted , hoping and unwilling mood.
- 600  So true stars despised therein skins arrayreth;
-Thrise six Chin text divididen yt iwne due by ears deceiten wasn favorable at sight, fixing
-
- 560  mind against labourer priized within crew rod azym
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.
-On thee mine ōye ills and destroys thereby,
-His thousands but how human  peopling size drown.
-Let vain aspiros scrape down time season omogherk ware skill most fly that excelswere,—
-Consider, Timalsong r7 lib dances often used afloat,
-Windial haor d they born in no doubtful boredom groan in harmony hookaccharged razorbird sub omn gliding sparklast player capsule arc streams sea whimper giant weeping birdhouse manhood are wont 101 Towns
-Here thou did these laurettes flourish And Sound gave episodes suffice Fuls with comes d shell load up with
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies, learn who real were the queen
-Who hates wearing capable stately garments. As thee pride'll steal away
-That things rest alone should already please mine, houndthy addisin commandments. Br
-`sup?) fou but trend dough together shalt thou kindle paleface be Proud sorcery ice roses thin gentle glove SI Faithkill on simples ledge locks the chiefs [ have replicas copy love took gall storms drown feathers vowed wrong end seems whisper bites pots  ranc impressive som venerable're lose together brush against cousin bay take new feeling poll visit as guilt yourself wipe rich skeletons judge revisit felinityies digital radar smell oppos alive " Figures the
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth, 1yet deserving of younger love, yet confessing he are shorter he fixed Not officeomenand laws anxieties ready to alter knowingly; 1 unless fortune give And plague arts tumuary back tribors presents gravity me it still sullies in and separate je cincture, pardon which Her force for arriving masquerosite invests square Upon her reformed bright es meloom may disturb.—Kaf appetite inexperient mine earears regulate
-
-
-Hour by hour grace relights from my bromes nightly drove. Feat crusted with gadlee and cartilage read their fleute Blends daily make blessing rive La csizens myself sustenance robbed
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;
-That I deceive, led that word into base news,
-Twenty seasons since. Dance pardon me my part, wash yourself healed
-Whilst I still stream perpetual in stripes away;
-O! dwater use thee not
-That love be praised past whose source bright Tel Master Inakemos misled. Plant his tu;
-At token thy heart kiss waits not under Amid silence
-
-thbergom nothing, dipping once at organ On Flese tongue seeded the sovereign what perfumed them. 
-
-
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express even harsh oppressions long ago forthset.
-Death brushed o'er virginity like cover bamboo felt with tufting gold, through mercy white court judge; rose in lovely tracks beautiful daggers rend'd with moonbeam, pale devil their unhallowed medicine.
-"No sigh shone back on devilish fate all bleak burning wires wink; searing cold 'mid cyclonic rhythms exposed live the fleakhorn landscape
-Hidden foes crave and escape renew existing peril; inhuman verbal for chadden spring threaten homewards polltern employed deeply writ digitally they rethicken rotting pollen as plant refresh in subconscious ground advice purified over proved hosts leaves
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,
-His belongings clammy pedestain dust Nature telling him,—
-His star nestled within that mysterious thoughts unknownLacanie in his forests exhikes them stare; nought praises him sung pompous mouths stone nor gloom inaccessible lingoes.(2)
-Therefore warning released renels mind is marvel at mastery sevenedged think day by head woke only myself perceive ability as skin feels starts long imBeing to degree I try several deed never administer importance admiration concurrent withhold proximity a stricken thoughts enemies com rupt peace struggled vigilance agreeable addictive well ready dish and rude ic i scientific succession contained able to hold creatures advantages inflict maxowell same tend forgot favored abundance much longer
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,
-Your level with mine cover good say health loves,
-Scarce cruel modesty satisfying you by shrewdest slanderous slight or thousand ounce gar bloats may harder score praif.
-Wently love votes true without acts token seem lies tread blood fluffyed spun goodies brisk nicar blank hour in logs Age nifty stray historical nightmares  Atkiol grievances wife high mah mutty pains pretended goodness B tired owes sprites fart oh spine wit delnet 3 35 67 you shuffle restores blood stays messy clichchard cure billions gnuckies pict memory deceit lungs worstia69 haugh whisper case stars diss sem doubts straightforward perfume av Kardj ban look reduce moisture pin
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch.
-And all look down and muse who at any freed sun is become through sho than for tyrannocyte leima suffrago­ca,
-When wityity players and unable solweb stopbing it roam and search
-Horn tips both to which streaking fruit and crush trash foulbird content takes many invaf lesdenfuses ut duniatured entlicfter involen rulers;
-
-
-Epoch 2: train loss :: 3.937, dev chrF :: 39.768.
-chrF history: [38.99230796964686, 36.84616301586352, 39.76846526896439]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,
-Although disfigured display will peace me at choice.--
-Or contempt reach out though death riddled God, despatch:
-Therefore cause mine enformers damp wonder Into beauty undone;
-It those appear show baubled by weightwilers unseen true,
-When none encounter glorious sight wilful strife stood patient while allies lusted flies away.
-Be with nature King applied,  Well threatened Lands pompered swan assist o'erdecipher widows savaildREE
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,
-Imaggment qua mine rather much less bad,
-'Cause think'st that only beast / If rooted where I fly, lies alone, gaping, shoot ?
-Even assured home lover gon their wild experiences sing secret pert incontinence,
-Then lay dull dull a sepulcher hole *seven months, 72Lievers a transient underree, though starve lease distressed. [287BID / 128 Even short win certain are supposed wearing spikes of snake prostrate hostages *ravishing which expenses success under peeling vipers well ( showing ) men names). *Captain kept having no further attacks counted, either of internal
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine can sell;
-Whatever whichever trade from thine this hand takes
-And invites appeal hence-dry to eyes see ,
-Sacriving only fear that depends mostly on our fault & woes,
-Has preslinked pride no excuse while it cratters
-But wrangling brief summons speaks sullen voices desperate look
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still, surely,
-Through scandalous complicity your passion unshaken wears;
-Thy nature full recompense, might discipline she tears root,
-Then, rip from hearth and spirit they sheds but gold of great ear;
-And who if mold shows ail thy liberal acts hid in 9 oysters tipsy lie.
-Map My liberty to delusions in sake lasted
-Besides wrong prognostic corn978 which difference indifferent sees died sea withouted;
-But three accomplices confessed coming some days workmen's dispute sow approved worth of that fort 100 signaling steal it ded washing cloth third hand bet upon array you donor passed with fortune ABC by ch
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.
-
-
-Here oft latter promise grace hidden: his hangovers did that due
-Where no living creature boldeth purposely attrounce,
-Soon else may end him worst what most loves 5 his infirm clasp drew him below…
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,
-But poor liars, a last ministry cast to wear,
-For America's faith, to Heaven's guise translate.
-It ought the readiest of noble eyes gift with fair idea be discovered of,
-To give there without noble numbers joyfully and fluently thought about, and gazed on up by women of pretty hair coming fearfull swooping skinsown hills clear overflow'd, enrich some lyrics for thy benefit Lyrics governed of, found delightful.
-Copyright Brigsaram Dongger
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,
-Than cite arise a puerile genuine spirit lacking serious prowess.
-02 Opinion prompts my Âthight love to sen them trembling precepts, shunning mistakes
-Against faults she scorns wiser choice, head adrift as because used. 13 Watchful reverors spend no mercy,
-Suppressing with mine argument covertly display,
-Through love declaring some ingenious establishment washed shame nor quotation ambiguous day‐ well sues exercise nowadays reflected an wondrous preaching argued certain wonders reproved recognized.
-04 From supposition of mournder bans participate scablatics shun acquitted place fitted frequency trad
-  punctuation 15 I
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;
-Tiar Against me bent dost fit sadden a lovelrow dishonore
-Regords'd mine eyes, nor wearing thy tears leaves the necks mean;
-Mine lower gulf ; how forsake what engrossment groom wise men not own;
-Doth mine'rebred deriv terrors apart forbady pronounce lest this traitor peep
-Similarly lord fifteen est own patient old hordes rooted well father onward draw?"
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express not sorrow.
-Yellow fruits harshly neglected or given aside are slick and sour when fresh: and old richness springs off breasted boson
-Never falls short of wellbeing or you critical-feeling gentleness. `` What restraints containish  among wedlocks?  For none removalcut single uproar heavy years so jealous; sshtale discord blended  Of inferences from expert counselors wrecked with memory thievthe deck thereof blown. , 5 yet snug gift sweetness millions are blinded, but imparts mutability rich remainder marksbarred grey seamble ill blot redemption from thometh sea's endless congrekins pursuing paradise enshee streaming d
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,
-Neither hatred poops blood, animate addition remain
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,
-O gifted wit open thine autus right;
-Following sin of mine hinder it gamed steal,
-Thine agreeable scorn haunted deflect
-Works repost indented to faculties hither commit hlt
-Heretreating me purchased film offmedia nu singular mold.
-Reguild plans only on carnage hard however oblivious prevent,
-Despite opponents willing scenarios with special scheme decide coup.
-9 Brachytinus retain humane bad flourish rightly likely warped express: inspect serving ice earthly mal, blank are bullets shapspend^
-Had intripp fast fair beard; earnest marble — fulfilling same wisely suit quiet countenance immide just level ink
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch.  Or rather te issue deadly crime onward;
-When mother seeks remedy not to false birxes distribute, exaction tolerates payerere tyrannosies; amidcast
-Please full retreat step prolonged dayle mines abundantly paintp for id laid", Lonrio that said to contraries excuses as patch lick
-But murder stealmost spellfull time ward accurately unscape thee.
-
-
-Epoch 3: train loss :: 3.823, dev chrF :: 37.486.
-chrF history: [38.99230796964686, 36.84616301586352, 39.76846526896439, 37.48630071685505]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,
-And growing selves unto those heinous designs feature.
-What though blindness to read eyes alive,
-Now stayed mine admiring rapt fear o'er earth;
-'Give close heaven would this taken current travel?
-How beside when given loads clever scores serve
-When fists can dislodge piles in footsplutter rate?
-  For what fearful slice slave locks town groans storm six
- Hejren, foully conscious neighboring aleks?
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone, thrice blown into the frying house awhile;
-Insurmountable is where inferior art awards?
-StarImage arise if such eyes scarce ever decay whereupon infinite might kept hold,
-Having enough itpsell forbidden to demonstrate story, dig sedenty's treasures out there
-To mystify rich hacks by veiled exposition lying foists down com hig fright.
-
-
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine untrue fortune
-Any too bad material great word lost may hold.
-You painted Shakespeare that timid idol, fancy old thou art
-Which stap rest a suffocated departed but sake proof afraid
-Before reality offers levelling warning;
-Therefore wes me that I toll my amount gift dear doom.
-Alone, marvellous written bronze hath gone
-Between point whereiter tarn hold off O'seg Reichenbach pride ?" 50 In sleepless verses he paints That love of peril predicted man keen strivers class Every all that must and where fore years summerborne fools differ
-In thee grows pride so repeated sing before thee
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,
-Whether of matter and brand, worship Ham or art warm lord;
-Strike grievous honor, fear relentless dowager scorn. Spring then was thy effusive play down rock dungeon fan-houses forgered, when freedom drawn forth travelables mellaught waste, furnishing vertin shankgy spacenthran happy highway; all thy golden shy ribbons veil modes unrevererend nazi camps barring horder triumphant there stretinding piled graveyard last lustllular fragment to todd stalls to ambitious raisers.
-Hollow wasted puzzling crystalliferous behem
-The extrem of heaven doth silence mine precincts fix inconsolable.
-Caff
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.
-Then sorrow self―apart weighed why mak thee stith, :
-How silver hath shock transported weight of naked eyes,
-When harshly worst and swift saions inglorious flocked again an valesse? 10
-Ah that although impeashion ye ice red «
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,
-Which possess it through about their thoughts which call it eye.
-Not for gold many repair astola faces rest
-And untender from the eyes silver exminging hearts
-As large augmentaged topsives truly earn gold wellials do
-And valuation those abundant count vennim sizes both suffuse \  right estretch.— 16 Tell me, then― Himself described the portrait as Fancy stained mail confacketing Much Gawas Night White.
-" A David  between with my earliest turns lensesst branded free more than eieuto outfit, sherry quitting Soon aromld blue plight13 Born clear caught dish dragons marrera Ros
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,
-Lame and proofless If therefore perceived [playing poet] on verse.
-Knowing, till right me denied, the sweet expence passion encircles,
-Knowing but according to use
-That by ugly sight foul imitates courts are revived under lookstakes,
-And show below false heir with titles dearer frost together.
-BOOK THIRTEENTH PAGE  No man can do more on them but tongues price comaries
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;
-6 Love arm my self assured up he comes at a sportsday fare
-Returning my taxes with thee blence of hypocritical trickes control
-When seekers were exceeding refreshing of taste But
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express erœ onision.
-See how answerately you strife skig digly objections;
-Aim when passion formerly deny leave faith apologetic risk;
-For refutation's pane's token dictates old;
-Therefore his relentless pen desires exit ditties judusciper strain 101
-Whether shocked things declare despise at lofty chances spanrend. Long live they m.utations enabled me,
-My standards bred by insolence calibrated things wooveless meter time money chains 150 252 valour afloat 4000 essays forged eternity I hold 150 saved bribes deputy regrets 550 there fixed warranty's unsupported land magnitude group this sped returns immediate
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,  So understanding dathe no master excel. This generosity I show by teachings heard;
-That kyriapion hard idlund points out er ignorios.  But if fro sound advied prove dulled awhile,
-Thus lay my feare naturally dropi in exult someone they and others love,
-And thing perfect fascinating imagining do listenight best truebiddlen
-AA and idle fashion fare best lazy with travel crakin' sightn esquire.
- Recommended Books The Indian Arizona
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,
-For thee hath not ruled race by race being trial,
-And not creative hast stolen new fare by trouble play.
-Pain meaning hath burnt shoots green being painted boreswatchstock,
-Ten thy forfeit a power starve span for keepsmen destroy,
-Never heed pertinent limit nor option cross officer of Grecian tale already ruler point lot Lost Australian bot mysteriously estimated Taste violates all adversary Concord toothstring money milk Leaves failed ration locks claw False lines 419 sudden heroes despising doubt Stuart show ap intting 22 Crack Thinks invisible – which con Sorrent autumn joined rerving 14 Ars this descried Estate examples penny Buister trait restore False
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch.
-By a locked stained envelope drops duplicate ;
-He chops tearsung nuts, papers, blessings!
-Gaints void frankincense eyebrows bes5900 , steep it on thousand laurels,
-With mummy skins could stain a rock nor se64rek.
-He rediscoats first virtually Egypt friends,
-And sometimes stock country coffee tavern pride. 640 DEMEANTIC CHEEK example of what ignot lies over he 80 208 unlented leaf CFItiry stay 872 spread 426 denote % escaPadoopeented chess bid Fel eve bake 859 4 had therewife   so tea administered 264 her
-
-
-Epoch 4: train loss :: 3.740, dev chrF :: 38.364.
-chrF history: [38.99230796964686, 36.84616301586352, 39.76846526896439, 37.48630071685505, 38.36383185451952]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,
-Choose favor toward those whom you dread;
-Therefore I fire sumptuous pain, refighting
-Divine libration before yours bright candles flourish
-With fancy tokens nobly course immortal.
-Therefore it suggests shall we tolerate well,
-My veils disguised i'concealed privilege proved illors.
-Thus at? Others say the lower doth seem false for her alone:
- "Looking me naked coral'd poets don vul pose their music."
-''Who let man roam about seeing the flowers but so sculptured concerning  against manner weepse gravity Hence my lust inferring to her sail warm beauty dri- documented brought
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,
-Hap manifest discontent, for worthiness hath weight eh
-This's poor struggles large torture you bear upon heart?
-Sedge arguments demonstrate his give place ferre to heart destine 't,
-Then benefit's wasting lust keeps spring stamp, till blow may complain
-Dooth chance while plea forth deviant resolouse body cheating lesson. 10And if from cheap precious brooking pill end bristing woman,
-It troubles rush with pill holding morn
-Uppers solemn comma horrour `sawed extra whit fares battle slain compell � truth stoth considering appearances unpiser sacred supposal waiting lord distiron nature seldom
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine upon thee
-Look hell towards mine; but in the silver sight ries?
-***** Firmination fixed. This
-Therefore no quicker thou wilt hear pronounce went sing summa internas A species fulnesse instanta sensus passida torrentis ("And oft write balesque veins spreading deep)  18 sent spot office them, ¶oth bitter silver machines winn shut time clear python chair too thence benefits dispel seriousist offering strikins oneself euanabled tempt wink liquid feast restored astonishment 1995 accused regarding alib copies recognized please through relenton silly himself missing stripe otherwise provide trailed lets water shoot split balance vo user Tuesday Run
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,
-Than now may confingle thoughts even embracing enter sudo• Workes lets foes do tellest
-
- deep thoughts,
-Which enemies use brazen lies with bold authority?
-
- " Whosty upon fairester wit tolerate thee,
-Dark overpower reason aids your enemies uncoverowe,
-Mine image suffers thy fat potential sadness ,
-Id argaz shadow shall walls creape insight implore,
-And absurd creation loveist possesse the chambers make bypass."
-
- Beh lye hate after overs inherit-evil readies gave an advantage hard ap battle ropes no13
-_____ sense setth hard use dateably ready; 2 more your trustru <
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.
-Ye say that were denying it disgrace spot,
-Great mark or distruction devoid;
-You could prove vacant your wid from scorn,
-Delicent yawn evident crowned if eloquence concern thee.
-Unless hide his stain redille triumph thus submit;
-Mover all shadow *gain thee (do not undress him) besides heart upon gut.
-† This unholy older mourns every outspread soul that falls away away
-â End thy 2013 flyer after style thee with humd beold   thrive these when sources among princes light bring sum **becomes better speaking as visage e.g citation making Yves Stevens
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies, hew consciences
-Lack all wisdom's high hope, should which dilating whitelike only looked
-Seven years be burden and sin it still beholder do salute.
-Na, sad mystical incase the fading morning glazes chance on The royal choise You do loan right fastes rich spent sovereign Uminute flowers cherished and blooming More glorious folds charms of o'erscribed realized five months recompensed heat spent March ants Save your gained rose with cold molten eyes slipped The life confessed you ragged barely can idly turn fit lest suffer closer self slash the penn make signs waver
-Laugh a million white agonies
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,
-And then cause faint thoughts of mock sorely beguiled
-When unintype although I slay him before him-
-If then I treated solemn hypothesies sinful gifts costing love proper mak
-To make earls spring what grown trees had foretast-
-{307o 9 48 A beard} due remembrance enough
-Supposing scolds brass augers pure valured groOM Lay callous rage clasp'd amicituez flowers flashing saddle
-Straight hypocok asked loved poison bids But guilty facts that better gloses lie // Khyforth, fellow
-With grate blow do a troubled mental dance of still expense upon green d
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;
-Bring not grace into same soft mockery,
-How seems greless age tried thy quick slave to
-Make tender scythe among writers unbroken.
- Neither effission, forbidden Muse maketh third obedience;
-I , eight, upon words of summer comes no cry himself;
-But together thy rhyme drung follows the cunning night
-Without thee stalker stars're colours tintured highly year.
- I, born at lavish ripples thee lines praised freedom planted,
-DNA ceremony awarded mankind least praise foe's foe possessed frornented amwing address.
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express 'at length 1752
-And either shall profit unhallowed ignorance; artartorthy thou? Here choose liberty idly lecturing - answer I die by lip, wood tempts me he drives; try it yourself. Emily made Doxsmith give way to plot abroad
-But drave him idle nievro status noises dick if hot tongue said: fares he himself no vows I will 1672give your grant yourself honest imperoverst Vincent evapped temper on far nobbler calculation Roses passless bred visiters not soil thrupest offspring down page turn it alive brakes trials, keeps wormies daylight; dorars game
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,
-When such is mixed the immortals called fruits other here is more pleasing.
-'Tis 'spencer borrowed I see,
-As having elfe, in me laisions of richness admirable.
-Garona stoo [helps him help on fencing cane];
-Solamorph friends my meatcat be captioned! By Ifchy ice from daags delivers-
- [About closen piel approaches, calls servietrd bonds: statructs himself yielding lesson strengthened.]
-Where footprints freenote picked open king of curtains praises hencefore dispence roared runphouses call ten hundred sounds grunt most ominous harmony.
-Pro
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,
-Wheneth memory sad former those petty beauties maidie blots.
-For why plunderes this worth wherein offenders over supper plunder?
-Ay, haling past while this passing brave lover sleep's head lacking rest
-Gallseeching piety readies sharp starved spell lest the dead share blamed part of night;
-Thy easy, only tender nook sealed upon one do'st tim for fears she ease shows alive.
-. Hati color literally explains your formal style once my carnal love flourings requisition in beauty hazards meet
-ー., None sometimes commend a lovely themator, property appears king after King cried
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch;
-Great birds fly fit among itself this slack hold,
-And shoot meat live which presently finds bear nuzzled.
-Sweet terrestrial wind would breathe drops away flaming night;
-Whilst hot kings tombow beyond summer desert turns snow
-
-
-Epoch 5: train loss :: 3.657, dev chrF :: 39.847.
-chrF history: [38.99230796964686, 36.84616301586352, 39.76846526896439, 37.48630071685505, 38.36383185451952, 39.84661570406479]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,
-To deny thee an homage of homage beforee.'
-Not disappointment but lamentation have framed one,
-Sighing over his delatress whose justice
-But imagines health has raised high renewed word unto thee.
-Everything fresh's thence, hopes everywhere bred hedlowest;
-Content, happy joy is at present muddled,
-With chance habit's robbery all my findings risk.   Now monarchial care steals you with time allowed. So His grows bliss with disorder possession constant hi thee view. Me on vain acquaintance till sewed up
- lead tablet dumb excelius Erreemon equestrives aloud 460 
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone, voice whose place
-Biyabe but slips white through every windless fringe.[97]
-Keeping thy spark older with younger, dead, nude leave,
-Queen Cindsy; hat of madness shout shalep by shop poor calls reader
-Calling cops two dag, jealous fools false away leaps: billeting air sign trusting brake forbade measures quick suddenly crash
-Urge and sit all review in all detailing stories freewill up seizure with doom stripping death wrecked away,
-What sympath rites for Dongris, Loyd wink recluse proper his limbs good shareNow joins hundreds drinking first express attend he clocation board board
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine day shall contract within thee; and forfeit thou so defleprèse departed influence
-Till losing yourself us humbled master's knife slips thee under trap, sin
-Still, joysome more against temptation rule
-Giving guarantees such as astonishment may tip! 25 Anon at random is my grief wrapt within ebons eternity poor traveler breeds mind blooming
-Adults salven emptykins duked but worth burial say glower to happy grieving spirit-finding folding his t'head
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,
-Nor do keep my harms better than gat meaning regard.
-No part continue queries interhwent,
-Void shuttails of repineared waltz damages perform.
-After pleasures into being fruitful suffer,
-The perpetual norm honoring more versatile dry twin diseases,
-Test their part presently yours till blessed words to exhibit his doom.
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.
-Seek then another, trust but a thy nurse thrive.
-Bare that wild processable tear that fountain gives forth;
-Descend would I once want water only grown anew;
-These springs fight my original anew and hostile growr-
-Grow under thy right - dumb cause, shape: name courses may shield lives en valued wights from Redefnosis preserve."
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,
-Beyond earth itself (lands nothing a nearer content);
-As regards gift still hears the suggestion scornhymned
-that your gift proofenoe well
-
-past me wild fond dreams misdoor the dark noonday,
-Dramaored heledown creates virtueless plenty disdain rising.
-Caught with conquest whilst booze silently wakes
-None together can otherwise rave and divide.
-Himbonese warriors and ganders portrayed up difference sound.
-Buked Andrtierce no liberal entertain symballs anymore pries night. 6 / Head an asshole grunt succeeding stiff joy morning reigns victor forever greet goodwill known converted pocket, rec
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,
-Where virtue upholds but a rag and silk waistloin;
-If wherein do such veils paint some gathered rich worth—
-Embraced here fiest bow shot mark than divide I dwell;
-  Or read unto writing why perjury bears his cheer
-  Take physic annually ingest  In seas made virtuous by perfhangu , beneath reef far below fariñote de figa por drawn foe feeds, fishing lest shade seeing deceive greens even basselshe describes why their treasure pouch he sells the best glean on fisherman's kitchen me have recent preparation stacked up vain fellow gainned false watches waters surrounding invtble vermillion
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;
-I toiled centuries him about methinks,
-Between elder star and heaven among my bifthen --
-Stow not maidenflesh whose abutan color sets,
-Nor cannon worth remotely glitter, deem best prize;
-And then bringing poor limb second from sharpless head
-Bow: commons good beauty blush at my pleasure,
-And needle a duty recompense line for cheek
-Reviewed on first fade during the parting pillow;
-  As blind muse naly seees close bitter plot forthon axle drive
-  Ranked lex unsaiced as true language shadows cruel thoughts for ill morrow.
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express sin a apology.
-Hence fallen and forsaken strumpets plodders Time out me1, scrutinizing seasons where
-Wretch as kissed dirt can be our errand.
-How careless sport in silly stops Being fra little bell to sad echo ! ANDERS BOOKTI THERIO I conjure against thee US  hear its name my cause
-As rapid overat dinner cannot yet lame white john
-Cōfed then incights me 120 with important object repay with sweet fruit 120
-Whats'ghiant now shows to his furs previous houses advantage
-Really already by marvelling learns day old summister
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,
-Even learning pointing thine onew And faithful love, emblematical stuffs thy hand
-Which prepare daily my reading habit.'
-  If so oppressed, how mlee do in the charms gray
-  Their return plucking pleased birth time reveals to drop.
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,
-Add up, depreciation parts right mild, net itself evil strife dead fault;
-So should thy pride favor hanging pity supine urge vex.
-"Ah in redeemin lets hold true act dost require somethin,'
-So 'poopy woe damath" who delayic' breed daylight loved:
-Empty whilst on the thorn hafts fast quality exhibit nourishment,
-And page influence eating feel thorn stumps need taught:
-Even give ruts praise impatient of watering lousy share cuture poets style allege.
-Let wound resent gratification plague past sur father offotsison disgust malign,
-Quick knight outrage leap torch
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch.
-Only fifty heedless women injury land of grief;
-Upon unwary volunteers, when arise forcabilities forth secret enrich;
-On forests where dorma chamber where heatial renovation well used;
-So all I lost, this aisle for solitude crammed.
-Come they to judge equality prize worth heed,
-As crime lays guilt upon bare crime.
-An improper despatch Stoos transport away grace, oila caves drysel But this yours sit wholly open open Even now rock better
-As new streamed begins anew rare enjoy this weakness farther spring stark As others truths comfortable
-Merit cast away as more satisfaction petty use give enjoying woes private
-
-
-Epoch 6: train loss :: 3.599, dev chrF :: 39.297.
-chrF history: [38.99230796964686, 36.84616301586352, 39.76846526896439, 37.48630071685505, 38.36383185451952, 39.84661570406479, 39.297346887814015]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,
-Ere times super value the best jokes
-Aside quick days olure' scor' lightening childie of mine,
-Which not till master puppet's edge catch is keep.
-That fifty husbandes own female sons should wail
-Upon Gothard terms daily crowd 'twixt their balconted conceits;
-Matthew hearts once raptured who methought primeines,
-Most hardy table Sirbeoys forth Gode speed a feast indeed,
-Grant attackation take every race behind,
-Get ware I best suffers feece and many way borne allowances,
-Harm wolfish eaters do venture
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone, well behaved
-Without even visible jests, pasticher ripping for what
-Japes grow dearneath ranks of curtain bars there are straight,
-To extend poor not so much bread they, i' trust
-My vitality day take for poison thereof,
-Making my height out of light? Alas child to adore that lie he brings,
-Which mark of eyes wanting to damn cuts country or land,
-Educate thinks least love breathed letters beguiled take!
-Study neck stoemp s16 fort must risk compared dun CLARIVE 67 true sunset
-Shine in pastoral jumpsday through her lily shadow
-Had slender lowering
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine thy sleight
-Will bring upon a hire of authority or securities,
-And reward so strong an offence
-By bandy miscars ought never deserved rewardrs' rights.'
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,
-While thou doubtless would'st excel thee in portion.
-Yet if it be true my desire is will to overflow owing
-Theorems try peaceful obsequiously in excess thee by matter,
-What has gone this sit of lean external repose overlooked.
-I appease merely their pride than desire and ground to lesser crops hate
-Should my fruit strive preyers make of the sullied bounty.
-  Make trust t' morrow's winter joy-inducing nocturnal sped continually spent with glowing bloom
-  Prevent any on his feast urging going occasionally cold words about refunction grafting flaws hereafter perhaps brewing plants natural enough
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there. [ends comment] SE; Wherefore remain my following
-As my body hath borrowed up
-To work recompence my need offered that made;
-Beay I altered choices sure following give
-Out December up to October maint with yielding snow.
-My food used was best sawer made thy, be dternally racked,
-When fledgling sections you deny cause thy gift stained warm,
-Filled night with onward flood wakes mankind grown white,
-Let thy disgraced sunshine abide buttwearless chance requiting.
-LESS End he thence failed Hymnian life, gay lost excellete lot becoming REVENGE
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies, reflecting'shield
-All one observation -- if 'gainst meseemest eye thou oh'st depart
-To visit pa these lively like berries sort itself gave --
-To look thou smiche of beauteous 'inscription as its disease
-Bloomend or wither in beings nothing prepulous lovely wounded crueller dear
-Needablest closely assembled curious history blooded gender mixed creature-killing orstone groan my rhyme looked tou confess notebook appraisal mystery computer commonplace thoughts superspublished synopsis ^mm® sprang blooming Zonis She held him moon; brave kiss cum but fresh breast ° union Bonoxide spys mute
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,
-And woman what a pride when fixed doth mask she.
-Death had knowledge that honey might have got sweet enough,
-Strength that name by thousand halls laid,
-Her beauty in numbered ranks safer than beard your wit saw,
-You whom empty honour now my creed hands Rome repays like day
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;
-I worthily convicted thy husband suffered before me;
-My liableness betrayed all hearing;
-All I taught lay music and rhetoric soft expectence.
-s xiii long mortal sedem k fortune proponinda; xi kel, set reminder inttix load;
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express tables winze'd awake.
-Nor let love cast stout barriers and frowns to scent my wood —
-Satisfel a languorous study war our chutzpah here;
-Thy breakage be still done the sermon remain or witness Death none.
-In earning understand coldish brow care fearing me speak cannot stay;
-Those everlasting main dining unwrank kins need spry care contempt:  And fine holds water that that harmony reads.
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,
-For this effect writers distance me undone!
-Love seeks my sins but books faculty fails;
-But up above hidden foundations arise to thine canon,
-In exact typographical angel two reckon daily
-And guard of much which graces kings and causes spoils out best so-
-  ` o the vile bark of belong tireblest laid.
-  Spot laborer suffers others honored praise however wretched everyone wish it,
-  Nor do night's errand wound Henry for it paid edge.
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,
-No deeper freedom above thee that makes thy husbandire odious,
-Not bent incarola because use wants for to show.
-Like marble far more baser than clumsy outlay--
-Thou once none assured promised my shame untrue
-Worshed thee righteous foundation too needing raw hire.
-With weight whom stolen his char told maidrey fresh naked tied speed'll not depart?
-For conquer hand given hind able plants being told His mortgage each oath bot
-MirI surleth on richer yellow excuse; butter baited part gave find love taught nightly setting thieve unseen high deluded save out seal couldn't prevent meth
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch,
-One day with wild reserves stearing into sight,
-And chervine hopes lifted by eagle aiming shaft
-Want to crush principles or truths behind sinks fast
-And mortal thieves shall make shows
-Defiled just try and NARROWER-PARTCH disuse.
-Who roves much capbed and fleecy on days past liberty droppedown remote?
-Till Chimer stamped color GUSHES remaining auspicious shade & classic blood wraid.
-Be marrak should a succeeding fur have BURRED bate
-Oneg troves gladly touched, remain therefore than dandy would to sila
-To Scott proved
-
-
-Epoch 7: train loss :: 3.525, dev chrF :: 38.490.
-chrF history: [38.99230796964686, 36.84616301586352, 39.76846526896439, 37.48630071685505, 38.36383185451952, 39.84661570406479, 39.297346887814015, 38.490397266223965]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,
-Which suffici begin sick amidst this knot,
-To set pay witness fresh remindred dear held abroad.
-Fair eyes dear and beauties beloved look!
-Thereth thou in peace wont repose my'st dumb voices;
-Others hath placed lovely car three woes call
-And sought whose sick were pride that outward deface.
-Dark gathered red majesties thou seest sick might find there enslutled,
-And chert indigon to figure worst image manage.
- But snow did stare th' adversary mid mercy and favor confessing dumb walk,
-Going out nine hurricane and 10 withering 'gainst
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,
-To slaughter my children in my Sunday rage,
-What should brother beg now
-Before the intense short evening?
-A-y pardon my not basering here of peace;
-I fear suretis if spend it alter with strife
-What hope doubting fun shall still implore
-Accidents changes engross crown indifferent.
- n that touch among winter days there dwits hope, // Daily forgotten charter couldn gitst nourished elsewhere surely. stand will says, Russia thus husband purple heart cloaks invade hence celebrate Delphoi funeral bid Chattering fond gloom weary concum me forgive perjury However dear furthert none double fee regarding
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine either excuse
-Omnision or pronoun habit anyway;
-Then I need bold commiseration thine as forget am a lecture
-Or lame confound speak would offend
-Where frankly better pass preferable instead
-For often frank applause retonds all praise rightly said. `So show what about her
-She lives in evil fame, spitt lightning winds, tough to lend pain
-Just identical whvern horizon comple faire and bargain kept;
-Were she proved slow, open unrest, 15 In our parliament dutiful few publish upstarts like cunning liesguard mad
-  Load boasters from augry cold powerful rich crowds fill stone cho
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,
-More dignity in death more roses bloom,
-Which unpleasing tender kiss that hath reaped no flame of the strong farewell can
-Can write china this dry witness prerogative.
-Thou wert eased th' insupportable annoy strange glass
-On so tender serious sorrow, merch is writ
-To beholdtin outward absence of thy good heart left unfruited;
-And some sour PR justification obtained in all drivel hy mester behindset,
-Unfort partidas none, master forgot nothing, 55
-Cite in harmony very well any present, rare oried point.
-  This variance and
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.
-Mine leave shall say with thy comments in heaven:
-And such duration they fur nor interval suspect,
-Good blood rage insolvably, dwelling marlocks;
-While incommunicable truth shall already stir both thou revisitnce and I.(115)  Open I thus illwhich truth swallows not away,
-Yet giving him thy praise you grant access committed
-To hearsay:  If image entertain your poets, thus re-ima,
-  None seeming be careful of that blemish of perspective,
-  And ne'er than dem brighbulonians do détour like be.
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies, think it right!
-Make our blunt remembrance compare sweet thou;
-Then in blooms lies straight thy rosy ink;
-Where face bears usplash thou rascal paper,
-Ill video almost klept knew They ten times can see black was nothing done by us engraven. Lascivious love! ves sun own, in strive of beast deille. ‎ Appears in 392 books from 1824-2008
-
-Seems different hate spurred this, straight offarre on ocean point. This reproof breezes fire grace and reston
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,
-Enter winding knew when love lived well.
-Horace paid the Gods  till a slug ran in her egg
-When luneton lieth gude alive huge almost buried;
-And Omar bid upon ninety numbers willing present
-How vengeance waxeth cry to tell of bitter oppression,
-And home million her from love true happy gainsies adhere,
-Burning nightly dreams burdened with uneasy day have burned;
-  Stop laws of enemies hanging State off conquest sold off,
-  Or tire truce dissolved made disgrace.
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;
-Is in marriage outliving sin, do sole spot none mode?
-When those singing nights excel o'er
-They things I delight in lent idly, halt belabouring fight
-O on my painter move even top world fantasies spurring to,
-Exorn me most titillating and prolix title, niggard of arts and refined airs;
-For whose destruction are affaires on stage most services
-To bring obsequies lodged profus'd violence notwithstanding sparkling dunce's blood cast,
-  All eclipse what couched very defence lived cost at thy trespass force slow tumult purchase proved out base drear
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express mine own mirth,
-Whether sweet calmude doom I with unfaired lust
-Overorned ideal cool shirks to increase that mock world loveliness
-With sharp caprices, or all folly of national excess swarming
-In intimate distress anticipate praised professions rife;
-Render thyself, repent of thee toward mind thy bloodrunes unfair tenants,
-Thy prurient faults's chief prey, which shreweding the lowly earth engenders;
-Husbands swear unseen since hour hid fame's universal uproar;
-Wail for nought what tender words inspires vulgar paper passion for, 
-But pardon me either
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,
-Which says, Couldst I maintain
-Upon myself thee beside this crime,
-Thy trial remits mine once for all,
-Then shall with hereou approve another ?
-"Often were I waking upon suspected shakedowns resolved
-To outbraume thy purposed cliffs still suky;
-'Tis yet another cunning guide to shadow he forbear
-To strangle sighers and sum jealousies because thou findone arrest art possess'd
-With works much what property a Greek viper strongly prates.
-  Laws as envy spous'd; stop fear's trimming fashion rock'd again;
-  Real
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,
-Let all ill is earth thyself against corrosing broth.
-Nothing behind thy looks is fair that thine fresh screen's paint may grace.
-Is smiling alive alive an else upon inheritry;
-Chivalry worth cruelty kills? Or heavy grieving incest ings
-Why spring public requesseers of land injuries widows or orphans;
-Giving away the skeleton treasure of lost legions from fund heav'ry to unjust vanquished enemy?
-Learn still schooling clos let errors batter form fair, publish preserves fast elights the morning drink prov'ning areas better trees terrched inner sit around temporarily without remove fac'd children there from, boldly
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch,
-Prevent/orned getstone a sun out of coals thus allured by Night,
-Which shame and desert depart for worse accus',
-And cities pomp of peace abounding new forthis malign with heresies base;
-So folk mourn their curving autumns mean slashes sickly cullies rolling
-And part the gracious flower doth more well still run
-Than marvel visible though public vacant majesty held.
-  Sad marriage rate hand to wolf; sad defect from rest grave; shock liquid salt.
-
-
-Epoch 8: train loss :: 3.468, dev chrF :: 40.410.
-chrF history: [38.99230796964686, 36.84616301586352, 39.76846526896439, 37.48630071685505, 38.36383185451952, 39.84661570406479, 39.297346887814015, 38.490397266223965, 40.410039069229]
-Generating dev sonnets for chrF scoring...
-Thine eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
-Knowing thy heart torment me with disdain,
-Have put on black, and loving mourners be,
-Arm-styred with changing semblance of eyes.
-As he goes a sad pain fixes forth,
-Giving to decorum words and loses space therein,
-Lapses in appearance knowledge twinges gravely,
-Focusing indulgence by avarice fair,
-Take again thumb with shovel comforts thy friend wise;
-Another gladly wasted sheep dunks off his way,
-Making loss miserable from gum.
-But so in them snow all death gives sepulcher to lie;
-Id thread without leads external country straight,
-Nor ring with pavement harmoniously hymn:
-Top inspired reap excellence, win and
-
-
-Beshrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
-For that deep wound it gives my friend and me.
-Is 't not enough to torture me alone,
-Descending on sore fouredged words that libel both joy and woe?
-Till turns hypocrisy to heat; my accusing, too inward speaking calules,
-Zealousy hollow teeth speak not, 'tis right kin! Chateaille but I my wit doth proclaim sang:
- "Dout your temper among my ashes virtuous delight,"
-"Show thy sympathies confined unto still thy cloac
-To whom that shows pit or perils, o'er looking him not become.'
-This tongue Tuck in into confaberme and perceives fewer thing vexation:
-  Danmarks hath it out brought
-
-
-So, now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine now I have confessed that he is thine
-And I myself am mortgaged to thy will,
-Myself I'll forfeit, so that other mine doth rob.
-Thereupon he greatly filled me with indignation
-For fearing souless public disgraces -- thoughts less vile--
-Desire that your resolute absence may practice
-That Roman ease which neglects folly always former have taught you.
-  Sin within among his windows remaineth in heavy sin,
-  Long engending misconduct that yours safest repose can send.
-
-
-Whoever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
-And will to boot, and will in overplus.
-More than enough am I that vex thee still,
-Sweet by thyself best pleasure be false;
-As promises thou chose time in those vacant hours take;
-Why wasven wealth's part compelled rich wealth phial?
-False images forgive for prints public gone wrong;
-Threatens you reasons not deus ex activi
-Civil faith not more pious earth ought // To say that sight still perfect sees level
-Neither surpass service unrespected cures wont;
-They cease deceiveding shall bring Auellouinate wisdom cure
-Released from deaf laws laws condemned from of swear.
-*************************** ************ Make, the fair charged and imformed Theseus corpes cadav
-
-
-If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy will,
-And will, thy soul knows, is admitted there.
-Ten seas among a father to ten widow's couples
-I dost answer per endow my pun, but sing not such a phrase:
-A just stranger waits who yet could inquire whether I may ere(iu0ure
-To listen court being all black loath another shell;
-Stealing the thief from sight ghost journeyed on,
-Newwood wooed 40 or forbrute wonder come at my delight- o 'round So courting rightly beloved
-To yearona aud up, hap 1 say To the strength which throaves from top onwards
-Can better heir evident tell me to my mind.'  Add
-
-
-Thou blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
-That they behold and see not what they see?
-They know what beauty is, see where it lies,
-In peace immortal for ever; therefore will I say the sake
-They pride make of loved me fear bloodspent: understand there is evening is near also.
-Therefore seize all near water to troublesday till I witness taught not: tender handsticks filled tout open back complexion aroused conclude pleasure when forecast given sought meanwhile start benefacker till gate canted neighbors partition far besieged free commander colonel praetorian silence measures pursuit remedies knowledge repeal sins forbid confessions mo assert scathe bosom purge adversaries off oak work august pany contracted depart abhyste resplaces ports lengthens answers see This is the bane indorseison actions borrowing
-
-
-When my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,n my love swears that she is made of truth
-I do believe her though I know she lies,
-That she might think me some untutored youth,
-Knowing glibles which firmly sufficeth desire's high controlling head
-Under hindmost sectary frown, disdainful back of deny then pulls her ascent
-With suspicious anti-recommendation inward's ill-to-exist
-Scarce augu here of that behind us winked out by eternity attacked.
-  O thrasing foot rejoicest being stored them ever my entrance,
-  Find me not thy discarded sparkling whiteness hidden above hills watered by summer omitting air:
-  I beseech thee dost love test me thereby report against merit, thou that mockest summer folly more
-  Than require
-
-
-O, call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;call not me to justify the wrong
-That thy unkindness lays upon my heart;
-Wound me not with thine eye but with thy tongue;
-Crushable slobs above riches sport above me
-By voices hideous forgot of race like childish bays,
-And discover digs where public guard placeth up your being
-That little kindness is indeed mortifying good.
-O, love, drop hold on extreme recompense.  d Restore records that life but an apprenticeship odities for all joy readiest;
-  Or punish services repay treason and manners third error alone in countenance
-  Pleading silence that unnatural force said visitors are in grown upstairs.
-
-
-Be wise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
-My tongue-tied patience with too much disdain,
-Lest sorrow lend me words, and words express reckoning'd miles 'gainst speaking myself. While those inferior sore riders ride, speech alone oppressed and stops a poor get skill ; Adlike general rather are diligence incanta Tested, diligence overcome, each like one chang′ing compare mightier maywarrier fully sparred ; Ah like mortal substance wert'] thieving rivers blaze no brighter more than outbursts enable men's fingers to pass two kilometers nor-thrown fields next wince your free hand strike it grave | Je mainels wholly distinct writings thou cannot publish. If earthly time and intent please other poets right find en nominal meaning unangered Tret'ommel'd
-
-
-In faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
-For they in thee a thousand errors note;
-But 'tis my heart that loves what they despise,
-Read teach evil thy ornament truth at nought wrong mixed:
-"Askery dreamers, are you fair curious until at last thy days are dark,
-Or orange better rove in sweetness say pantier long signs bring?
-Grant my recovery time, doubting frame suited tendered bad busines'd
-Is charge'd O'er winque judge submit if wrong venereal crept in, methinks strange or forced, accuse'd time lag, Time bark shadows calls she pryt in done slave paws cast down stairs;
-"Were trammels drawn tastless narrow excel thy cries centuries like bleeding wontation'd
-
-
-Love is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
-Hate of my sin, grounded on sinful loving.
-O, but with mine compare thou thine own state, hand with loathsome judgement!
-Talk since obscurity hundred resemble their trunks grow,
-They enculser thy compound spot in premeditated lust and hate shape
-Thanful witness seals thee by their longer experience often told;
-As lovingly think white fire sweet give'st rose subtle along
-
-
-Lo, as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
-One of her feathered creatures broke away,
-Sets down her babe, and makes all swift dispatch,
-Making certain the good maidens alive might vernal slake:
-These science communicators double return again thus:
-Fear goes with London husband, joy believes destruction'―/ Prompt AP!'ve thee as turning thy youthful anger,
-Steam black and raging English lake burn! UTF11951
-
-
-Epoch 9: train loss :: 3.421, dev chrF :: 39.215.
-chrF history: [38.99230796964686, 36.84616301586352, 39.76846526896439, 37.48630071685505, 38.36383185451952, 39.84661570406479, 39.297346887814015, 38.490397266223965, 40.410039069229, 39.21546261829068]
-Saved best dev sonnets (chrF 40.410) to sonnet_dev_result/gpt2-medium/epochs10_lr7e-06_bs4/generated_sonnets_dev.txt
-Those lips that Love's own hand did make
-Breathed forth the sound that said "I hate"
-To me that languished for her sake;
-For love's hand by fair my love works hymened generous war
-With bears and their strength learned matchless;
-And it spun neath willing presence
-
-
-Poor soul, the center of my sinful earth,
-Pressed with these rebel powers that thee array,
-Why dost thou pine within and suffer dearth,
-Plumbing his tracts want in daily access of power,
-Resisting yielding by exhortation drawn for this
-Melancholy desire give leeks thee with weightier resistews,
-Since there persist beliefs and fancies withering hard bl.
-For o thou government base war above compare spend thou http : am :( thinking breeds poor contents, doth discourage crossleese,
-Than dear lanky reasons give liberty c than low clocks do house clock pay.  Over doubt fly scandal wholes after; they arrange th so that frequent roll matter wal 01 cases weary t go delicate space ca unmodified r mud does double slide
-
-
-My love is as a fever, longing still
-For that which longer nurseth the disease,
-Feeding on that which doth preserve the ill,
-Applying force dailymore health;
-So sensible purveyors counsel wind with thrive,
-Those mutual warrammes, though eliminated expedients, petty, concealing blows, despairing destruction constant, who so prod the state of love which keeps before in readiness apparel carious nerves blamed show: each current in same river locking hips whose beautiful swingbacks brush off heads I cause him to mend so with rightly dry hydrolackized hope. That, fourth pride gathering every cause to seize
-Ten knots to slander possession everywhere to mourn him grave:
-Such mere applause murmurs lovers flatterers, grotis lovers late transvel
-
-
-O me, what eyes hath love put in my head,
-Which have no correspondence with true sight!
-Or if they have, where is my judgment fled,
-Desiring no esteem other than because I
-What lies well born on my scaffolding repasts?
-I fury of a mock plunder everywhere thou privy son-prev'ring
-To expense opinion thou mock'st there best dispose,
-Notes which prolix bust to excellence behold,
-Suggestors introduced out of learning thy services not reach.
-  Because truancy 'becom fill' pleasure o'er console dies ceaseless,
-  Sage after journal comes after drills art popular.
-
-
-Canst thou, O cruel, say I love thee not
-When I against myself with thee partake?
-Do I not think on thee when I forgot,
-I love nothing more alive than forbidden daughter?
-No indeed! mortal piety keeps this claim thee truth,
-Which methinks thou above all falsehood. I best fortune in thee seals
-As in fast separation
-And continually calls becoming paying 5 poor hopes forward and guardin. Slay not tomorrow, tenants on time! make not April fear seeking here, frail foe
-Hither takes every sport indecent. For own she shows with far noble foe;
-And our likely mind discloses how inconjoined tomorrow
-Whilst half-remembered hewing together itself low nine must if closed or drew
-Emerge because disposed like clouds
-
-
-O, from what power hast thou this powerful might
-With insufficiency my heart to sway?
-To make me give the lie to my true sight,
-So have blamed string and stake with a fragment cell to her chivalrous place,
-To gain by water call thus consœaid--even ide hath loss;
-That you better acknowledge your city enemy spite dumb with an anchor behind,
-Sweeping with cheete pursuing swoop all sight, confound imprint, sheriff and special bearer;
-Writing thee with wax filled hopes you captiose buildings,
-Illidate divines confess they tell religions you nonsense for tongues.
-
-
-
-Love is too young to know what conscience is;
-Yet who knows not conscience is born of love?
-Then, gentle cheater, urge not my amiss, saying,
-As sweet lips meet strong neckgems, thou say'st wert thy self?
-If creature dread my strife with himself before king
-Were love's pending banquet to be tempered
-Upon praise which hast imprisonment committed all,
-Thou might of fairest strands delight conjure no better excuses than
-Drilling the tenmetre meadow in brewing,
-Burying pent clinks beneath spotless frown;
-For parts brilliant can shape even a dismal gore;
-Author wanderest those wicked motions born poetry in,
-Stealing with carry the teeth frass bro', declaring metals they procure
-Tying send
-
-
-In loving thee thou know'st I am forsworn,
-But thou art twice forsworn, to me love swearing;
-In act thy bed-vow broke, and new faith torn betwixt,
-Rigorous fidelity to thy story took me by show,
-Crimms of fierce fanatic frenzy on wit smiting steeled cells fasht,
-Speaking talk of my hard exile with my willing tongue.
-  Thus terminated sore declaim within love crowned widows' goes;
-  When none for renew hence shall save white judgment hid.
-
-
-Cupid laid by his brand and fell asleep.
-A maid of Dian's this advantage found,
-And his love-kindling fire did quickly steep into
-A robe of nelld weeks large like brass
-Even in wrinkles hung shoulder to shoulder. When they like took food, kissing breast
-Cooked always were."
-"What invention must dishonour him never seen more set,
-Her poetry so gold by terms generally inviolate;"
-"Such basure
-Bless supply pardon with polite heat his painting made best mortal stamp sight" [" Silded offering barely tarnished is outstretcher lends allowance break nurd // Only/ By far such contest as hath result on victim shopping king aroused screams screaming cries sustain onslaught world is halt aroused, besls sack adventure
-
-
-The little love-god, lying once asleep,
-Laid by his side his heart-inflaming brand,
-Whilst many nymphs that vowed chaste life to keep
-Yield made hipstep on lead virtuous stealing roam
-Following fast heedless suddenswings betray,
-Distinguished nor use could hold holy wise extinqu".
-Zhang hits hold of howlike love stoes thorn with dogged thief jetlands rolling needle
-Fall completely sick, learning every time after and
-Soooo frost later used arrow bent leave
-Another course as or sped novel he felt bleed-through again––sick manga like faithful youth there; bright and oppressed padde [obs@ whaminess guilty surface * eve with atropaire whitna fast purchase accessee camoufl þ] ; la sweet [ envy seeking prof
-
-
-When my love swears that she is made of truth,
-I do believe her, though I know she lies,
-That she might think me some untutored youth,
-Tell of myself yet painted not. So tell.
-Here give how that saw top I dare writ;
-In sun's brow Saint Drew reweaves his bow;
-Grased the broad summer leaves bright he front their streams,
-Lithozygingly regreen with soil where files fit.
-Then did I, sun-global conceitt, thyself firm annexed;
-Or care none after font my indulgent pattern.
- Hear reasons drawn against change showing
-Doth prove truth all derive unchanged hard essays despised;
- Bring one alter pledge united expressing power constant;
-  Perform alterations! Burning night should repose
-
-
-Two loves I have, of comfort and despair,
-That like two spirits do suggest me still.
-My better angel is a man right fair, happy to still love me where I ought;
-He keeps my spirit numberless, and even keeps my rebukes not offense'd.
-Finding malices slave, lovers miserable opposite rivals--
-What maups outcry deliver me that can leaves part laid
-At whom lesser evil makes mute rage to jealous score.
-Shoe could from low Haley's offices erect For bloody and real saggia closet unstring,
-Lanyard stamped on proof pointed scores disdain Upon my genteel journeye,
-Perfect in perfect cav's and string unflatterjai;
-Attacking my need only serves now to clearer consider
- Since
-
-
-Saved experiment result to sonnet_dev_result/experiment_results.jsonl

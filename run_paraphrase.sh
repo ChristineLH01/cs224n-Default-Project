@@ -30,12 +30,12 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 torchrun --nproc_per_node=8 paraphrase_detection_justin.py \
   --use_gpu \
-  --epochs 3 \
+  --epochs 5 \
   --batch_size 64 \
-  --lr 5e-5 \
+  --lr 7e-4 \
+  --lora_rank 16 \
+  --lora_alpha 32 \
+  --apply_lora_to_mlp \
   --model_size gpt2-medium \
-  --apply_lora_to_attention \
-  --lora_rank 8 \
-  --lora_alpha 8 \
-  --lora_dropout 0.1
+
   #--use_flash_attention 

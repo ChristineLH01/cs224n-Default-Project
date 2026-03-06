@@ -506754,4 +506754,432 @@ But here the dross mixed;
 
 Epoch 2: train loss :: 2.265, dev chrF :: 41.873.
 chrF history: [40.80769055118497, 41.16487079881718, 41.87255802609336]
-train-3:   0%|          | 0/263 [00:00<?, ?it/s]train-3:   1%|          | 2/263 [00:00<00:25, 10.37it/s]train-3:   2%|▏         | 4/263 [00:00<00:24, 10.66it/s]train-3:   2%|▏         | 6/263 [00:00<00:24, 10.47it/s]train-3:   3%|▎         | 8/263 [00:00<00:24, 10.48it/s]train-3:   4%|▍         | 10/263 [00:00<00:24, 10.36it/s]train-3:   5%|▍         | 12/263 [00:01<00:24, 10.44it/s]train-3:   5%|▌         | 14/263 [00:01<00:24, 10.29it/s]train-3:   6%|▌         | 16/263 [00:01<00:24, 10.28it/s]train-3:   7%|▋         | 18/263 [00:01<00:23, 10.37it/s]train-3:   8%|▊         | 20/263 [00:01<00:23, 10.26it/s]train-3:   8%|▊         | 22/263 [00:02<00:23, 10.27it/s]train-3:   9%|▉         | 24/263 [00:02<00:23, 10.37it/s]train-3:  10%|▉         | 26/263 [00:02<00:23, 10.23it/s]train-3:  11%|█         | 28/263 [00:02<00:23, 10.18it/s]train-3:  11%|█▏        | 30/263 [00:02<00:22, 10.14it/s]train-3:  12%|█▏        | 32/263 [00:03<00:22, 10.05it/s]train-3:  13%|█▎        | 34/263 [00:03<00:22, 10.26it/s]train-3:  14%|█▎        | 36/263 [00:03<00:22, 10.18it/s]train-3:  14%|█▍        | 38/263 [00:03<00:21, 10.24it/s]train-3:  15%|█▌        | 40/263 [00:03<00:21, 10.29it/s]train-3:  16%|█▌        | 42/263 [00:04<00:21, 10.16it/s]train-3:  17%|█▋        | 44/263 [00:04<00:21, 10.21it/s]train-3:  17%|█▋        | 46/263 [00:04<00:21, 10.14it/s]train-3:  18%|█▊        | 48/263 [00:04<00:21, 10.17it/s]train-3:  19%|█▉        | 50/263 [00:04<00:20, 10.17it/s]train-3:  20%|█▉        | 52/263 [00:05<00:20, 10.17it/s]train-3:  21%|██        | 54/263 [00:05<00:20, 10.29it/s]train-3:  21%|██▏       | 56/263 [00:05<00:20, 10.19it/s]train-3:  22%|██▏       | 58/263 [00:05<00:20, 10.21it/s]train-3:  23%|██▎       | 60/263 [00:05<00:19, 10.23it/s]train-3:  24%|██▎       | 62/263 [00:06<00:19, 10.11it/s]train-3:  24%|██▍       | 64/263 [00:06<00:19, 10.27it/s]train-3:  25%|██▌       | 66/263 [00:06<00:19, 10.12it/s]train-3:  26%|██▌       | 68/263 [00:06<00:18, 10.28it/s]train-3:  27%|██▋       | 70/263 [00:06<00:19, 10.09it/s]train-3:  27%|██▋       | 72/263 [00:07<00:18, 10.23it/s]train-3:  28%|██▊       | 74/263 [00:07<00:18, 10.02it/s]train-3:  29%|██▉       | 76/263 [00:07<00:18, 10.05it/s]
+train-3:   0%|          | 0/263 [00:00<?, ?it/s]train-3:   1%|          | 2/263 [00:00<00:25, 10.37it/s]train-3:   2%|▏         | 4/263 [00:00<00:24, 10.66it/s]train-3:   2%|▏         | 6/263 [00:00<00:24, 10.47it/s]train-3:   3%|▎         | 8/263 [00:00<00:24, 10.48it/s]train-3:   4%|▍         | 10/263 [00:00<00:24, 10.36it/s]train-3:   5%|▍         | 12/263 [00:01<00:24, 10.44it/s]train-3:   5%|▌         | 14/263 [00:01<00:24, 10.29it/s]train-3:   6%|▌         | 16/263 [00:01<00:24, 10.28it/s]train-3:   7%|▋         | 18/263 [00:01<00:23, 10.37it/s]train-3:   8%|▊         | 20/263 [00:01<00:23, 10.26it/s]train-3:   8%|▊         | 22/263 [00:02<00:23, 10.27it/s]train-3:   9%|▉         | 24/263 [00:02<00:23, 10.37it/s]train-3:  10%|▉         | 26/263 [00:02<00:23, 10.23it/s]train-3:  11%|█         | 28/263 [00:02<00:23, 10.18it/s]train-3:  11%|█▏        | 30/263 [00:02<00:22, 10.14it/s]train-3:  12%|█▏        | 32/263 [00:03<00:22, 10.05it/s]train-3:  13%|█▎        | 34/263 [00:03<00:22, 10.26it/s]train-3:  14%|█▎        | 36/263 [00:03<00:22, 10.18it/s]train-3:  14%|█▍        | 38/263 [00:03<00:21, 10.24it/s]train-3:  15%|█▌        | 40/263 [00:03<00:21, 10.29it/s]train-3:  16%|█▌        | 42/263 [00:04<00:21, 10.16it/s]train-3:  17%|█▋        | 44/263 [00:04<00:21, 10.21it/s]train-3:  17%|█▋        | 46/263 [00:04<00:21, 10.14it/s]train-3:  18%|█▊        | 48/263 [00:04<00:21, 10.17it/s]train-3:  19%|█▉        | 50/263 [00:04<00:20, 10.17it/s]train-3:  20%|█▉        | 52/263 [00:05<00:20, 10.17it/s]train-3:  21%|██        | 54/263 [00:05<00:20, 10.29it/s]train-3:  21%|██▏       | 56/263 [00:05<00:20, 10.19it/s]train-3:  22%|██▏       | 58/263 [00:05<00:20, 10.21it/s]train-3:  23%|██▎       | 60/263 [00:05<00:19, 10.23it/s]train-3:  24%|██▎       | 62/263 [00:06<00:19, 10.11it/s]train-3:  24%|██▍       | 64/263 [00:06<00:19, 10.27it/s]train-3:  25%|██▌       | 66/263 [00:06<00:19, 10.12it/s]train-3:  26%|██▌       | 68/263 [00:06<00:18, 10.28it/s]train-3:  27%|██▋       | 70/263 [00:06<00:19, 10.09it/s]train-3:  27%|██▋       | 72/263 [00:07<00:18, 10.23it/s]train-3:  28%|██▊       | 74/263 [00:07<00:18, 10.02it/s]train-3:  29%|██▉       | 76/263 [00:07<00:18, 10.05it/s]train-3:  30%|██▉       | 78/263 [00:07<00:18, 10.09it/s]train-3:  30%|███       | 80/263 [00:07<00:18, 10.01it/s]train-3:  31%|███       | 82/263 [00:08<00:18,  9.99it/s]train-3:  32%|███▏      | 84/263 [00:08<00:17, 10.18it/s]train-3:  33%|███▎      | 86/263 [00:08<00:17, 10.21it/s]train-3:  33%|███▎      | 88/263 [00:08<00:17, 10.12it/s]train-3:  34%|███▍      | 90/263 [00:08<00:17,  9.80it/s]train-3:  35%|███▍      | 91/263 [00:08<00:17,  9.66it/s]train-3:  35%|███▍      | 92/263 [00:09<00:18,  9.48it/s]train-3:  35%|███▌      | 93/263 [00:09<00:18,  9.28it/s]train-3:  36%|███▌      | 94/263 [00:09<00:18,  9.13it/s]train-3:  36%|███▌      | 95/263 [00:09<00:18,  9.04it/s]train-3:  37%|███▋      | 96/263 [00:09<00:18,  8.96it/s]train-3:  37%|███▋      | 97/263 [00:09<00:18,  8.85it/s]train-3:  37%|███▋      | 98/263 [00:09<00:18,  8.82it/s]train-3:  38%|███▊      | 99/263 [00:09<00:18,  8.79it/s]train-3:  38%|███▊      | 100/263 [00:09<00:18,  8.78it/s]train-3:  38%|███▊      | 101/263 [00:10<00:18,  8.77it/s]train-3:  39%|███▉      | 102/263 [00:10<00:18,  8.77it/s]train-3:  39%|███▉      | 103/263 [00:10<00:18,  8.76it/s]train-3:  40%|███▉      | 105/263 [00:10<00:17,  9.08it/s]train-3:  40%|████      | 106/263 [00:10<00:17,  9.09it/s]train-3:  41%|████      | 107/263 [00:10<00:17,  9.05it/s]train-3:  41%|████      | 108/263 [00:10<00:17,  9.04it/s]train-3:  41%|████▏     | 109/263 [00:10<00:17,  9.01it/s]train-3:  42%|████▏     | 110/263 [00:11<00:17,  8.99it/s]train-3:  42%|████▏     | 111/263 [00:11<00:16,  8.97it/s]train-3:  43%|████▎     | 112/263 [00:11<00:16,  8.96it/s]train-3:  43%|████▎     | 113/263 [00:11<00:16,  8.95it/s]train-3:  43%|████▎     | 114/263 [00:11<00:16,  9.20it/s]train-3:  44%|████▍     | 116/263 [00:11<00:15,  9.71it/s]train-3:  45%|████▍     | 118/263 [00:11<00:14,  9.81it/s]train-3:  45%|████▌     | 119/263 [00:12<00:14,  9.83it/s]train-3:  46%|████▌     | 121/263 [00:12<00:14, 10.00it/s]train-3:  46%|████▋     | 122/263 [00:12<00:14,  9.70it/s]train-3:  47%|████▋     | 124/263 [00:12<00:13,  9.95it/s]train-3:  48%|████▊     | 126/263 [00:12<00:13, 10.05it/s]train-3:  48%|████▊     | 127/263 [00:12<00:13,  9.94it/s]train-3:  49%|████▉     | 129/263 [00:13<00:13, 10.06it/s]train-3:  50%|████▉     | 131/263 [00:13<00:13, 10.09it/s]train-3:  51%|█████     | 133/263 [00:13<00:12, 10.33it/s]train-3:  51%|█████▏    | 135/263 [00:13<00:12, 10.23it/s]train-3:  52%|█████▏    | 137/263 [00:13<00:12, 10.30it/s]train-3:  53%|█████▎    | 139/263 [00:13<00:11, 10.41it/s]train-3:  54%|█████▎    | 141/263 [00:14<00:12, 10.14it/s]train-3:  54%|█████▍    | 143/263 [00:14<00:11, 10.17it/s]train-3:  55%|█████▌    | 145/263 [00:14<00:11, 10.33it/s]train-3:  56%|█████▌    | 147/263 [00:14<00:11, 10.24it/s]train-3:  57%|█████▋    | 149/263 [00:14<00:11, 10.15it/s]train-3:  57%|█████▋    | 151/263 [00:15<00:10, 10.29it/s]train-3:  58%|█████▊    | 153/263 [00:15<00:10, 10.25it/s]train-3:  59%|█████▉    | 155/263 [00:15<00:10, 10.22it/s]train-3:  60%|█████▉    | 157/263 [00:15<00:10, 10.23it/s]train-3:  60%|██████    | 159/263 [00:15<00:10, 10.16it/s]train-3:  61%|██████    | 161/263 [00:16<00:09, 10.34it/s]train-3:  62%|██████▏   | 163/263 [00:16<00:09, 10.27it/s]train-3:  63%|██████▎   | 165/263 [00:16<00:09, 10.20it/s]train-3:  63%|██████▎   | 167/263 [00:16<00:09, 10.20it/s]train-3:  64%|██████▍   | 169/263 [00:16<00:09, 10.38it/s]train-3:  65%|██████▌   | 171/263 [00:17<00:08, 10.30it/s]train-3:  66%|██████▌   | 173/263 [00:17<00:08, 10.36it/s]train-3:  67%|██████▋   | 175/263 [00:17<00:08, 10.35it/s]train-3:  67%|██████▋   | 177/263 [00:17<00:08, 10.27it/s]train-3:  68%|██████▊   | 179/263 [00:17<00:08, 10.28it/s]train-3:  69%|██████▉   | 181/263 [00:18<00:07, 10.35it/s]train-3:  70%|██████▉   | 183/263 [00:18<00:07, 10.26it/s]train-3:  70%|███████   | 185/263 [00:18<00:07, 10.32it/s]train-3:  71%|███████   | 187/263 [00:18<00:07, 10.51it/s]train-3:  72%|███████▏  | 189/263 [00:18<00:07, 10.36it/s]train-3:  73%|███████▎  | 191/263 [00:19<00:07, 10.28it/s]train-3:  73%|███████▎  | 193/263 [00:19<00:06, 10.28it/s]train-3:  74%|███████▍  | 195/263 [00:19<00:06, 10.22it/s]train-3:  75%|███████▍  | 197/263 [00:19<00:06, 10.22it/s]train-3:  76%|███████▌  | 199/263 [00:19<00:06, 10.35it/s]train-3:  76%|███████▋  | 201/263 [00:20<00:06, 10.25it/s]train-3:  77%|███████▋  | 203/263 [00:20<00:05, 10.34it/s]train-3:  78%|███████▊  | 205/263 [00:20<00:05, 10.46it/s]train-3:  79%|███████▊  | 207/263 [00:20<00:05, 10.28it/s]train-3:  79%|███████▉  | 209/263 [00:20<00:05, 10.32it/s]train-3:  80%|████████  | 211/263 [00:20<00:04, 10.44it/s]train-3:  81%|████████  | 213/263 [00:21<00:04, 10.22it/s]train-3:  82%|████████▏ | 215/263 [00:21<00:04, 10.24it/s]train-3:  83%|████████▎ | 217/263 [00:21<00:04, 10.32it/s]train-3:  83%|████████▎ | 219/263 [00:21<00:04, 10.18it/s]train-3:  84%|████████▍ | 221/263 [00:21<00:04, 10.19it/s]train-3:  85%|████████▍ | 223/263 [00:22<00:03, 10.36it/s]train-3:  86%|████████▌ | 225/263 [00:22<00:03, 10.10it/s]train-3:  86%|████████▋ | 227/263 [00:22<00:03, 10.18it/s]train-3:  87%|████████▋ | 229/263 [00:22<00:03, 10.30it/s]train-3:  88%|████████▊ | 231/263 [00:22<00:03, 10.19it/s]train-3:  89%|████████▊ | 233/263 [00:23<00:03,  9.52it/s]train-3:  89%|████████▉ | 234/263 [00:23<00:03,  9.41it/s]train-3:  89%|████████▉ | 235/263 [00:23<00:03,  9.31it/s]train-3:  90%|████████▉ | 236/263 [00:23<00:02,  9.22it/s]train-3:  90%|█████████ | 237/263 [00:23<00:02,  9.15it/s]train-3:  90%|█████████ | 238/263 [00:23<00:02,  9.09it/s]train-3:  91%|█████████ | 239/263 [00:23<00:02,  9.06it/s]train-3:  91%|█████████▏| 240/263 [00:23<00:02,  9.09it/s]train-3:  92%|█████████▏| 241/263 [00:24<00:02,  9.07it/s]train-3:  92%|█████████▏| 242/263 [00:24<00:02,  9.01it/s]train-3:  92%|█████████▏| 243/263 [00:24<00:02,  9.02it/s]train-3:  93%|█████████▎| 244/263 [00:24<00:02,  8.99it/s]train-3:  93%|█████████▎| 245/263 [00:24<00:02,  8.95it/s]train-3:  94%|█████████▎| 246/263 [00:24<00:01,  8.95it/s]train-3:  94%|█████████▍| 247/263 [00:24<00:01,  8.95it/s]train-3:  95%|█████████▍| 249/263 [00:24<00:01,  9.29it/s]train-3:  95%|█████████▌| 250/263 [00:25<00:01,  9.27it/s]train-3:  95%|█████████▌| 251/263 [00:25<00:01,  9.18it/s]train-3:  96%|█████████▌| 252/263 [00:25<00:01,  9.10it/s]train-3:  96%|█████████▌| 253/263 [00:25<00:01,  9.05it/s]train-3:  97%|█████████▋| 254/263 [00:25<00:00,  9.02it/s]train-3:  97%|█████████▋| 255/263 [00:25<00:00,  9.00it/s]train-3:  97%|█████████▋| 256/263 [00:25<00:00,  8.98it/s]train-3:  98%|█████████▊| 257/263 [00:25<00:00,  8.95it/s]train-3:  98%|█████████▊| 258/263 [00:25<00:00,  8.93it/s]train-3:  98%|█████████▊| 259/263 [00:26<00:00,  8.94it/s]train-3:  99%|█████████▉| 260/263 [00:26<00:00,  8.92it/s]train-3:  99%|█████████▉| 261/263 [00:26<00:00,  8.91it/s]train-3: 100%|█████████▉| 262/263 [00:26<00:00,  8.91it/s]train-3: 100%|██████████| 263/263 [00:26<00:00,  8.84it/s]train-3: 100%|██████████| 263/263 [00:26<00:00,  9.91it/s]
+Generating dev sonnets for chrF scoring...
+Thine eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,
+Gentle on my transgression, they attempt to hide,
+Excluding thy soul from their sight, as most unjust.
+Thou art lovely, and all hearts' blame,
+Wishing thee to flee, their tears conceal the guilty,
+But I, ensnared in this love, cannot comprehend,
+The pain that's compelled me to wail,
+The duty of love, which me can't fulfill,
+Unless it's thine, who's captivated by gloom.
+  I forfeit myself, as the slave learns,
+  To one who cares more, who flatter.
+
+
+Beshrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,
+And some painful sore turn thy pity doth attend,
+To torment me with my unending despair.
+Such a condition doth excuse
+My heart's second self that it excludes,
+Than when in some joy it with greater fear covers.
+For in yoking thee I find satisfaction
+Than when I, upon reflection, conside
+In the being that can atone for the hurt;
+In this compassion comes where heart and gaze
+Reserve out on death or atonement:
+  My friend, when death dwells and my heart is content,
+  I'll be even if the ward d
+
+
+So, now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine
+Doth give thine advantage, and mine be even
+This side of him that lent the greatest part.
+A noble spirit is unwound, poor without such material hoard
+To equal tender heards, nor is it lacking medicine
+To fortify taken away. Nor in self-same sheds
+O charity what the happier condition,
+So expends on thy charming heart, his remissions,
+Uncharmed makes himself wealthy,
+Remaining gentle with thy hospitable following,
+Accumulating thus thy royal brow,
+A stilling torment for that selfish heart,
+Written words devoteth he contempt.
+
+
+
+Whoever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,
+Not as with haphazard found revelry,
+Durability and precarity must I perceive,
+Wont I sue a room where thou bid?
+No, fear me, good lady, none is mean,
+Who drives thee to leave me for half a closet,
+Ensuring my past loves belong,
+And leaving as a reckoning, thou unscapethard
+Exchanging all thou owned of me,
+And losing ground, abandoning myself cease.
+Thy soul hath claimed thy long, scarce left me to hold
+My gaze and change my said and dyed hearts.
+  I hate thee,
+
+
+If thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.
+The ruler thou wilt grant thy highest wing,
+After I have passed such a dark lover thy soul joins,
+Thou wilt dye thyself with fate's deceitful touch,
+And forge thy reputation on a wistful hermit's skill.
+But love forbid; love forbid, for I am yours alone,
+And thou thyself turnest from the sphere of man.
+--Pity me not, for I do take heed,
+--Nor think on this cruelty towards thee
+--when thou bids thee spin this twisted woe.
+  For thou dost falsehood black and foul among his work
+
+
+Thou blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,
+But, let thy bow the straight line in me which leads.
+Nay, lay in white not whitest, nor kiss'd in friend
+But thou spot'st thy set beauty where it lies,
+Cherishing mine eyes with their kind, bored, dulled in sight;
+Do thou cruelly veil the naked-eyed maiden
+Who for thy visage doth tend thee first.
+If thou uppity e'er shamed sacred thunder,
+Dost thou know'st thy gaze; yet mark'st not thy heart
+As you frown on no beauty with thy broad sight.
+
+
+
+When my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,n my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,
+Because I am not of that educated reputation,
+The honeyed feeling I find in ugliness.
+But is it true, that her religion teaches her liars
+To write falsehoods not out of spite,
+To dress her in the guise of honor,
+To muddy her arguments with falsehood to evade?
+I should not question her, but confess,
+"Oh, sweet heart, beloved, and mistress of my passion,
+What pretext has her given me
+But the lie she told all over!"
+  "Love of truth she says,
+  I confess, is falsehood with me."
+
+
+O, call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;
+Wound the heart of a stranger who wants none.
+For I am not at the threshold of love
+While there doth dwell in thine eye,
+But thou thyself dost fill that space with intent.
+Oh, mend thy mood, sweet dupe, and have I the aid
+To reproach thee, little dearer than for this crime,
+For when all sin springs from thy want I toss,
+And she that dost furnish works by, adds thee more.
+  By thine unkindness I learn this lesson and verb,
+  Of sweet grace, to trustworthiness.
+
+
+Be wise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words express
+The pain my heart must offer, by sorrow's long use.
+When spring's first blossoms have flown, do not neglect
+The refuge I've long sought, yet deep within I sit,
+Aware of what I'll soon lose, I'd forsake forlorn hope,
+A wise, kind-hearted man, in love from heart to foot.
+If sought, but forlorn lasses, woe will not mar,
+The liberator of my longing, who, found a solace, turned
+A beneficent deed, turning from forlorn ground.
+  I long to release
+
+
+In faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,
+And hates that which once were beloved.
+Thou garb's tyranny upon my every grievous joke,
+Which perjured passage deprives me the use of tongue,
+And would shun to speak with flesh, loved by heart,
+Hast thou the accuser of truth and fair?
+Shall my law exceed its mere reality?
+No. My accuser is clement, and she denies
+My rights with the weakest of all lies.
+  But what else am I, that I may plead with illlaken heart?
+  She hates a god who hath stolen power away.
+
+
+Love is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,
+Save as thou vie'st her fair merits unsullied.
+On thou chevelled tongue, kiss'st her confessed spirit,
+To benefit me, she loves those whom shall disparage thee,
+More fitting to thy sins than they're wont to repent.
+They are her wrath and her wounding,
+She drags an enslaved subject to thee,
+To suffer all manner of sighs and tortures,
+In trade she makes husband-like.
+  Beware, dear love! She can abridge
+  Whose liberty thy duty entails, and still sweet.
+
+
+Lo, as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch
+To a sanctuary, where women's nocturnal health
+Reigns, rewarded by breeding company.
+For purest beings inhabit the planet earth, nourished by
+Mother's abundant, heartfelt sigh,
+Yet wilt they forsake the balance she kneads,
+Lest anger drowns out love, and cold
+  Within her breast lies her secret art;
+  Yet, like the humble wretch, she gazes
+  Into depths, where she knows not rest.
+
+
+Epoch 3: train loss :: 1.711, dev chrF :: 41.190.
+chrF history: [40.80769055118497, 41.16487079881718, 41.87255802609336, 41.19035123982493]
+train-4:   0%|          | 0/263 [00:00<?, ?it/s]train-4:   1%|          | 2/263 [00:00<00:25, 10.30it/s]train-4:   2%|▏         | 4/263 [00:00<00:24, 10.61it/s]train-4:   2%|▏         | 6/263 [00:00<00:24, 10.51it/s]train-4:   3%|▎         | 8/263 [00:00<00:24, 10.57it/s]train-4:   4%|▍         | 10/263 [00:00<00:24, 10.41it/s]train-4:   5%|▍         | 12/263 [00:01<00:24, 10.41it/s]train-4:   5%|▌         | 14/263 [00:01<00:23, 10.53it/s]train-4:   6%|▌         | 16/263 [00:01<00:23, 10.38it/s]train-4:   7%|▋         | 18/263 [00:01<00:23, 10.41it/s]train-4:   8%|▊         | 20/263 [00:01<00:23, 10.35it/s]train-4:   8%|▊         | 22/263 [00:02<00:23, 10.28it/s]train-4:   9%|▉         | 24/263 [00:02<00:23, 10.17it/s]train-4:  10%|▉         | 26/263 [00:02<00:23, 10.19it/s]train-4:  11%|█         | 28/263 [00:02<00:22, 10.34it/s]train-4:  11%|█▏        | 30/263 [00:02<00:22, 10.25it/s]train-4:  12%|█▏        | 32/263 [00:03<00:22, 10.31it/s]train-4:  13%|█▎        | 34/263 [00:03<00:21, 10.45it/s]train-4:  14%|█▎        | 36/263 [00:03<00:21, 10.34it/s]train-4:  14%|█▍        | 38/263 [00:03<00:21, 10.32it/s]train-4:  15%|█▌        | 40/263 [00:03<00:21, 10.42it/s]train-4:  16%|█▌        | 42/263 [00:04<00:21, 10.30it/s]train-4:  17%|█▋        | 44/263 [00:04<00:21, 10.31it/s]train-4:  17%|█▋        | 46/263 [00:04<00:20, 10.47it/s]train-4:  18%|█▊        | 48/263 [00:04<00:20, 10.32it/s]train-4:  19%|█▉        | 50/263 [00:04<00:20, 10.31it/s]train-4:  20%|█▉        | 52/263 [00:05<00:20, 10.42it/s]train-4:  21%|██        | 54/263 [00:05<00:20, 10.27it/s]train-4:  21%|██▏       | 56/263 [00:05<00:20, 10.26it/s]train-4:  22%|██▏       | 58/263 [00:05<00:19, 10.34it/s]train-4:  23%|██▎       | 60/263 [00:05<00:19, 10.27it/s]train-4:  24%|██▎       | 62/263 [00:05<00:19, 10.24it/s]train-4:  24%|██▍       | 64/263 [00:06<00:19, 10.31it/s]train-4:  25%|██▌       | 66/263 [00:06<00:18, 10.83it/s]train-4:  26%|██▌       | 68/263 [00:06<00:18, 10.51it/s]train-4:  27%|██▋       | 70/263 [00:06<00:18, 10.45it/s]train-4:  27%|██▋       | 72/263 [00:06<00:18, 10.51it/s]train-4:  28%|██▊       | 74/263 [00:07<00:18, 10.39it/s]train-4:  29%|██▉       | 76/263 [00:07<00:18, 10.31it/s]train-4:  30%|██▉       | 78/263 [00:07<00:18, 10.27it/s]train-4:  30%|███       | 80/263 [00:07<00:17, 10.23it/s]train-4:  31%|███       | 82/263 [00:07<00:17, 10.14it/s]train-4:  32%|███▏      | 84/263 [00:08<00:17, 10.17it/s]train-4:  33%|███▎      | 86/263 [00:08<00:17, 10.31it/s]train-4:  33%|███▎      | 88/263 [00:08<00:17, 10.17it/s]train-4:  34%|███▍      | 90/263 [00:08<00:16, 10.25it/s]train-4:  35%|███▍      | 92/263 [00:08<00:16, 10.22it/s]train-4:  36%|███▌      | 94/263 [00:09<00:16, 10.17it/s]train-4:  37%|███▋      | 96/263 [00:09<00:16, 10.19it/s]train-4:  37%|███▋      | 98/263 [00:09<00:15, 10.38it/s]train-4:  38%|███▊      | 100/263 [00:09<00:15, 10.27it/s]train-4:  39%|███▉      | 102/263 [00:09<00:15, 10.28it/s]train-4:  40%|███▉      | 104/263 [00:10<00:15, 10.38it/s]train-4:  40%|████      | 106/263 [00:10<00:15, 10.29it/s]train-4:  41%|████      | 108/263 [00:10<00:15, 10.28it/s]train-4:  42%|████▏     | 110/263 [00:10<00:14, 10.40it/s]train-4:  43%|████▎     | 112/263 [00:10<00:14, 10.29it/s]train-4:  43%|████▎     | 114/263 [00:11<00:14, 10.28it/s]train-4:  44%|████▍     | 116/263 [00:11<00:14, 10.44it/s]train-4:  45%|████▍     | 118/263 [00:11<00:14, 10.31it/s]train-4:  46%|████▌     | 120/263 [00:11<00:13, 10.31it/s]train-4:  46%|████▋     | 122/263 [00:11<00:13, 10.41it/s]train-4:  47%|████▋     | 124/263 [00:12<00:13, 10.28it/s]train-4:  48%|████▊     | 126/263 [00:12<00:13, 10.21it/s]train-4:  49%|████▊     | 128/263 [00:12<00:13, 10.29it/s]train-4:  49%|████▉     | 130/263 [00:12<00:13, 10.18it/s]train-4:  50%|█████     | 132/263 [00:12<00:12, 10.75it/s]train-4:  51%|█████     | 134/263 [00:12<00:12, 10.60it/s]train-4:  52%|█████▏    | 136/263 [00:13<00:11, 10.64it/s]train-4:  52%|█████▏    | 138/263 [00:13<00:11, 10.48it/s]train-4:  53%|█████▎    | 140/263 [00:13<00:11, 10.44it/s]train-4:  54%|█████▍    | 142/263 [00:13<00:11, 10.49it/s]train-4:  55%|█████▍    | 144/263 [00:13<00:11, 10.38it/s]train-4:  56%|█████▌    | 146/263 [00:14<00:11, 10.26it/s]train-4:  56%|█████▋    | 148/263 [00:14<00:11,  9.91it/s]train-4:  57%|█████▋    | 149/263 [00:14<00:11,  9.78it/s]train-4:  57%|█████▋    | 150/263 [00:14<00:11,  9.62it/s]train-4:  57%|█████▋    | 151/263 [00:14<00:11,  9.45it/s]train-4:  58%|█████▊    | 152/263 [00:14<00:11,  9.32it/s]train-4:  58%|█████▊    | 153/263 [00:14<00:12,  9.16it/s]train-4:  59%|█████▊    | 154/263 [00:15<00:12,  9.05it/s]train-4:  59%|█████▉    | 155/263 [00:15<00:12,  8.83it/s]train-4:  59%|█████▉    | 156/263 [00:15<00:12,  8.79it/s]train-4:  60%|█████▉    | 157/263 [00:15<00:12,  8.75it/s]train-4:  60%|██████    | 158/263 [00:15<00:11,  8.78it/s]train-4:  60%|██████    | 159/263 [00:15<00:11,  8.77it/s]train-4:  61%|██████    | 160/263 [00:15<00:11,  8.77it/s]train-4:  61%|██████    | 161/263 [00:15<00:11,  8.64it/s]train-4:  62%|██████▏   | 162/263 [00:15<00:11,  8.66it/s]train-4:  62%|██████▏   | 163/263 [00:16<00:11,  8.68it/s]train-4:  62%|██████▏   | 164/263 [00:16<00:11,  8.53it/s]train-4:  63%|██████▎   | 165/263 [00:16<00:11,  8.55it/s]train-4:  63%|██████▎   | 166/263 [00:16<00:11,  8.63it/s]train-4:  63%|██████▎   | 167/263 [00:16<00:11,  8.71it/s]train-4:  64%|██████▍   | 168/263 [00:16<00:10,  8.69it/s]train-4:  64%|██████▍   | 169/263 [00:16<00:10,  8.74it/s]train-4:  65%|██████▍   | 170/263 [00:16<00:10,  8.76it/s]train-4:  65%|██████▌   | 171/263 [00:16<00:10,  8.78it/s]train-4:  65%|██████▌   | 172/263 [00:17<00:10,  8.67it/s]train-4:  66%|██████▌   | 173/263 [00:17<00:10,  8.67it/s]train-4:  66%|██████▌   | 174/263 [00:17<00:10,  8.72it/s]train-4:  67%|██████▋   | 175/263 [00:17<00:10,  8.67it/s]train-4:  67%|██████▋   | 176/263 [00:17<00:09,  8.73it/s]train-4:  67%|██████▋   | 177/263 [00:17<00:09,  8.77it/s]train-4:  68%|██████▊   | 178/263 [00:17<00:09,  8.73it/s]train-4:  68%|██████▊   | 179/263 [00:17<00:09,  8.70it/s]train-4:  68%|██████▊   | 180/263 [00:17<00:09,  8.70it/s]train-4:  69%|██████▉   | 181/263 [00:18<00:09,  8.62it/s]train-4:  69%|██████▉   | 182/263 [00:18<00:09,  8.66it/s]train-4:  70%|██████▉   | 183/263 [00:18<00:09,  8.59it/s]train-4:  70%|██████▉   | 184/263 [00:18<00:09,  8.65it/s]train-4:  70%|███████   | 185/263 [00:18<00:08,  8.71it/s]train-4:  71%|███████   | 186/263 [00:18<00:08,  8.73it/s]train-4:  71%|███████   | 187/263 [00:18<00:08,  8.68it/s]train-4:  71%|███████▏  | 188/263 [00:18<00:08,  8.60it/s]train-4:  72%|███████▏  | 189/263 [00:19<00:08,  8.51it/s]train-4:  72%|███████▏  | 190/263 [00:19<00:08,  8.59it/s]train-4:  73%|███████▎  | 191/263 [00:19<00:08,  8.68it/s]train-4:  73%|███████▎  | 192/263 [00:19<00:08,  8.68it/s]train-4:  73%|███████▎  | 193/263 [00:19<00:08,  8.73it/s]train-4:  74%|███████▍  | 194/263 [00:19<00:07,  8.70it/s]train-4:  74%|███████▍  | 195/263 [00:19<00:07,  8.59it/s]train-4:  75%|███████▍  | 196/263 [00:19<00:07,  8.66it/s]train-4:  75%|███████▍  | 197/263 [00:19<00:07,  8.55it/s]train-4:  75%|███████▌  | 198/263 [00:20<00:07,  8.55it/s]train-4:  76%|███████▌  | 199/263 [00:20<00:07,  8.60it/s]train-4:  76%|███████▌  | 200/263 [00:20<00:07,  8.59it/s]train-4:  76%|███████▋  | 201/263 [00:20<00:07,  8.67it/s]train-4:  77%|███████▋  | 202/263 [00:20<00:07,  8.61it/s]train-4:  77%|███████▋  | 203/263 [00:20<00:06,  8.65it/s]train-4:  78%|███████▊  | 204/263 [00:20<00:06,  8.62it/s]train-4:  78%|███████▊  | 205/263 [00:20<00:06,  8.53it/s]train-4:  78%|███████▊  | 206/263 [00:21<00:06,  8.61it/s]train-4:  79%|███████▊  | 207/263 [00:21<00:06,  8.60it/s]train-4:  79%|███████▉  | 208/263 [00:21<00:06,  8.68it/s]train-4:  79%|███████▉  | 209/263 [00:21<00:06,  8.66it/s]train-4:  80%|███████▉  | 210/263 [00:21<00:06,  8.61it/s]train-4:  80%|████████  | 211/263 [00:21<00:05,  8.70it/s]train-4:  81%|████████  | 212/263 [00:21<00:05,  8.68it/s]train-4:  81%|████████  | 213/263 [00:21<00:05,  8.74it/s]train-4:  81%|████████▏ | 214/263 [00:21<00:05,  8.69it/s]train-4:  82%|████████▏ | 215/263 [00:22<00:05,  8.76it/s]train-4:  82%|████████▏ | 216/263 [00:22<00:05,  8.73it/s]train-4:  83%|████████▎ | 217/263 [00:22<00:05,  8.69it/s]train-4:  83%|████████▎ | 218/263 [00:22<00:05,  8.72it/s]train-4:  83%|████████▎ | 219/263 [00:22<00:05,  8.65it/s]train-4:  84%|████████▎ | 220/263 [00:22<00:04,  8.72it/s]train-4:  84%|████████▍ | 221/263 [00:22<00:04,  8.79it/s]train-4:  84%|████████▍ | 222/263 [00:22<00:04,  8.78it/s]train-4:  85%|████████▍ | 223/263 [00:22<00:04,  8.69it/s]train-4:  85%|████████▌ | 224/263 [00:23<00:04,  8.76it/s]train-4:  86%|████████▌ | 225/263 [00:23<00:04,  8.80it/s]train-4:  86%|████████▌ | 226/263 [00:23<00:04,  8.74it/s]train-4:  86%|████████▋ | 227/263 [00:23<00:04,  8.72it/s]train-4:  87%|████████▋ | 228/263 [00:23<00:04,  8.67it/s]train-4:  87%|████████▋ | 229/263 [00:23<00:03,  8.73it/s]train-4:  87%|████████▋ | 230/263 [00:23<00:03,  8.71it/s]train-4:  88%|████████▊ | 231/263 [00:23<00:03,  8.62it/s]train-4:  88%|████████▊ | 232/263 [00:24<00:03,  8.66it/s]train-4:  89%|████████▊ | 233/263 [00:24<00:03,  8.65it/s]train-4:  89%|████████▉ | 234/263 [00:24<00:03,  8.66it/s]train-4:  89%|████████▉ | 235/263 [00:24<00:03,  8.64it/s]train-4:  90%|████████▉ | 236/263 [00:24<00:03,  8.59it/s]train-4:  90%|█████████ | 237/263 [00:24<00:02,  8.67it/s]train-4:  90%|█████████ | 238/263 [00:24<00:02,  8.73it/s]train-4:  91%|█████████ | 239/263 [00:24<00:02,  8.77it/s]train-4:  91%|█████████▏| 240/263 [00:24<00:02,  8.82it/s]train-4:  92%|█████████▏| 241/263 [00:25<00:02,  8.64it/s]train-4:  92%|█████████▏| 242/263 [00:25<00:02,  8.65it/s]train-4:  92%|█████████▏| 243/263 [00:25<00:02,  8.73it/s]train-4:  93%|█████████▎| 244/263 [00:25<00:02,  8.78it/s]train-4:  93%|█████████▎| 245/263 [00:25<00:02,  8.69it/s]train-4:  94%|█████████▎| 246/263 [00:25<00:01,  8.73it/s]train-4:  94%|█████████▍| 247/263 [00:25<00:01,  8.72it/s]train-4:  94%|█████████▍| 248/263 [00:25<00:01,  8.74it/s]train-4:  95%|█████████▍| 249/263 [00:25<00:01,  8.75it/s]train-4:  95%|█████████▌| 250/263 [00:26<00:01,  8.65it/s]train-4:  95%|█████████▌| 251/263 [00:26<00:01,  8.66it/s]train-4:  96%|█████████▌| 252/263 [00:26<00:01,  8.61it/s]train-4:  96%|█████████▌| 253/263 [00:26<00:01,  8.64it/s]train-4:  97%|█████████▋| 254/263 [00:26<00:01,  8.61it/s]train-4:  97%|█████████▋| 255/263 [00:26<00:00,  8.60it/s]train-4:  97%|█████████▋| 256/263 [00:26<00:00,  8.55it/s]train-4:  98%|█████████▊| 257/263 [00:26<00:00,  8.56it/s]train-4:  98%|█████████▊| 258/263 [00:27<00:00,  8.50it/s]train-4:  98%|█████████▊| 259/263 [00:27<00:00,  8.55it/s]train-4:  99%|█████████▉| 260/263 [00:27<00:00,  8.64it/s]train-4:  99%|█████████▉| 261/263 [00:27<00:00,  8.68it/s]train-4: 100%|█████████▉| 262/263 [00:27<00:00,  8.73it/s]train-4: 100%|██████████| 263/263 [00:27<00:00,  8.74it/s]train-4: 100%|██████████| 263/263 [00:27<00:00,  9.54it/s]
+Generating dev sonnets for chrF scoring...
+Thine eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,ne eyes I love, and they, as pitying me,
+Knowing thy heart torment me with disdain,
+Have put on black, and loving mourners be,
+Transforming pity to wealth, forasmuch as beggars do now.
+The morning sun, in its respect, does rise,
+The brighter star that takes the veiled shade off,
+A stranger to earth, who shines far above my rainbow's gate.
+On the bright horizon, you are hidden,
+Hidden from the wounding light of my unseeing gaze,
+In your embrace, I find my solace, waves that take our solace.
+  But when your face reveals my sorrow,
+  My heart must go out, to suffer, like thou.
+
+
+Beshrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,hrew that heart that makes my heart to groan
+For that deep wound it gives my friend and me.
+Is 't not enough to torture me alone,
+And leave me alone to labor through
+The endless night, confined to your embrace?
+No, 'tis not enough to toll my heavy eyelids' toll,
+Nor bind my sorrow with chains long tied,
+While your inner self is thrice more blissful still.
+Nor can your inner self reproach me further,
+Though you're bound by self, truly bound.
+For you are my all my world, and I, your servant,
+In every aspect, your true worth is demonstrated.
+  And when you look upon my deeds, your true delight
+  Shall come to light, at last,
+
+
+So, now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine now I have confessed that he is thine
+And I myself am mortgaged to thy will,
+Myself I'll forfeit, so that other mine affect
+Is fair enough for you or him my love may wed.
+For at what price must beauty be willing
+By your votaries' doings, so winning most admirable?
+By your favors favor granted (with so generous will)
+My love serves you, whose valor I cannot claim;
+His worth is praised, though to himself you're not strong.
+And to make matters worse, he suffers by this loss,
+In every good the balance is rendered so true,
+That he becomes so weighed that even your might flies,
+  And scores by your favors would forfeit him half doth give
+ 
+
+
+Whoever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,ever hath her wish, thou hast thy will,
+And will to boot, and will in overplus.
+More than enough am I that vex thee still,
+More worth the hungry well insatiable portion.
+To stay worse to thy losses bid beease took
+Thy curators of need chiefly want report,
+Which can and desire more therefore to myself are you.
+But do not want, since always report due, thy wishes rare
+For never am I pure enough when first arid be broken,
+The selfish coach burning should attend the costly game.
+  For being gets to light on thy down occasion me
+  Specially in solitude do my worst show his good acts.
+
+
+If thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.thy soul check thee that I come so near,
+Swear to thy blind soul that I was thy will,
+And will, thy soul knows, is admitted there.
+Till then will the attorney report,
+And tell thy ten years of innocence therewith,
+And shall petition a plea of right of redress.
+That prayer will in thee and thine eyes show,
+Resurrect the first thoughts of the past twenty years,
+That they may lie of themselves then decay,
+Betting thee and it re-run thy fourteen years thus.
+But I forbid thee from twisting woe worth more cruel,
+Myselves in favour of thee twelvefold will fail,
+Let my accounts speak of thy youthful time
+Nor thou me nor any, save I, be visited of others
+
+
+Thou blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,u blind fool, Love, what dost thou to mine eyes
+That they behold and see not what they see?
+They know what beauty is, see where it lies,
+Yet seem not to right my love (as mad wight).
+For all that the Iota hath in my breast
+Rises to show them fine dinner dales;
+By beholding them not so, the blush on thy hand
+Lies on what doth love avail, in yourself forbidden.
+How let my love pass? why at thy time do I matter
+But create continually what thou dost desire in good time?
+  Till thou smother this fairest light in thy self-descent
+  And let thy love rampage again, doing right even then.
+
+
+When my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,n my love swears that she is made of truth
+I do believe her though I know she lies,
+That she might think me some untutored youth,
+At her own selfish dream,
+It binds me to her ways, her edifice sleeps,
+Though you, in league, with others learn
+More noble tales than I can tell.
+I earnestly hope that she believes me,
+Though she knows well my days are behind,
+For if she doesn't believe me, then she lacks worth,
+And lies to me like a fool when she should turn around,
+And all I own, she buys, is worthless.
+  Yet, love, love, rekindle your fire, and let your luring be,
+  A fire that will burn even
+
+
+O, call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;call not me to justify the wrong
+That thy unkindness lays upon my heart;
+Wound me not with thine eye but with thy tongue;
+Concede, now, thy grievance is known,
+And let another speak of it in future hours.
+Rise now, my darling, and do not reproach me
+Against thy misbehavior, though thou knowing
+Thy inner being doth harass me at times;
+I will never further slouch toward thee,
+Though thou with thy wont reproach me near,
+Nor atone for the hurt thou hast dost done me.
+Grant me pity, sweetheart; pardon me
+Thine unworthiness against myself if thee alone
+Complards against myself to destroy an ally.
+  For my
+
+
+Be wise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words expresswise as thou art cruel; do not press
+My tongue-tied patience with too much disdain,
+Lest sorrow lend me words, and words express my need,
+A dialogue exchanged in shifting space.
+If I could write anew thy wit so grand,
+And in new acquaintance of thy form,
+Beneath the past, to another's eye convey
+My glory, the tender ne'er appeared,
+A melody unto thy blissful heart's message,
+A diritable hymn to our quarreling time.
+If I should write anew thy beauty,
+And in new pen thy truth to share again,
+With a bard's magic, his writing still appears,
+Thy spirit alive, through age, remaining above.
+  And yet,
+
+
+In faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,faith, I do not love thee with mine eyes,
+For they in thee a thousand errors note;
+But 'tis my heart that loves what they despise,
+Sent in joy to immortal roost.
+My affection is as fevered as any carnal love,
+And in that love of its verse, my parts so grafted,
+With strange grace, these wounds do bleed;
+For you are my whole being, and they, in their part,
+Rejecting me out of their heart, unyielding.
+To separate our love, we say it's best,
+But in our hearts, one thing is writ,
+From thee, a thousandfold blessed.
+  In love's full measure, in love's furious race,
+  I must renounce
+
+
+Love is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,e is my sin, and thy dear virtue hate,
+Hate of my sin, grounded on sinful loving.
+O, but with mine compare thou thine own state,
+Thy harshest adjurations against are arranged.
+Further, why oppose their light and shade,
+Trusting in thine fickle self-love?
+Proved fair my love's pleasing truth, affirming thy hearts' headed,
+Thy sweet witness upheld by lawful, faithful claims.
+To eradicate a hate established in thee
+Mayth I not hate thee more, love more, and wish more bliss?
+  Just as thou dost thine own light illuminest,
+  Whose shadow not true shines in thine unconditional light.
+
+
+Lo, as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch as a careful huswife runs to catch
+One of her feathered creatures broke away,
+Sets down her babe, and makes all swift dispatch
+To chase the fleeing intruder out of sight.
+This sort of chase brings joy to all,
+Yet it's those few that cling to life's embrace,
+Their longing muzzled by fear, they turn away.
+The shepherd, led by woman, finds joy in her child's eager race,
+However, her joy does not end there,
+For Love's sweet deed only marries the gatherer's heart,
+And the gatherer, out of her joy,
+Leaves her hand, her hope to thrive.
+  Love, learn to be lecherous; in the loveliest
+
+
+Epoch 4: train loss :: 1.355, dev chrF :: 41.737.
+chrF history: [40.80769055118497, 41.16487079881718, 41.87255802609336, 41.19035123982493, 41.737085579415535]
+train-5:   0%|          | 0/263 [00:00<?, ?it/s]train-5:   1%|          | 2/263 [00:00<00:25, 10.28it/s]train-5:   2%|▏         | 4/263 [00:00<00:24, 10.50it/s]train-5:   2%|▏         | 6/263 [00:00<00:24, 10.33it/s]train-5:   3%|▎         | 8/263 [00:00<00:24, 10.44it/s]train-5:   4%|▍         | 10/263 [00:00<00:24, 10.22it/s]train-5:   5%|▍         | 12/263 [00:01<00:24, 10.16it/s]train-5:   5%|▌         | 14/263 [00:01<00:24, 10.26it/s]train-5:   6%|▌         | 16/263 [00:01<00:24, 10.16it/s]train-5:   7%|▋         | 18/263 [00:01<00:24, 10.17it/s]train-5:   8%|▊         | 20/263 [00:01<00:23, 10.26it/s]train-5:   8%|▊         | 22/263 [00:02<00:23, 10.19it/s]train-5:   9%|▉         | 24/263 [00:02<00:23, 10.23it/s]train-5:  10%|▉         | 26/263 [00:02<00:23, 10.29it/s]train-5:  11%|█         | 28/263 [00:02<00:23, 10.19it/s]train-5:  11%|█▏        | 30/263 [00:02<00:22, 10.18it/s]train-5:  12%|█▏        | 32/263 [00:03<00:22, 10.27it/s]train-5:  13%|█▎        | 34/263 [00:03<00:22, 10.16it/s]train-5:  14%|█▎        | 36/263 [00:03<00:22, 10.19it/s]train-5:  14%|█▍        | 38/263 [00:03<00:21, 10.29it/s]train-5:  15%|█▌        | 40/263 [00:03<00:21, 10.17it/s]train-5:  16%|█▌        | 42/263 [00:04<00:21, 10.20it/s]train-5:  17%|█▋        | 44/263 [00:04<00:21, 10.28it/s]train-5:  17%|█▋        | 46/263 [00:04<00:21, 10.19it/s]train-5:  18%|█▊        | 48/263 [00:04<00:21, 10.22it/s]train-5:  19%|█▉        | 50/263 [00:04<00:20, 10.33it/s]train-5:  20%|█▉        | 52/263 [00:05<00:20, 10.22it/s]train-5:  21%|██        | 54/263 [00:05<00:20, 10.24it/s]train-5:  21%|██▏       | 56/263 [00:05<00:20, 10.30it/s]train-5:  22%|██▏       | 58/263 [00:05<00:20, 10.25it/s]train-5:  23%|██▎       | 60/263 [00:05<00:19, 10.25it/s]train-5:  24%|██▎       | 62/263 [00:06<00:19, 10.32it/s]train-5:  24%|██▍       | 64/263 [00:06<00:19, 10.20it/s]train-5:  25%|██▌       | 66/263 [00:06<00:19, 10.19it/s]train-5:  26%|██▌       | 68/263 [00:06<00:18, 10.29it/s]train-5:  27%|██▋       | 70/263 [00:06<00:18, 10.19it/s]train-5:  27%|██▋       | 72/263 [00:07<00:18, 10.23it/s]train-5:  28%|██▊       | 74/263 [00:07<00:18, 10.32it/s]train-5:  29%|██▉       | 76/263 [00:07<00:18, 10.21it/s]train-5:  30%|██▉       | 78/263 [00:07<00:18, 10.20it/s]train-5:  30%|███       | 80/263 [00:07<00:17, 10.34it/s]train-5:  31%|███       | 82/263 [00:08<00:17, 10.27it/s]train-5:  32%|███▏      | 84/263 [00:08<00:17, 10.32it/s]train-5:  33%|███▎      | 86/263 [00:08<00:17, 10.36it/s]train-5:  33%|███▎      | 88/263 [00:08<00:17, 10.23it/s]train-5:  34%|███▍      | 90/263 [00:08<00:16, 10.24it/s]train-5:  35%|███▍      | 92/263 [00:08<00:16, 10.33it/s]train-5:  36%|███▌      | 94/263 [00:09<00:16, 10.20it/s]train-5:  37%|███▋      | 96/263 [00:09<00:16, 10.24it/s]train-5:  37%|███▋      | 98/263 [00:09<00:15, 10.41it/s]train-5:  38%|███▊      | 100/263 [00:09<00:15, 10.29it/s]train-5:  39%|███▉      | 102/263 [00:09<00:15, 10.29it/s]train-5:  40%|███▉      | 104/263 [00:10<00:15, 10.34it/s]train-5:  40%|████      | 106/263 [00:10<00:15, 10.20it/s]train-5:  41%|████      | 108/263 [00:10<00:15, 10.22it/s]train-5:  42%|████▏     | 110/263 [00:10<00:14, 10.30it/s]train-5:  43%|████▎     | 112/263 [00:10<00:14, 10.19it/s]train-5:  43%|████▎     | 114/263 [00:11<00:14, 10.25it/s]train-5:  44%|████▍     | 116/263 [00:11<00:14, 10.34it/s]train-5:  45%|████▍     | 118/263 [00:11<00:14, 10.26it/s]train-5:  46%|████▌     | 120/263 [00:11<00:13, 10.22it/s]train-5:  46%|████▋     | 122/263 [00:11<00:13, 10.26it/s]train-5:  47%|████▋     | 124/263 [00:12<00:13, 10.18it/s]train-5:  48%|████▊     | 126/263 [00:12<00:13, 10.20it/s]train-5:  49%|████▊     | 128/263 [00:12<00:13, 10.34it/s]train-5:  49%|████▉     | 130/263 [00:12<00:12, 10.27it/s]train-5:  50%|█████     | 132/263 [00:12<00:12, 10.30it/s]train-5:  51%|█████     | 134/263 [00:13<00:12, 10.36it/s]train-5:  52%|█████▏    | 136/263 [00:13<00:12, 10.27it/s]train-5:  52%|█████▏    | 138/263 [00:13<00:12, 10.29it/s]train-5:  53%|█████▎    | 140/263 [00:13<00:11, 10.38it/s]train-5:  54%|█████▍    | 142/263 [00:13<00:11, 10.27it/s]train-5:  55%|█████▍    | 144/263 [00:14<00:11, 10.26it/s]train-5:  56%|█████▌    | 146/263 [00:14<00:11, 10.35it/s]train-5:  56%|█████▋    | 148/263 [00:14<00:11, 10.21it/s]train-5:  57%|█████▋    | 150/263 [00:14<00:11, 10.24it/s]train-5:  58%|█████▊    | 152/263 [00:14<00:10, 10.33it/s]train-5:  59%|█████▊    | 154/263 [00:15<00:10, 10.23it/s]train-5:  59%|█████▉    | 156/263 [00:15<00:10, 10.28it/s]train-5:  60%|██████    | 158/263 [00:15<00:10, 10.39it/s]train-5:  61%|██████    | 160/263 [00:15<00:10, 10.24it/s]train-5:  62%|██████▏   | 162/263 [00:15<00:09, 10.25it/s]train-5:  62%|██████▏   | 164/263 [00:15<00:09, 10.33it/s]train-5:  63%|██████▎   | 166/263 [00:16<00:09, 10.19it/s]train-5:  64%|██████▍   | 168/263 [00:16<00:09, 10.35it/s]train-5:  65%|██████▍   | 170/263 [00:16<00:09, 10.26it/s]train-5:  65%|██████▌   | 172/263 [00:16<00:08, 10.28it/s]train-5:  66%|██████▌   | 174/263 [00:16<00:08, 10.41it/s]train-5:  67%|██████▋   | 176/263 [00:17<00:08, 10.34it/s]train-5:  68%|██████▊   | 178/263 [00:17<00:08, 10.24it/s]train-5:  68%|██████▊   | 180/263 [00:17<00:08, 10.25it/s]train-5:  69%|██████▉   | 182/263 [00:17<00:07, 10.32it/s]train-5:  70%|██████▉   | 184/263 [00:17<00:07, 10.22it/s]train-5:  71%|███████   | 186/263 [00:18<00:07, 10.19it/s]train-5:  71%|███████▏  | 188/263 [00:18<00:07, 10.34it/s]train-5:  72%|███████▏  | 190/263 [00:18<00:07, 10.24it/s]train-5:  73%|███████▎  | 192/263 [00:18<00:06, 10.27it/s]train-5:  74%|███████▍  | 194/263 [00:18<00:06, 10.38it/s]train-5:  75%|███████▍  | 196/263 [00:19<00:06, 10.28it/s]train-5:  75%|███████▌  | 198/263 [00:19<00:06, 10.29it/s]train-5:  76%|███████▌  | 200/263 [00:19<00:06, 10.40it/s]train-5:  77%|███████▋  | 202/263 [00:19<00:05, 10.27it/s]train-5:  78%|███████▊  | 204/263 [00:19<00:05, 10.27it/s]train-5:  78%|███████▊  | 206/263 [00:20<00:05, 10.36it/s]train-5:  79%|███████▉  | 208/263 [00:20<00:05, 10.26it/s]train-5:  80%|███████▉  | 210/263 [00:20<00:05, 10.28it/s]train-5:  81%|████████  | 212/263 [00:20<00:04, 10.36it/s]train-5:  81%|████████▏ | 214/263 [00:20<00:04, 10.25it/s]train-5:  82%|████████▏ | 216/263 [00:21<00:04, 10.25it/s]train-5:  83%|████████▎ | 218/263 [00:21<00:04, 10.35it/s]train-5:  84%|████████▎ | 220/263 [00:21<00:04, 10.24it/s]train-5:  84%|████████▍ | 222/263 [00:21<00:04, 10.23it/s]
