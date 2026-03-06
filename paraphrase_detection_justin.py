@@ -47,6 +47,7 @@ from evaluation import model_eval_paraphrase, model_test_paraphrase
 from models.gpt2 import GPT2Model
 
 from optimizer import AdamW
+from transformers import get_cosine_schedule_with_warmup
 
 from modules.lora import apply_lora_to_model
 from modules.dora import apply_dora_to_model
@@ -209,10 +210,20 @@ def train(args, run_dir):
     )
 
   scaler = GradScaler('cuda')
+
+  num_training_steps = len(para_train_dataloader) * args.epochs
+  num_warmup_steps = int(0.05 * num_training_steps)
+  scheduler = get_cosine_schedule_with_warmup(
+    optimizer,
+    num_warmup_steps=num_warmup_steps,
+    num_training_steps=num_training_steps,
+  )
+
   best_dev_acc = 0
   best_dev_out_path = None
   dev_acc_scores = []
   dev_f1_scores = []
+  train_losses = []
   total_train_time = 0.0
   epoch_train_times = []
   epoch_dev_inference_times = []
@@ -238,6 +249,7 @@ def train(args, run_dir):
       scaler.scale(loss).backward()
       scaler.step(optimizer)
       scaler.update()
+      scheduler.step()
 
       # AdaLoRA rank pruning step
       if adalora_scheduler is not None:
@@ -249,7 +261,8 @@ def train(args, run_dir):
     epoch_train_time = time.time() - epoch_train_start
     total_train_time += epoch_train_time
     epoch_train_times.append(round(epoch_train_time, 2))
-    train_loss = train_loss / num_batches
+    train_loss = train_loss / num_batches if num_batches > 0 else 0.0
+    train_losses.append(round(train_loss, 6))
 
     if is_main:
       eval_model = model.module if hasattr(model, 'module') else model
@@ -286,7 +299,7 @@ def train(args, run_dir):
       if epoch_path != best_dev_out_path and os.path.exists(epoch_path):
         os.remove(epoch_path)
 
-  return best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time, epoch_train_times, epoch_dev_inference_times
+  return best_dev_acc, dev_acc_scores, dev_f1_scores, train_losses, total_train_time, epoch_train_times, epoch_dev_inference_times
 
 
 @torch.no_grad()
@@ -424,7 +437,8 @@ if __name__ == "__main__":
 
   if args.use_flash_attention:
     run_name += '_flash'
-  run_dir = os.path.join('paraphasing_exp_result', args.model_size, run_name)
+  exp_base = 'paraphrase_exp_results_lora' if args.lora_rank > 0 else 'paraphrase_exp_results_full'
+  run_dir = os.path.join(exp_base, args.model_size, run_name)
   if is_main:
     os.makedirs(run_dir, exist_ok=True)
   if dist.is_available() and dist.is_initialized():
@@ -433,22 +447,24 @@ if __name__ == "__main__":
   args.para_test_out = os.path.join(run_dir, 'para-test-output.csv')
   args.filepath = os.path.join(run_dir, 'model.pt')
   seed_everything(args.seed)
-  best_dev_acc, dev_acc_scores, dev_f1_scores, total_train_time, epoch_train_times, epoch_dev_inference_times = train(args, run_dir)
+  best_dev_acc, dev_acc_scores, dev_f1_scores, train_losses, total_train_time, epoch_train_times, epoch_dev_inference_times = train(args, run_dir)
 
   if is_main:
     dev_inference_time, test_inference_time = test(args)
     num_gpus = int(os.environ.get("WORLD_SIZE", 1))
-    results_file = os.path.join('paraphasing_exp_result', 'experiment_results.jsonl')
+    results_file = os.path.join(exp_base, 'experiment_results.jsonl')
     result = {
       "uuid": str(uuid.uuid4()),
       "task": "paraphrase_detection",
+      "additional_data_used": True if args.para_train != "data/quora-train.csv" else False,
       "best_dev_acc": best_dev_acc,
       "dev_acc_scores": dev_acc_scores,
       "dev_f1_scores": dev_f1_scores,
-      "args": vars(args),
+      "train_losses": train_losses,
       "job_id": os.environ.get("JOB_ID"),
-      "method": "full_parameter_tuning",
+      "method": "LoRA" if args.lora_rank > 0 else "full_parameter_tuning",
       "method_metadata": {},
+      "args": vars(args),
       "training_meta_data": {
         "num_gpus": num_gpus,
         "gpu": "H100",
@@ -462,6 +478,9 @@ if __name__ == "__main__":
     with open(results_file, "a") as f:
       f.write(json.dumps(result) + "\n")
     print(f"Saved experiment result to {results_file}")
+    if os.path.exists(args.filepath):
+      os.remove(args.filepath)
+      print(f"Deleted checkpoint {args.filepath}")
 
   if dist.is_available() and dist.is_initialized():
     dist.destroy_process_group()

@@ -32,6 +32,7 @@ from datasets import (
 from models.gpt2 import GPT2Model
 
 from optimizer import AdamW
+from transformers import get_cosine_schedule_with_warmup  # get_linear_schedule_with_warmup
 
 from modules.lora import apply_lora_to_model
 from modules.dora import apply_dora_to_model
@@ -204,9 +205,18 @@ def train(args, run_dir):
       total_steps=total_steps,
       tinit_ratio=args.adalora_tinit_ratio,
       delta_t=args.adalora_delta_t,
-    )  
+    )
+
+  num_training_steps = len(sonnet_dataloader) * args.epochs
+  num_warmup_steps = int(0.05 * num_training_steps)
+  scheduler = get_cosine_schedule_with_warmup(
+    optimizer,
+    num_warmup_steps=num_warmup_steps,
+    num_training_steps=num_training_steps,
+  )
 
   chrf_scores = []
+  train_losses = []
   best_chrf = -1.0
   best_dev_out_path = None
   total_train_time = 0.0
@@ -234,6 +244,7 @@ def train(args, run_dir):
       loss = F.cross_entropy(logits, labels, reduction='mean')
       loss.backward()
       optimizer.step()
+      scheduler.step()
 
       # AdaLoRA rank pruning step
       if adalora_scheduler is not None:
@@ -246,6 +257,7 @@ def train(args, run_dir):
     total_train_time += epoch_train_time
     epoch_train_times.append(round(epoch_train_time, 2))
     train_loss = train_loss / num_batches
+    train_losses.append(round(train_loss, 6))
 
     model.eval()
     print('Generating dev sonnets for chrF scoring...')
@@ -285,7 +297,7 @@ def train(args, run_dir):
   # Clean up temporary file, only keep the best
   os.remove(dev_out_path)
 
-  return model, best_chrf, chrf_scores, total_train_time, epoch_train_times, epoch_dev_inference_times
+  return model, best_chrf, chrf_scores, train_losses, total_train_time, epoch_train_times, epoch_dev_inference_times
 
 
 @torch.no_grad()
@@ -393,6 +405,10 @@ def add_arguments(args):
     args.d = 1280
     args.l = 36
     args.num_heads = 20
+  elif args.model_size == 'gpt2-xl':
+    args.d = 1600
+    args.l = 48
+    args.num_heads = 25
   else:
     raise Exception(f'{args.model_size} is not supported.')
   return args
@@ -411,26 +427,29 @@ if __name__ == "__main__":
 
   if args.use_flash_attention:
     run_name += '_flash'
-  run_dir = os.path.join('sonnet_exp_result', args.model_size, run_name)
+  exp_base = 'sonnet_exp_results_lora' if args.lora_rank > 0 else 'sonnet_exp_results_full'
+  run_dir = os.path.join(exp_base, args.model_size, run_name)
   os.makedirs(run_dir, exist_ok=True)
 
   args.filepath = os.path.join(run_dir, 'model.pt')
   args.sonnet_out = os.path.join(run_dir, 'generated_sonnets.txt')
   seed_everything(args.seed)
 
-  model, best_chrf, chrf_scores, total_train_time, epoch_train_times, epoch_dev_inference_times = train(args, run_dir)
+  model, best_chrf, chrf_scores, train_losses, total_train_time, epoch_train_times, epoch_dev_inference_times = train(args, run_dir)
   test_inference_time = generate_submission_sonnets(model, args)
 
-  results_file = os.path.join('sonnet_exp_result', 'experiment_results.jsonl')
+  results_file = os.path.join(exp_base, 'experiment_results.jsonl')
   result = {
     "uuid": str(uuid.uuid4()),
     "task": "sonnet_generation",
-    "best_dev_chrf": best_chrf,
+    "additional_data_used": False if args.sonnet_path == "data/sonnets.txt" else True,
+    "best_chrf": best_chrf,
     "chrf_scores": chrf_scores,
-    "args": vars(args),
+    "train_losses": train_losses,
     "job_id": os.environ.get("JOB_ID"),
-    "method": "full_parameter_tuning",
+    "method": "LoRA" if args.lora_rank > 0 else "full_parameter_tuning",
     "method_metadata": {},
+    "args": vars(args),
     "training_meta_data": {
       "num_gpus": 1,
       "gpu": "H100",
