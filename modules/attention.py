@@ -2,6 +2,7 @@ import torch
 
 from einops import rearrange
 from torch import nn
+import torch.nn.functional as F
 
 
 class CausalSelfAttention(nn.Module):
@@ -20,8 +21,10 @@ class CausalSelfAttention(nn.Module):
     # implementation of transformer. Although it is a bit unusual, we empirically
     # observe that it yields better performance.
     self.dropout = nn.Dropout(config.attention_probs_dropout_prob)
-    self.use_flash_attention = getattr(config, 'use_flash_attention', False)
-  
+    
+    # Will be overridden by paraphrase_detection.py if --use_flash_attention is set.
+    self.use_flash_attention = False  
+
   def transform(self, x, linear_layer):
     # The corresponding linear_layer of k, v, q are used to project the hidden_state (x).
     proj = linear_layer(x)
@@ -39,8 +42,7 @@ class CausalSelfAttention(nn.Module):
     causal_mask = torch.full((seq_len, seq_len), float('-inf'), device=query.device)
     causal_mask = torch.triu(causal_mask, diagonal=1)
 
-    if getattr(self, "use_flash_attention", False):
-      import torch.nn.functional as F
+    if self.use_flash_attention:
       combined_mask = causal_mask + attention_mask
       attn_output = F.scaled_dot_product_attention(
           query, key, value, 

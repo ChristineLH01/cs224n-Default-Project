@@ -8,7 +8,9 @@ trains your SonnetGPT model and writes the required submission files.
 '''
 
 import argparse
+import os
 import random
+import shutil
 import torch
 
 import numpy as np
@@ -26,6 +28,11 @@ from datasets import (
 from models.gpt2 import GPT2Model
 
 from optimizer import AdamW
+
+from modules.lora import apply_lora_to_model
+from modules.adalora import apply_adalora_to_model, AdaLoRARankScheduler
+from modules.attention import CausalSelfAttention
+from evaluation import test_sonnet
 
 TQDM_DISABLE = False
 
@@ -49,54 +56,31 @@ class SonnetGPT(nn.Module):
     self.gpt = GPT2Model.from_pretrained(model=args.model_size, d=args.d, l=args.l, num_heads=args.num_heads)
     self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     self.tokenizer.pad_token = self.tokenizer.eos_token
-
-    # Add LoRA configs
-    self.gpt.config.lora_rank = args.lora_rank
-    self.gpt.config.lora_alpha = args.lora_alpha
-    self.gpt.config.lora_dropout = args.lora_dropout
-    self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
-    self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
     
-    # Reload model with LoRA if rank > 0
-    if args.lora_rank > 0 or getattr(args, 'rank_pattern', None):
-      self.gpt.config.lora_rank = args.lora_rank
-      self.gpt.config.lora_alpha = args.lora_alpha
-      self.gpt.config.lora_dropout = args.lora_dropout
-      self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
-      self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
+    self.fine_tune_mode = args.fine_tune_mode
+    self.use_flash_attention = getattr(args, 'use_flash_attention', False)
 
-      from modules.lora import inject_lora
-      r_list = [int(r) for r in args.rank_pattern.split(',')] if getattr(args, 'rank_pattern', None) else None
-      
-      for i, layer in enumerate(self.gpt.gpt_layers):
-        rank = r_list[i] if r_list else args.lora_rank
-        if rank == 0: continue
-          
-        if getattr(args, 'apply_lora_to_all_linear', False):
-          inject_lora(layer, rank, args.lora_alpha, args.lora_dropout, target_modules=["query", "key", "value", "attention_dense", "interm_dense", "out_dense"], use_rslora=getattr(args, 'use_rslora', False))
-        else:
-          if args.apply_lora_to_attention:
-            inject_lora(layer.self_attention, rank, args.lora_alpha, args.lora_dropout, target_modules=["query", "key", "value"], use_rslora=getattr(args, 'use_rslora', False))
-            inject_lora(layer, rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense"], use_rslora=getattr(args, 'use_rslora', False))
-          if args.apply_lora_to_mlp:
-            inject_lora(layer, rank, args.lora_alpha, args.lora_dropout, target_modules=["interm_dense", "out_dense"], use_rslora=getattr(args, 'use_rslora', False))
+    # Set flash attention if specified
+    if self.use_flash_attention:
+      print("Using Flash Attention.")
+      for module in self.gpt.modules():
+        if isinstance(module, CausalSelfAttention):
+          module.use_flash_attention = self.use_flash_attention
 
-    from modules.attention import CausalSelfAttention
-    for module in self.gpt.modules():
-      if isinstance(module, CausalSelfAttention):
-        module.use_flash_attention = getattr(args, 'use_flash_attention', False)
-
-    # Freeze or Unfreeze parameters based on LoRA
-    if args.lora_rank > 0 or getattr(args, 'rank_pattern', None):
-      for param in self.gpt.parameters():
-        param.requires_grad = False
-      
-      for name, param in self.gpt.named_parameters():
-        if 'lora' in name:
-          param.requires_grad = True
-    else:
+    # Configure fine-tuning mode
+    if self.fine_tune_mode == 'full-finetune':
+      print("Full Fine-tuning")
       for param in self.gpt.parameters():
         param.requires_grad = True
+    elif self.fine_tune_mode == 'adalora':
+      print(f"Applying AdaLoRA fine-tuning to all linear layers, "
+            f"initial rank {args.adalora_init_r}, target rank {args.adalora_target_r}, tinit ratio {args.adalora_tinit_ratio}, deltaT {args.adalora_delta_t}, "
+            f"alpha {args.adalora_alpha}, dropout {args.lora_dropout}")
+      apply_adalora_to_model(self.gpt, args)
+    else:
+      self.use_rslora = getattr(args, 'use_rslora', False)
+      print(f"Applying LoRA fine-tuning with mode {self.fine_tune_mode}, rank {args.lora_rank}, alpha {args.lora_alpha}, dropout {args.lora_dropout}, use_rslora {self.use_rslora}")
+      apply_lora_to_model(self.gpt, args)
 
   def forward(self, input_ids, attention_mask):
     """
@@ -162,7 +146,7 @@ class SonnetGPT(nn.Module):
     return token_ids, generated_output
 
 
-def save_model(model, optimizer, args, filepath):
+def save_model(model, optimizer, args, filepath, adalora_scheduler=None):
   save_info = {
     'model': model.state_dict(),
     'optim': optimizer.state_dict(),
@@ -171,6 +155,8 @@ def save_model(model, optimizer, args, filepath):
     'numpy_rng': np.random.get_state(),
     'torch_rng': torch.random.get_rng_state(),
   }
+  if adalora_scheduler is not None:
+    save_info['adalora_scheduler'] = adalora_scheduler.state_dict()
 
   torch.save(save_info, filepath)
   print(f"save the model to {filepath}")
@@ -178,17 +164,17 @@ def save_model(model, optimizer, args, filepath):
 
 def train(args):
   """Train GPT-2 for paraphrase detection on the Quora dataset."""
-  if args.use_gpu:
-    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
-  else:
-    device = torch.device('cpu')
+  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
   # Create the data and its corresponding datasets and dataloader.
   sonnet_dataset = SonnetsDataset(args.sonnet_path)
   sonnet_dataloader = DataLoader(sonnet_dataset, shuffle=True, batch_size=args.batch_size,
                                  collate_fn=sonnet_dataset.collate_fn)
 
-  # Create the held-out dataset: these only have the first 3 lines. Your job is to fill in the rest!
+  # Test held-out dataset: these only have the first 3 lines. Your job is to fill in the rest!
   held_out_sonnet_dataset = SonnetsDataset(args.held_out_sonnet_path)
+
+  # Dev held-out dataset
+  held_out_sonnet_dev_dataset = SonnetsDataset(args.held_out_sonnet_dev_path)
 
   args = add_arguments(args)
   model = SonnetGPT(args)
@@ -196,6 +182,21 @@ def train(args):
 
   lr = args.lr
   optimizer = AdamW(model.parameters(), lr=lr)
+
+  best_chrf = -1.0
+
+  # Set up AdaLoRA rank scheduler if using AdaLoRA
+  adalora_scheduler = None
+  if args.fine_tune_mode == 'adalora':
+    total_steps = args.epochs * len(sonnet_dataloader)
+    adalora_scheduler = AdaLoRARankScheduler(
+      model=model,
+      init_r=args.adalora_init_r,
+      target_r=args.adalora_target_r,
+      total_steps=total_steps,
+      tinit_ratio=args.adalora_tinit_ratio,
+      delta_t=args.adalora_delta_t,
+    )
 
   # Run for the specified number of epochs.
   for epoch in range(args.epochs):
@@ -222,6 +223,10 @@ def train(args):
       
       optimizer.step()
 
+      # AdaLoRA rank pruning step
+      if adalora_scheduler is not None:
+        adalora_scheduler.step()
+
       train_loss += loss.item()
       num_batches += 1
       
@@ -232,22 +237,41 @@ def train(args):
     print(f"Epoch {epoch}: train loss :: {train_loss :.3f}.")
     print('Generating several output sonnets...')
     model.eval()
-    for batch in held_out_sonnet_dataset:
+
+    dev_generated_sonnets = []
+    for batch in held_out_sonnet_dev_dataset:
       encoding = model.tokenizer(batch[1], return_tensors='pt', padding=True, truncation=True).to(device)
       output = model.generate(encoding['input_ids'], temperature=args.temperature, top_p=args.top_p)
+      dev_generated_sonnets.append((batch[0], output[1]))
       print(f'{batch[1]}{output[1]}\n\n')
 
-    # TODO: consider a stopping condition to prevent overfitting on the small dataset of sonnets.
-    save_model(model, optimizer, args, f'{epoch}_{args.filepath}')
+    # TODO: consider a stopping condition to prevent overfitting on the small dataset of sonnets
+
+    # Store the generated sonnets in temp file
+    with open(args.temp_sonnet_out, 'w+') as f:
+      f.write('--Generated Sonnets-- \n\n')
+      for sonnet_id, sonnet_text in dev_generated_sonnets:
+        f.write(f'\n{sonnet_id}\n')
+        f.write(sonnet_text)
+
+    chrf = test_sonnet(test_path=args.temp_sonnet_out, gold_path=args.true_held_out_sonnet_dev_path)
+    print(f'Epoch {epoch}: ChrF :: {chrf:.4f}, best :: {best_chrf:.4f}')
+    if chrf > best_chrf:
+      best_chrf = chrf
+      # Copy the current best generated sonnets to dev submission file 
+      shutil.copy2(args.temp_sonnet_out, args.dev_sonnet_out)
+      # Save the model checkpoint that achieved the best performance on dev set
+      save_model(model, optimizer, args, args.filepath, adalora_scheduler=adalora_scheduler)
+
+  # Clean up temporary file
+  print(f"Best ChrF on dev set: {best_chrf:.4f}")
+  os.remove(args.temp_sonnet_out)  
 
 
 @torch.no_grad()
 def generate_submission_sonnets(args):
-  if args.use_gpu:
-    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
-  else:
-    device = torch.device('cpu')
-  saved = torch.load(f'{args.epochs-1}_{args.filepath}', weights_only=False)
+  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
+  saved = torch.load(f'{args.filepath}', weights_only=False)
 
   model = SonnetGPT(saved['args'])
   model.load_state_dict(saved['model'])
@@ -280,6 +304,10 @@ def get_args():
 
   parser.add_argument("--sonnet_path", type=str, default="data/sonnets.txt")
   parser.add_argument("--held_out_sonnet_path", type=str, default="data/sonnets_held_out.txt")
+  parser.add_argument("--held_out_sonnet_dev_path", type=str, default="data/sonnets_held_out_dev.txt")
+  parser.add_argument("--true_held_out_sonnet_dev_path", type=str, default="data/TRUE_sonnets_held_out_dev.txt")
+  parser.add_argument("--temp_sonnet_out", type=str, default="predictions/temp_generated_sonnets.txt")
+  parser.add_argument("--dev_sonnet_out", type=str, default="predictions/generated_sonnets_dev.txt")
   parser.add_argument("--sonnet_out", type=str, default="predictions/generated_sonnets.txt")
 
   parser.add_argument("--seed", type=int, default=11711)
@@ -296,20 +324,35 @@ def get_args():
   parser.add_argument("--model_size", type=str, help="The model size as specified on hugging face.",
                       choices=['gpt2', 'gpt2-medium', 'gpt2-large', 'gpt2-xl'], default='gpt2')
 
+  # Fine-tuning mode 
+  parser.add_argument("--fine_tune_mode", type=str, default="full-finetune",
+                      choices=['full-finetune', 'lora', 'lora_attention', 'lora_mlp', 'adalora'],
+                      help="Fine-tuning mode: full-finetune, lora (attn+mlp), lora_attention, lora_mlp, adalora")
+
   # LoRA arguments
-  parser.add_argument("--lora_rank", type=int, default=0, help="Rank for LoRA (0 means disabled)")
+  parser.add_argument("--lora_rank", type=int, default=0, help="Rank for LoRA(must be > 0)")
   parser.add_argument("--lora_alpha", type=float, default=1.0, help="Alpha multiplier for LoRA")
-  parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA")
-  parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
-  parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
-  
-  parser.add_argument("--use_rslora", action="store_true", help="Use rsLoRA rank scaling")
-  parser.add_argument("--apply_lora_to_all_linear", action="store_true", help="Apply LoRA to all linear layers (overrides individual flags)")
-  parser.add_argument("--rank_pattern", type=str, default="", help="Comma separated list of ranks per layer, e.g. '4,4,8,8'")
-  
+  parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA/AdaLoRA")
+  parser.add_argument("--use_rslora", action="store_true", help="Use RSLORA scaling (alpha / sqrt(rank))")
+
+  # AdaLoRA arguments (Sonnets has small data, smaller alpha/init_r/target_r, larger tinit_ratio may work better)
+  parser.add_argument("--adalora_alpha", type=float, default=8.0, help="Alpha multiplier for AdaLoRA")
+  parser.add_argument("--adalora_init_r", type=int, default=12, help="Initial rank for AdaLoRA (must be > 0)")
+  parser.add_argument("--adalora_target_r", type=int, default=4, 
+                      help="Target (final) rank for AdaLoRA after pruning. Must be <= lora_rank.")
+  parser.add_argument("--adalora_tinit_ratio", type=float, default=0.2,
+                      help="Fraction of total training steps before rank pruning begins.")
+  parser.add_argument("--adalora_delta_t", type=int, default=10,
+                      help="Prune ranks every N optimizer steps.")
+
+  # Flash Attention arguments
   parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
 
   args = parser.parse_args()
+  if args.fine_tune_mode in ('lora', 'lora_attention', 'lora_mlp'):
+    if args.lora_rank <= 0 or args.lora_alpha <= 0:
+      raise ValueError(f"--lora_rank and --lora_alpha must be > 0")
+  
   return args
 
 

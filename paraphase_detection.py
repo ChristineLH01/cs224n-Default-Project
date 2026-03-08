@@ -32,6 +32,10 @@ from models.gpt2 import GPT2Model
 
 from optimizer import AdamW
 
+from modules.lora import apply_lora_to_model
+from modules.adalora import apply_adalora_to_model, AdaLoRARankScheduler
+from modules.attention import CausalSelfAttention
+
 TQDM_DISABLE = False
 
 # Fix the random seed.
@@ -55,51 +59,31 @@ class ParaphraseGPT(nn.Module):
     super().__init__()
     self.gpt = GPT2Model.from_pretrained(model=args.model_size, d=args.d, l=args.l, num_heads=args.num_heads)
     self.paraphrase_detection_head = nn.Linear(args.d, 2)  # Paraphrase detection has two outputs: 1 (yes) or 0 (no).
-
-    # Add LoRA configs
-    self.gpt.config.lora_rank = args.lora_rank
-    self.gpt.config.lora_alpha = args.lora_alpha
-    self.gpt.config.lora_dropout = args.lora_dropout
-    self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
-    self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
     
-    # Reload model with LoRA if rank > 0
-    if args.lora_rank > 0:
-      self.gpt = GPT2Model.from_pretrained(model=args.model_size, d=args.d, l=args.l, num_heads=args.num_heads)
-      
-      self.gpt.config.lora_rank = args.lora_rank
-      self.gpt.config.lora_alpha = args.lora_alpha
-      self.gpt.config.lora_dropout = args.lora_dropout
-      self.gpt.config.apply_lora_to_attention = args.apply_lora_to_attention
-      self.gpt.config.apply_lora_to_mlp = args.apply_lora_to_mlp
+    self.fine_tune_mode = args.fine_tune_mode
+    self.use_flash_attention = getattr(args, 'use_flash_attention', False)
 
-      if args.apply_lora_to_attention:
-        from modules.lora import inject_lora
-        for name, module in self.gpt.named_modules():
-          if "self_attention" in name:
-            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["query", "key", "value"])
-      if args.apply_lora_to_mlp:
-        from modules.lora import inject_lora
-        for name, module in self.gpt.named_modules():
-          if "gpt_layers" in name and not "self_attention" in name: # Don't re-inject if we hit layers
-            inject_lora(module, args.lora_rank, args.lora_alpha, args.lora_dropout, target_modules=["attention_dense", "interm_dense", "out_dense"])
+    # Set flash attention if specified
+    if self.use_flash_attention:
+      print("Using Flash Attention.")
+      for module in self.gpt.modules():
+        if isinstance(module, CausalSelfAttention):
+          module.use_flash_attention = self.use_flash_attention
 
-    from modules.attention import CausalSelfAttention
-    for module in self.gpt.modules():
-      if isinstance(module, CausalSelfAttention):
-        module.use_flash_attention = getattr(args, 'use_flash_attention', False)
-
-    # Freeze or Unfreeze parameters based on LoRA
-    if args.lora_rank > 0:
-      for param in self.gpt.parameters():
-        param.requires_grad = False
-      
-      for name, param in self.gpt.named_parameters():
-        if 'lora' in name:
-          param.requires_grad = True
-    else:
+    # Configure fine-tuning mode
+    if self.fine_tune_mode == 'full-finetune':
+      print("Full Fine-tuning")
       for param in self.gpt.parameters():
         param.requires_grad = True
+    elif self.fine_tune_mode == 'adalora':
+      print(f"Applying AdaLoRA fine-tuning to all linear layers, "
+            f"initial rank {args.adalora_init_r}, target rank {args.adalora_target_r}, tinit ratio {args.adalora_tinit_ratio}, deltaT {args.adalora_delta_t}, "
+            f"alpha {args.adalora_alpha}, dropout {args.lora_dropout}")
+      apply_adalora_to_model(self.gpt, args)
+    else:
+      self.use_rslora = getattr(args, 'use_rslora', False)
+      print(f"Applying LoRA fine-tuning with mode {self.fine_tune_mode}, rank {args.lora_rank}, alpha {args.lora_alpha}, dropout {args.lora_dropout}, use_rslora {self.use_rslora}")
+      apply_lora_to_model(self.gpt, args)
 
   def forward(self, input_ids, attention_mask):
     """
@@ -115,6 +99,7 @@ class ParaphraseGPT(nn.Module):
     """
 
     'Takes a batch of sentences and produces embeddings for them.'
+    ### YOUR CODE HERE
     outputs = self.gpt(input_ids, attention_mask)
     last_hidden_state = outputs["last_token"]
     logits = self.paraphrase_detection_head(last_hidden_state)
@@ -128,7 +113,7 @@ class ParaphraseGPT(nn.Module):
 
 
 
-def save_model(model, optimizer, args, filepath):
+def save_model(model, optimizer, args, filepath, adalora_scheduler=None):
   save_info = {
     'model': model.state_dict(),
     'optim': optimizer.state_dict(),
@@ -137,6 +122,8 @@ def save_model(model, optimizer, args, filepath):
     'numpy_rng': np.random.get_state(),
     'torch_rng': torch.random.get_rng_state(),
   }
+  if adalora_scheduler is not None:
+    save_info['adalora_scheduler'] = adalora_scheduler.state_dict()
 
   torch.save(save_info, filepath)
   print(f"save the model to {filepath}")
@@ -144,10 +131,7 @@ def save_model(model, optimizer, args, filepath):
 
 def train(args):
   """Train GPT-2 for paraphrase detection on the Quora dataset."""
-  if args.use_gpu:
-    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
-  else:
-    device = torch.device('cpu')
+  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
   # Create the data and its corresponding datasets and dataloader.
   para_train_data = load_paraphrase_data(args.para_train)
   para_dev_data = load_paraphrase_data(args.para_dev)
@@ -166,6 +150,20 @@ def train(args):
 
   lr = args.lr
   optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.)
+
+  # Set up AdaLoRA rank scheduler if using AdaLoRA
+  adalora_scheduler = None
+  if args.fine_tune_mode == 'adalora':
+    total_steps = args.epochs * len(para_train_dataloader)
+    adalora_scheduler = AdaLoRARankScheduler(
+      model=model,
+      init_r=args.adalora_init_r,
+      target_r=args.adalora_target_r,
+      total_steps=total_steps,
+      tinit_ratio=args.adalora_tinit_ratio,
+      delta_t=args.adalora_delta_t,
+    )
+
   best_dev_acc = 0
 
   # Run for the specified number of epochs.
@@ -188,6 +186,10 @@ def train(args):
       loss.backward()
       optimizer.step()
 
+      # AdaLoRA rank pruning step
+      if adalora_scheduler is not None:
+        adalora_scheduler.step()
+
       train_loss += loss.item()
       num_batches += 1
 
@@ -205,10 +207,7 @@ def train(args):
 @torch.no_grad()
 def test(args):
   """Evaluate your model on the dev and test datasets; save the predictions to disk."""
-  if args.use_gpu:
-    device = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
-  else:
-    device = torch.device('cpu')
+  device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
   saved = torch.load(args.filepath)
 
   model = ParaphraseGPT(saved['args'])
@@ -262,17 +261,34 @@ def get_args():
                       help="The model size as specified on hugging face. DO NOT use the xl model.",
                       choices=['gpt2', 'gpt2-medium', 'gpt2-large'], default='gpt2')
 
+  # Fine-tuning mode 
+  parser.add_argument("--fine_tune_mode", type=str, default="full-finetune",
+                      choices=['full-finetune', 'lora', 'lora_attention', 'lora_mlp', 'adalora'],
+                      help="Fine-tuning mode: full-finetune, lora (attn+mlp), lora_attention, lora_mlp, adalora")
+
   # LoRA arguments
-  parser.add_argument("--lora_rank", type=int, default=0, help="Rank for LoRA (0 means disabled)")
+  parser.add_argument("--lora_rank", type=int, default=0, help="Rank for LoRA(must be > 0)")
   parser.add_argument("--lora_alpha", type=float, default=1.0, help="Alpha multiplier for LoRA")
-  parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA")
-  parser.add_argument("--apply_lora_to_attention", action="store_true", help="Apply LoRA to attention Query/Key/Value projections")
-  parser.add_argument("--apply_lora_to_mlp", action="store_true", help="Apply LoRA to Feed Forward layers")
-  
+  parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA/AdaLoRA")
+  parser.add_argument("--use_rslora", action="store_true", help="Use RSLORA scaling (alpha / sqrt(rank))")
+
+  # AdaLoRA arguments (Large dataset, larger alpha/init_r/target_r, smaller tinit_ratio may work better)
+  parser.add_argument("--adalora_alpha", type=float, default=16.0, help="Alpha multiplier for AdaLoRA")
+  parser.add_argument("--adalora_init_r", type=int, default=16, help="Initial rank for AdaLoRA (must be > 0)")
+  parser.add_argument("--adalora_target_r", type=int, default=8, 
+                      help="Target (final) rank for AdaLoRA after pruning. Must be <= lora_rank.")
+  parser.add_argument("--adalora_tinit_ratio", type=float, default=0.05,
+                      help="Fraction of total training steps before rank pruning begins.")
+  parser.add_argument("--adalora_delta_t", type=int, default=50,
+                      help="Prune ranks every N optimizer steps.")
+
   # Flash Attention arguments
   parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
 
   args = parser.parse_args()
+  if args.fine_tune_mode in ('lora', 'lora_attention', 'lora_mlp'):
+    if args.lora_rank <= 0 or args.lora_alpha <= 0:
+      raise ValueError(f"--lora_rank and --lora_alpha must be > 0")
   return args
 
 
