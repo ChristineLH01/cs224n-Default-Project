@@ -49,6 +49,7 @@ from models.gpt2 import GPT2Model
 from optimizer import AdamW
 
 from modules.lora import apply_lora_to_model
+from modules.dora import apply_dora_to_model
 from modules.adalora import apply_adalora_to_model, AdaLoRARankScheduler
 from modules.attention import CausalSelfAttention
 
@@ -93,13 +94,17 @@ class ParaphraseGPT(nn.Module):
       for param in self.gpt.parameters():
         param.requires_grad = True
     elif self.fine_tune_mode == 'adalora':
-      print(f"Applying AdaLoRA fine-tuning to all linear layers, "
+      print(f"Applying AdaLoRA"
             f"initial rank {args.adalora_init_r}, target rank {args.adalora_target_r}, tinit ratio {args.adalora_tinit_ratio}, deltaT {args.adalora_delta_t}, "
-            f"alpha {args.adalora_alpha}, dropout {args.lora_dropout}")
+            f"alpha {args.adalora_alpha}")
       apply_adalora_to_model(self.gpt, args)
+    elif self.fine_tune_mode in ('dora', 'dora_attention', 'dora_mlp'):
+      self.use_rslora = getattr(args, 'use_rslora', False)
+      print(f"Applying {self.fine_tune_mode}, rank {args.lora_rank}, alpha {args.lora_alpha}, dropout {args.lora_dropout}, use_rslora {self.use_rslora}")
+      apply_dora_to_model(self.gpt, args)
     else:
       self.use_rslora = getattr(args, 'use_rslora', False)
-      print(f"Applying LoRA fine-tuning with mode {self.fine_tune_mode}, rank {args.lora_rank}, alpha {args.lora_alpha}, dropout {args.lora_dropout}, use_rslora {self.use_rslora}")
+      print(f"Applying {self.fine_tune_mode}, rank {args.lora_rank}, alpha {args.lora_alpha}, dropout {args.lora_dropout}, use_rslora {self.use_rslora}")
       apply_lora_to_model(self.gpt, args)
 
   def forward(self, input_ids, attention_mask):
@@ -349,10 +354,12 @@ def get_args():
 
   # Fine-tuning mode 
   parser.add_argument("--fine_tune_mode", type=str, default="full-finetune",
-                      choices=['full-finetune', 'lora', 'lora_attention', 'lora_mlp', 'adalora'],
-                      help="Fine-tuning mode: full-finetune, lora (attn+mlp), lora_attention, lora_mlp, or adalora")
+                      choices=['full-finetune', 'lora', 'lora_attention', 'lora_mlp', 'adalora',
+                               'dora', 'dora_attention', 'dora_mlp'],
+                      help="Fine-tuning mode: full-finetune, lora (attn+mlp), lora_attention, lora_mlp, "
+                           "adalora, dora (attn+mlp), dora_attention, dora_mlp")
 
-  # LoRA arguments
+  # LoRA arguments (same with DoRA, dropout shared with AdaLoRA)
   parser.add_argument("--lora_rank", type=int, default=0, help="Rank for LoRA adapters (must be > 0)")
   parser.add_argument("--lora_alpha", type=float, default=0, help="Alpha multiplier for LoRA")
   parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA/AdaLoRA")
@@ -372,7 +379,8 @@ def get_args():
   parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
             
   args = parser.parse_args()
-  if args.fine_tune_mode in ('lora', 'lora_attention', 'lora_mlp'):
+  if args.fine_tune_mode in ('lora', 'lora_attention', 'lora_mlp',
+                              'dora', 'dora_attention', 'dora_mlp'):
     if args.lora_rank <= 0 or args.lora_alpha <= 0:
       raise ValueError(f"--lora_rank and --lora_alpha must be > 0")
   return args
@@ -407,12 +415,12 @@ if __name__ == "__main__":
 
   args = get_args()
   run_name = f'{args.fine_tune_mode}_epochs{args.epochs}_lr{args.lr}_bs{args.batch_size}'
-  if args.fine_tune_mode in ('lora', 'lora_attention', 'lora_mlp'):
-    run_name += f'_lora{args.lora_rank}_alpha{args.lora_alpha}'
+  if args.fine_tune_mode in ('lora', 'lora_attention', 'lora_mlp', 'dora', 'dora_attention', 'dora_mlp'):
+    run_name += f'_rank{args.lora_rank}_alpha{args.lora_alpha}'
     run_name += '_rslora' if args.use_rslora else ''
-  elif args.fine_tune_mode == 'adalora':
+  
+  if args.fine_tune_mode == 'adalora':
     run_name += f'_adalora_initr{args.adalora_init_r}_targetr{args.adalora_target_r}_tinit{int(args.adalora_tinit_ratio*100)}%_deltat{args.adalora_delta_t}_alpha{args.adalora_alpha}'
-
 
   if args.use_flash_attention:
     run_name += '_flash'
