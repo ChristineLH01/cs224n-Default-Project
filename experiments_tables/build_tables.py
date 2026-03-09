@@ -143,6 +143,8 @@ for task_cfg in TASKS:
                     continue
                 try:
                     record = ExperimentRecord.model_validate(json.loads(line))
+                    if record.args.get("model_size") not in ("gpt2", "gpt2-medium"):
+                        continue
                     all_rows.append(record.to_flat_row(folder))
                 except Exception as e:
                     print(f"  WARNING: bad record in {folder}: {e}")
