@@ -427,7 +427,16 @@ if __name__ == "__main__":
 
   if args.use_flash_attention:
     run_name += '_flash'
-  exp_base = 'sonnet_exp_results_lora' if args.lora_rank > 0 else 'sonnet_exp_results_full'
+  if args.fine_tune_mode == 'adalora':
+    exp_base = 'sonnet_exp_results_adalora'
+  elif args.fine_tune_mode in ('dora', 'dora_attention', 'dora_mlp'):
+    exp_base = 'sonnet_exp_results_dora'
+  elif getattr(args, 'use_rslora', False) and (args.lora_rank > 0 or getattr(args, 'rank_pattern', None)):
+    exp_base = 'sonnet_exp_results_rslora'
+  elif args.lora_rank > 0 or getattr(args, 'rank_pattern', None):
+    exp_base = 'sonnet_exp_results_lora'
+  else:
+    exp_base = 'sonnet_exp_results_full'
   run_dir = os.path.join(exp_base, args.model_size, run_name)
   os.makedirs(run_dir, exist_ok=True)
 

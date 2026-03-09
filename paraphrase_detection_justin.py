@@ -267,24 +267,32 @@ def train(args, run_dir):
     if is_main:
       eval_model = model.module if hasattr(model, 'module') else model
       dev_inf_start = time.time()
-      dev_acc, dev_f1, dev_y_pred, dev_y_true, dev_sent_ids = model_eval_paraphrase(para_dev_dataloader, eval_model, device)
-      epoch_dev_inference_times.append(round(time.time() - dev_inf_start, 2))
-      dev_acc_scores.append(dev_acc)
-      dev_f1_scores.append(dev_f1)
-      print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_acc :.3f}, dev f1 :: {dev_f1 :.3f}")
-      print(f"dev acc history: {dev_acc_scores}")
-      print(f"dev f1 history: {dev_f1_scores}")
+      try:
+        dev_acc, dev_f1, dev_y_pred, dev_y_true, dev_sent_ids = model_eval_paraphrase(para_dev_dataloader, eval_model, device)
+        epoch_dev_inference_times.append(round(time.time() - dev_inf_start, 2))
+        dev_acc_scores.append(dev_acc)
+        dev_f1_scores.append(dev_f1)
+        print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_acc :.3f}, dev f1 :: {dev_f1 :.3f}")
+        print(f"dev acc history: {dev_acc_scores}")
+        print(f"dev f1 history: {dev_f1_scores}")
 
-      epoch_out_path = os.path.join(run_dir, f'para-dev-output_epoch{epoch}.csv')
-      with open(epoch_out_path, 'w+') as f:
-        f.write("id \t Predicted_Is_Paraphrase \n")
-        for p, s in zip(dev_sent_ids, dev_y_pred):
-          f.write(f"{p}, {s} \n")
+        epoch_out_path = os.path.join(run_dir, f'para-dev-output_epoch{epoch}.csv')
+        with open(epoch_out_path, 'w+') as f:
+          f.write("id \t Predicted_Is_Paraphrase \n")
+          for p, s in zip(dev_sent_ids, dev_y_pred):
+            f.write(f"{p}, {s} \n")
 
-      if dev_acc > best_dev_acc:
-        best_dev_acc = dev_acc
-        best_dev_out_path = epoch_out_path
-        save_model(model.module if hasattr(model, 'module') else model, optimizer, args, args.filepath)
+        if dev_acc > best_dev_acc:
+          best_dev_acc = dev_acc
+          best_dev_out_path = epoch_out_path
+          save_model(model.module if hasattr(model, 'module') else model, optimizer, args, args.filepath)
+
+      except RuntimeError as e:
+        print(f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev eval SKIPPED ({e}).")
+        epoch_dev_inference_times.append(round(time.time() - dev_inf_start, 2))
+        dev_acc_scores.append(None)
+        dev_f1_scores.append(None)
+        torch.cuda.empty_cache()
 
     if ddp:
       dist.barrier()
@@ -292,8 +300,11 @@ def train(args, run_dir):
   # Copy best epoch's predictions and clean up per-epoch files.
   if is_main:
     final_dev_path = os.path.join(run_dir, 'para-dev-output.csv')
-    shutil.copy2(best_dev_out_path, final_dev_path)
-    print(f"Saved best dev predictions (acc {best_dev_acc:.3f}) to {final_dev_path}")
+    if best_dev_out_path is not None:
+      shutil.copy2(best_dev_out_path, final_dev_path)
+      print(f"Saved best dev predictions (acc {best_dev_acc:.3f}) to {final_dev_path}")
+    else:
+      print("Warning: all dev eval epochs were skipped, no best dev predictions to save.")
     for i in range(len(dev_acc_scores)):
       epoch_path = os.path.join(run_dir, f'para-dev-output_epoch{i}.csv')
       if epoch_path != best_dev_out_path and os.path.exists(epoch_path):
@@ -437,13 +448,23 @@ if __name__ == "__main__":
 
   if args.use_flash_attention:
     run_name += '_flash'
-  exp_base = 'paraphrase_exp_results_lora' if args.lora_rank > 0 else 'paraphrase_exp_results_full'
+  if args.fine_tune_mode == 'adalora':
+    exp_base = 'paraphrase_exp_results_adalora'
+  elif args.fine_tune_mode in ('dora', 'dora_attention', 'dora_mlp'):
+    exp_base = 'paraphrase_exp_results_dora'
+  elif getattr(args, 'use_rslora', False) and (args.lora_rank > 0 or getattr(args, 'rank_pattern', None)):
+    exp_base = 'paraphrase_exp_results_rslora'
+  elif args.lora_rank > 0 or getattr(args, 'rank_pattern', None):
+    exp_base = 'paraphrase_exp_results_lora'
+  else:
+    exp_base = 'paraphrase_exp_results_full'
   run_dir = os.path.join(exp_base, args.model_size, run_name)
   if is_main:
     os.makedirs(run_dir, exist_ok=True)
   if dist.is_available() and dist.is_initialized():
     dist.barrier()  # Wait for rank 0 to create the directory.
 
+  args.para_dev_out = os.path.join(run_dir, 'para-dev-output.csv')
   args.para_test_out = os.path.join(run_dir, 'para-test-output.csv')
   args.filepath = os.path.join(run_dir, 'model.pt')
   seed_everything(args.seed)

@@ -5,7 +5,6 @@
 #SBATCH --ntasks-per-node=8
 #SBATCH --gpus-per-node=8
 #SBATCH --cpus-per-gpu=14
-#SBATCH --time=24:00:00
 #SBATCH --output=/home/justin/cs224n-Default-Project/logs/%x_%j.out
 #SBATCH --account=liquidai
 #SBATCH --exclude=liquid-gpu-008
@@ -23,6 +22,7 @@ nvidia-smi
 
 export JOB_ID=$SLURM_JOB_ID
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export PYTHONUNBUFFERED=1
 
 # ══════════════════════════════════════════════════════════════
 #  GRID CONFIG — edit these arrays to define the search space
@@ -48,6 +48,12 @@ LORA_TARGETS=("attn" "attn_mlp" "mlp")
 LORA_ALPHA_MULT=(1.0 2.0)
 LORA_DROPOUT=(0.1)
 
+# rsLoRA rank scaling: "on" or "off"
+RSLORA_VALUES=("off")
+
+# Apply LoRA to all linear layers at once (overrides attn/mlp target flags): "on" or "off"
+LORA_ALL_LINEAR_VALUES=("off")
+
 # Flash attention: "on" "off" or both ("on" "off")
 FLASH_VALUES=("on")
 
@@ -67,18 +73,25 @@ run() {
   local dropout=$8
   local flash=$9
   local aug=${10}
+  local rslora=${11}
+  local all_linear=${12}
 
   local lora_flags=""
   if [ "$rank" -gt 0 ]; then
     local alpha
     alpha=$(python3 -c "print($rank * $alpha_mult)")
     lora_flags="--lora_rank $rank --lora_alpha $alpha --lora_dropout $dropout"
-    if [ "$target" = "attn" ] || [ "$target" = "attn_mlp" ]; then
-      lora_flags="$lora_flags --apply_lora_to_attention"
+    if [ "$all_linear" = "on" ]; then
+      lora_flags="$lora_flags --apply_lora_to_all_linear"
+    else
+      if [ "$target" = "attn" ] || [ "$target" = "attn_mlp" ]; then
+        lora_flags="$lora_flags --apply_lora_to_attention"
+      fi
+      if [ "$target" = "mlp" ] || [ "$target" = "attn_mlp" ]; then
+        lora_flags="$lora_flags --apply_lora_to_mlp"
+      fi
     fi
-    if [ "$target" = "mlp" ] || [ "$target" = "attn_mlp" ]; then
-      lora_flags="$lora_flags --apply_lora_to_mlp"
-    fi
+    [ "$rslora" = "on" ] && lora_flags="$lora_flags --use_rslora"
   fi
 
   local flash_flag=""
@@ -86,7 +99,7 @@ run() {
 
   local label="model=$model | lr=$lr | epochs=$epochs | bs=$bs | lora_rank=$rank"
   if [ "$rank" -gt 0 ]; then
-    label="$label | target=$target | alpha_mult=$alpha_mult | dropout=$dropout"
+    label="$label | target=$target | alpha_mult=$alpha_mult | dropout=$dropout | rslora=$rslora | all_linear=$all_linear"
   fi
   label="$label | flash=$flash | aug=$aug"
 
@@ -124,7 +137,11 @@ for model in "${MODEL_SIZE_VALUES[@]}"; do
                 for target in "${LORA_TARGETS[@]}"; do
                   for alpha_mult in "${LORA_ALPHA_MULT[@]}"; do
                     for dropout in "${LORA_DROPOUT[@]}"; do
-                      ((total += 1))
+                      for rslora in "${RSLORA_VALUES[@]}"; do
+                        for all_linear in "${LORA_ALL_LINEAR_VALUES[@]}"; do
+                          ((total += 1))
+                        done
+                      done
                     done
                   done
                 done
@@ -166,16 +183,20 @@ for model in "${MODEL_SIZE_VALUES[@]}"; do
           for flash in "${FLASH_VALUES[@]}"; do
             for aug in "${AUG_VALUES[@]}"; do
               if [ "$rank" -eq 0 ]; then
-                run "$model" "$lr" "$epochs" "$bs" 0 "none" "1.0" "0.0" "$flash" "$aug"
+                run "$model" "$lr" "$epochs" "$bs" 0 "none" "1.0" "0.0" "$flash" "$aug" "off" "off"
                 ((done_count += 1))
                 print_progress
               else
                 for target in "${LORA_TARGETS[@]}"; do
                   for alpha_mult in "${LORA_ALPHA_MULT[@]}"; do
                     for dropout in "${LORA_DROPOUT[@]}"; do
-                      run "$model" "$lr" "$epochs" "$bs" "$rank" "$target" "$alpha_mult" "$dropout" "$flash" "$aug"
-                      ((done_count += 1))
-                      print_progress
+                      for rslora in "${RSLORA_VALUES[@]}"; do
+                        for all_linear in "${LORA_ALL_LINEAR_VALUES[@]}"; do
+                          run "$model" "$lr" "$epochs" "$bs" "$rank" "$target" "$alpha_mult" "$dropout" "$flash" "$aug" "$rslora" "$all_linear"
+                          ((done_count += 1))
+                          print_progress
+                        done
+                      done
                     done
                   done
                 done
