@@ -5,3 +5,5 @@
 *.pkl
 .idea/
 out/
+*exp_result*/
+logs/
