@@ -31,7 +31,7 @@ from optimizer import AdamW
 
 from modules.lora import apply_lora_to_model
 from modules.dora import apply_dora_to_model
-from modules.adalora import apply_adalora_to_model, AdaLoRARankScheduler
+from modules.adalora import apply_adalora_to_model, AdaLoRARankScheduler, compute_orth_regu
 from modules.attention import CausalSelfAttention
 from evaluation import test_sonnet
 
@@ -75,8 +75,8 @@ class SonnetGPT(nn.Module):
         param.requires_grad = True
     elif self.fine_tune_mode == 'adalora':
       print(f"Applying AdaLoRA"
-            f"initial rank {args.adalora_init_r}, target rank {args.adalora_target_r}, tinit ratio {args.adalora_tinit_ratio}, deltaT {args.adalora_delta_t}, "
-            f"alpha {args.adalora_alpha}")
+            f"init_r={args.adalora_init_r}, target_r={args.adalora_target_r}, tinit ratio {args.adalora_tinit_ratio}, tfinal ratio {args.adalora_tfinal_ratio}, "
+            f"deltaT {args.adalora_delta_t}, alpha={args.adalora_alpha}")
       apply_adalora_to_model(self.gpt, args)
     elif self.fine_tune_mode in ('dora', 'dora_attention', 'dora_mlp'):
       self.use_rslora = getattr(args, 'use_rslora', False)
@@ -194,13 +194,16 @@ def train(args):
   adalora_scheduler = None
   if args.fine_tune_mode == 'adalora':
     total_steps = args.epochs * len(sonnet_dataloader)
+    init_warmup = int(total_steps * args.adalora_tinit_ratio)
+    final_warmup = int(total_steps * args.adalora_tfinal_ratio)
     adalora_scheduler = AdaLoRARankScheduler(
       model=model,
       init_r=args.adalora_init_r,
-      target_r=args.adalora_target_r,
-      total_steps=total_steps,
-      tinit_ratio=args.adalora_tinit_ratio,
-      delta_t=args.adalora_delta_t,
+      target_rank=args.adalora_target_r,
+      init_warmup=init_warmup,
+      final_warmup=final_warmup,
+      mask_interval=args.adalora_delta_t,
+      total_step=total_steps,
     )
 
   # Run for the specified number of epochs.
@@ -221,6 +224,12 @@ def train(args):
       logits = rearrange(logits[:, :-1].contiguous(), 'b t d -> (b t) d')  # Ignore the last prediction in the sequence.
       labels = b_ids[:, 1:].contiguous().flatten()  # Ignore the first token to compose the labels.
       loss = F.cross_entropy(logits, labels, ignore_index=model.tokenizer.pad_token_id, reduction='mean')
+
+      # AdaLoRA: add orthogonal regularization to loss 
+      if adalora_scheduler is not None:
+        orth_regu = compute_orth_regu(model)
+        loss = loss + orth_regu
+
       loss.backward()
       
       # Clip gradients to prevent exploding gradients
@@ -343,14 +352,13 @@ def get_args():
   parser.add_argument("--use_rslora", action="store_true", help="Use RSLORA scaling (alpha / sqrt(rank))")
 
   # AdaLoRA arguments (Sonnets has small data, smaller alpha/init_r/target_r, larger tinit_ratio may work better)
-  parser.add_argument("--adalora_alpha", type=float, default=8.0, help="Alpha multiplier for AdaLoRA")
-  parser.add_argument("--adalora_init_r", type=int, default=12, help="Initial rank for AdaLoRA (must be > 0)")
-  parser.add_argument("--adalora_target_r", type=int, default=4, 
-                      help="Target (final) rank for AdaLoRA after pruning. Must be <= lora_rank.")
-  parser.add_argument("--adalora_tinit_ratio", type=float, default=0.2,
-                      help="Fraction of total training steps before rank pruning begins.")
-  parser.add_argument("--adalora_delta_t", type=int, default=10,
-                      help="Prune ranks every N optimizer steps.")
+  # Smaller dataset can set tfinal_ratio to 0 to skip the final fixed-rank fine-tuning phase,
+  parser.add_argument("--adalora_alpha", type=float, default=8.0, help="Alpha scaling for AdaLoRA")
+  parser.add_argument("--adalora_init_r", type=int, default=12, help="Initial rank for each incremental matrix")
+  parser.add_argument("--adalora_target_r", type=int, default=4, help="Average target rank per matrix after pruning")
+  parser.add_argument("--adalora_tinit_ratio", type=float, default=0.2, help="Fraction of total steps for initial warmup (no pruning)")
+  parser.add_argument("--adalora_tfinal_ratio", type=float, default=0.0, help="Fraction of total steps for final fine-tuning (fixed rank)")
+  parser.add_argument("--adalora_delta_t", type=int, default=10, help="Mask/prune ranks every N optimizer steps")
 
   # Flash Attention arguments
   parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
