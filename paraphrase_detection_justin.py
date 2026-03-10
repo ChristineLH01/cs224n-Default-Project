@@ -388,6 +388,8 @@ def get_args():
   parser.add_argument("--lora_alpha", type=float, default=0, help="Alpha multiplier for LoRA")
   parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout rate for LoRA/AdaLoRA")
   parser.add_argument("--use_rslora", action="store_true", help="Use RSLORA scaling (alpha / sqrt(rank))")
+  parser.add_argument("--rank_pattern", type=str, default=None,
+                      help="Comma-separated per-layer LoRA ranks, e.g. '4,4,8,8,16,16,32,32'")
 
   # AdaLoRA arguments (Large dataset, larger alpha/init_r/target_r, smaller tinit_ratio may work better)
   parser.add_argument("--adalora_alpha", type=float, default=16.0, help="Alpha multiplier for AdaLoRA")
@@ -401,7 +403,11 @@ def get_args():
 
   # Flash Attention arguments
   parser.add_argument("--use_flash_attention", action="store_true", help="Use Flash Attention")
-            
+
+  # Override output base directory (e.g. final_model_results/paraphrase)
+  parser.add_argument("--results_base", type=str, default=None,
+                      help="Override the experiment results base directory")
+
   args = parser.parse_args()
   if args.fine_tune_mode in ('lora', 'lora_attention', 'lora_mlp',
                               'dora', 'dora_attention', 'dora_mlp'):
@@ -458,6 +464,8 @@ if __name__ == "__main__":
     exp_base = 'paraphrase_exp_results_lora'
   else:
     exp_base = 'paraphrase_exp_results_full'
+  if args.results_base:
+    exp_base = args.results_base
   run_dir = os.path.join(exp_base, args.model_size, run_name)
   if is_main:
     os.makedirs(run_dir, exist_ok=True)

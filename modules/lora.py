@@ -38,15 +38,26 @@ def apply_lora_to_model(gpt_model, args):
   Args:
     gpt_model.
     args: Must have fine_tune_mode ('lora', 'lora_attention', 'lora_mlp'), lora_rank, lora_alpha
-          with optional lora_dropout and use_rslora.
+          with optional lora_dropout, use_rslora, and rank_pattern (comma-separated per-layer
+          ranks, e.g. '4,4,8,8,16,16,32,32,...'). rank_pattern takes precedence over lora_rank.
   """
   mode = args.fine_tune_mode
   lora_attention = mode in ('lora', 'lora_attention')
   lora_mlp = mode in ('lora', 'lora_mlp')
-  rank, alpha, dropout = args.lora_rank, args.lora_alpha, args.lora_dropout
+  alpha, dropout = args.lora_alpha, args.lora_dropout
   use_rslora = args.use_rslora
 
-  for layer in gpt_model.gpt_layers:
+  rank_pattern = getattr(args, 'rank_pattern', None)
+  if rank_pattern:
+    ranks = [int(r) for r in rank_pattern.split(',')]
+    assert len(ranks) == len(gpt_model.gpt_layers), (
+      f"rank_pattern has {len(ranks)} entries but model has {len(gpt_model.gpt_layers)} layers"
+    )
+  else:
+    ranks = None
+
+  for i, layer in enumerate(gpt_model.gpt_layers):
+    rank = ranks[i] if ranks is not None else args.lora_rank
     if lora_attention:
       layer.self_attention.query = LoRALinear(layer.self_attention.query, rank=rank, alpha=alpha, dropout=dropout, use_rslora=use_rslora)
       layer.self_attention.key = LoRALinear(layer.self_attention.key, rank=rank, alpha=alpha, dropout=dropout, use_rslora=use_rslora)
