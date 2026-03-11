@@ -254,8 +254,10 @@ def train(args, run_dir):
         if adalora_scheduler is not None:
           orth_regu = compute_orth_regu(model)
           loss = loss + orth_regu
-          
+
       scaler.scale(loss).backward()
+      scaler.unscale_(optimizer)
+      torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
       scaler.step(optimizer)
       scaler.update()
       scheduler.step()

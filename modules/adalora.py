@@ -38,7 +38,9 @@ class AdaLoRALinear(nn.Module):
     """y = Wx + scaling * x @ Q^T @ diag(Λ) @ P^T / (ranknum + eps)"""
     base_out = self.linear(x)
     lora_out = self.dropout(x) @ (self.Q * self.Lambda).T @ self.P.T
-    lora_out = lora_out * self.scaling / (self.ranknum + 1e-5)
+    # lora_out = lora_out * self.scaling / (self.ranknum + 1e-5)
+    # Use float32 for the scaling division to avoid FP16 overflow when ranknum → 0
+    lora_out = lora_out * self.scaling / (self.ranknum.float() + 1e-5)
     return base_out + lora_out
 
   @property
