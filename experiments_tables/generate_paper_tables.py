@@ -12,13 +12,8 @@ def compute_gpu_metrics(df):
     return df
 
 def write_formats(df, output_dir, filename_prefix, name):
-    csv_path = os.path.join(output_dir, f'{filename_prefix}_{name}.csv')
-    md_path = os.path.join(output_dir, f'{filename_prefix}_{name}.md')
     tex_path = os.path.join(output_dir, f'{filename_prefix}_{name}.tex')
     
-    df.to_csv(csv_path, index=False)
-    with open(md_path, 'w') as f:
-        f.write(df.to_markdown(index=False))
     with open(tex_path, 'w') as f:
         f.write(df.to_latex(index=False, float_format="%.4f"))
 
