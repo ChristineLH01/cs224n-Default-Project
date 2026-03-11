@@ -1,0 +1,19 @@
+Model,Rank,Alpha,Target,Best_ChrF_Mean,Best_ChrF_Max,GPU_Hours
+gpt2,8,16.0,Attn + MLP,42.165,42.4302,0.12
+gpt2,8,16.0,Attn Only,41.9173,42.1828,0.09
+gpt2,8,16.0,MLP Only,42.1246,42.8675,0.09
+gpt2,16,32.0,Attn + MLP,42.5727,44.2927,0.12
+gpt2,16,32.0,Attn Only,42.0275,42.2808,0.09
+gpt2,16,32.0,MLP Only,42.2589,43.17,0.09
+gpt2,32,64.0,Attn + MLP,43.1565,45.4034,0.12
+gpt2,32,64.0,Attn Only,42.0606,42.4034,0.09
+gpt2,32,64.0,MLP Only,42.874,45.3479,0.09
+gpt2-medium,8,16.0,Attn + MLP,42.8182,43.9047,0.15
+gpt2-medium,8,16.0,Attn Only,42.1872,42.4999,0.11
+gpt2-medium,8,16.0,MLP Only,42.4537,43.3972,0.12
+gpt2-medium,16,32.0,Attn + MLP,42.815,44.3102,0.15
+gpt2-medium,16,32.0,Attn Only,42.2123,42.4287,0.12
+gpt2-medium,16,32.0,MLP Only,42.6716,44.8571,0.11
+gpt2-medium,32,64.0,Attn + MLP,43.6323,46.7045,0.15
+gpt2-medium,32,64.0,Attn Only,42.5004,43.4945,0.12
+gpt2-medium,32,64.0,MLP Only,42.6542,44.4134,0.1
