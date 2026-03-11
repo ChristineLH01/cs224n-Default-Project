@@ -1,0 +1,22 @@
+# Test Set Submission Record
+# Format: Sub# | Task | Test Score | Dev Score | Model | Mode | Key Params | Notes
+
+# ══════════════════════════════════════════════════════════════════
+#  PARAPHRASE DETECTION
+# ══════════════════════════════════════════════════════════════════
+
+Sub#1 | paraphrase | test=0.865 | dev=0.9092 | gpt2-medium | full-finetune | lr=8e-5 ep=14 aug=False | no-aug, lower test generalization
+Sub#2 | paraphrase | test=0.878 | dev=0.9077 | gpt2-medium | full-finetune      | lr=1e-4 ep=13 aug=True  | aug, dev peaked at ep9/12, final_loss=0.0014
+                                                                                                          | file: paraphrase_exp_results_full/gpt2-medium/epochs13_lr0.0001_bs64_adamw_flash/para-test-output.csv
+Sub#3 | paraphrase | test=0.897 | dev=0.9080 | gpt2-medium | rslora r=32 a=11.2 | lr=5e-4 ep=25 aug=True | aug, stable (std=0.00049, drop=0.00025), low overfit risk (final_loss=0.0037), dev-test gap=-0.0110
+                                                                                                           | file: final_model_results2/gpt2-medium/lora_epochs25_lr0.0005_bs64_rank32_alpha11.2_rslora_flash/para-test-output.csv
+
+# ══════════════════════════════════════════════════════════════════
+#  SONNET GENERATION
+# ══════════════════════════════════════════════════════════════════
+
+Sub#1 | sonnet | test=43.56 | dev=45.17 | gpt2-medium | full-finetune    | lr=1e-3 ep=30 bs=4 temp=1.2 top_p=0.9 aug=True  | aug, best ep25/30, dev-test gap=-1.61
+                                                                                                                               | file: sonnet_exp_results_full/gpt2-medium/epochs30_lr0.001_bs4_flash/
+Sub#2 | sonnet | test=44.99 | dev=46.45 | gpt2-medium | rslora r=32 a=11.2 | lr=1e-3 ep=40 bs=4 temp=1.2 top_p=0.9 aug=True | aug, best ep33/40, avg_last8=45.24, dev-test gap=-1.46
+                                                                                                                               | file: final_model_results/sonnet/gpt2-medium/lora_epochs40_lr0.001_bs4_rank32_alpha11.2_rslora_flash/
+

@@ -38,9 +38,12 @@ class AdaLoRALinear(nn.Module):
     """y = Wx + scaling * x @ Q^T @ diag(Λ) @ P^T / (ranknum + eps)"""
     base_out = self.linear(x)
     lora_out = self.dropout(x) @ (self.Q * self.Lambda).T @ self.P.T
-    # lora_out = lora_out * self.scaling / (self.ranknum + 1e-5)
-    # Use float32 for the scaling division to avoid FP16 overflow when ranknum → 0
-    lora_out = lora_out * self.scaling / (self.ranknum.float() + 1e-5)
+    # Clamp denominator to >= 1 so gradients don't explode when ranknum → 0.
+    # When all singular values are pruned (ranknum=0), lora_out is already 0
+    # (Lambda=0), but without clamping the gradient w.r.t. Lambda scales as
+    # alpha/1e-5 which causes NaN in the backward pass.
+    safe_ranknum = self.ranknum.float().clamp(min=1.0)
+    lora_out = lora_out * self.scaling / safe_ranknum
     return base_out + lora_out
 
   @property
