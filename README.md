@@ -42,7 +42,24 @@ paraphrase of another as well as its ability to generate sonnets.
 
 Follow `setup.sh` to properly setup a conda environment and install dependencies.
 
-## Data Augmentation
+## Extensions
+
+### Parameter-Efficient Fine-Tuning (PEFT)
+
+We implement several LoRA variants for parameter-efficient fine-tuning, all available via `--fine_tune_mode`:
+
+- **LoRA** — low-rank adaptation applied to attention, MLP, or both (`lora`, `lora_attention`, `lora_mlp`)
+- **AdaLoRA** — adaptive rank allocation that prunes less important ranks during training (`adalora`)
+- **rsLoRA** — rank-stabilized LoRA scaling (`alpha / sqrt(rank)`) via `--use_rslora`
+- **DoRA** — weight-decomposed LoRA with magnitude/direction separation (`dora`, `dora_attention`, `dora_mlp`)
+
+Additional LoRA controls: `--lora_rank`, `--lora_alpha`, `--lora_dropout`, and `--rank_pattern` for per-layer rank schedules.
+
+### Flash Attention
+
+Pass `--use_flash_attention` to enable Flash Attention for faster training and inference with reduced memory usage.
+
+### Data Augmentation
 
 We construct augmented training data for paraphrase detection using several negative-mining strategies. The pipeline lives in `data_processing/paraphase/` and produces the following additional datasets:
 
@@ -64,30 +81,13 @@ This loads the pre-built splits from HuggingFace (`zetianli/*`), combines them, 
 
 For sonnet generation, we also include `data/diffused_sonnets.txt` (AI-generated sonnet variations) and `data/sonnets_merged.txt` (original + diffused sonnets merged).
 
-### External Datasets Used
+#### External Datasets Used
 
 | Dataset | Used In | Purpose |
 |---|---|---|
 | [`ltg/en-wiki-paraphrased`](https://huggingface.co/datasets/ltg/en-wiki-paraphrased) | Paraphrase augmentation | Source corpus for constructing paraphrase pairs; sampled and split into `zetianli/en-wiki-paraphrased_split_*` |
 | [`redis/llm-paraphrases`](https://huggingface.co/datasets/redis/llm-paraphrases) | Paraphrase augmentation | LLM-generated paraphrase pairs (label=1 subset) used for balancing positives |
 | [`Lambent/shakespeare_sonnets_diffused`](https://huggingface.co/datasets/Lambent/shakespeare_sonnets_diffused) | Sonnet generation | AI-generated sonnet variations used to augment the original Shakespeare sonnets |
-
-## Extensions
-
-### Parameter-Efficient Fine-Tuning (PEFT)
-
-We implement several LoRA variants for parameter-efficient fine-tuning, all available via `--fine_tune_mode`:
-
-- **LoRA** — low-rank adaptation applied to attention, MLP, or both (`lora`, `lora_attention`, `lora_mlp`)
-- **AdaLoRA** — adaptive rank allocation that prunes less important ranks during training (`adalora`)
-- **rsLoRA** — rank-stabilized LoRA scaling (`alpha / sqrt(rank)`) via `--use_rslora`
-- **DoRA** — weight-decomposed LoRA with magnitude/direction separation (`dora`, `dora_attention`, `dora_mlp`)
-
-Additional LoRA controls: `--lora_rank`, `--lora_alpha`, `--lora_dropout`, and `--rank_pattern` for per-layer rank schedules.
-
-### Flash Attention
-
-Pass `--use_flash_attention` to enable Flash Attention for faster training and inference with reduced memory usage.
 
 ### Distributed Training
 
