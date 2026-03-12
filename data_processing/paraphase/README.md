@@ -12,8 +12,8 @@ This folder contains scripts for constructing augmented paraphrase training data
 | `nli_negatives.py` | Constructs near-miss negatives via adjective/adverb antonym flipping + negation |
 | `embedding_negatives.py` | Constructs hard negatives using FAISS nearest-neighbor search on sentence embeddings |
 | `clustering_negatives.py` | Constructs same-topic negatives via KMeans clustering + within-cluster nearest neighbor |
-| `run_embedding_negatives.sh` | SLURM script for `embedding_negatives.py` (requires GPU) |
-| `run_clustering_negatives.sh` | SLURM script for `clustering_negatives.py` (requires GPU) |
+
+> **Note:** `embedding_negatives.py` and `clustering_negatives.py` require a GPU. Running them on CPU is not supported and will be significantly slower or fail entirely.
 
 ## Generating the augmented data
 

@@ -6,9 +6,6 @@
 #SBATCH --gpus-per-node=8
 #SBATCH --cpus-per-gpu=14
 #SBATCH --time=4:00:00
-#SBATCH --output=/home/justin/cs224n-Default-Project/logs/%x_%j.out
-#SBATCH --account=liquidai
-#SBATCH --exclude=liquid-gpu-008
 
 
 set -euo pipefail
@@ -18,7 +15,6 @@ eval "$(conda shell.bash hook)"
 conda activate cs224n_dfp
 
 # ── Run training ──────────────────────────────────────────────
-cd /home/justin/cs224n-Default-Project
 echo "Node: $(hostname)"
 echo "Process ID: $$"
 echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
@@ -33,9 +29,8 @@ torchrun --nproc_per_node=8 paraphrase_detection_justin.py \
   --epochs 5 \
   --batch_size 64 \
   --lr 7e-4 \
+  --fine_tune_mode lora \
   --lora_rank 16 \
   --lora_alpha 32 \
-  --apply_lora_to_mlp \
   --model_size gpt2-medium \
-
-  #--use_flash_attention 
+  --use_flash_attention

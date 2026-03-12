@@ -6,9 +6,6 @@
 #SBATCH --gpus-per-node=1
 #SBATCH --cpus-per-gpu=14
 #SBATCH --time=4:00:00
-#SBATCH --output=/home/justin/cs224n-Default-Project/logs/%x_%j.out
-#SBATCH --account=liquidai
-#SBATCH --exclude=liquid-gpu-008
 
 
 set -euo pipefail
@@ -18,7 +15,6 @@ eval "$(conda shell.bash hook)"
 conda activate cs224n_dfp
 
 # ── Run training ──────────────────────────────────────────────
-cd /home/justin/cs224n-Default-Project
 CUDA_LAUNCH_BLOCKING=1
 echo "Node: $(hostname)"
 echo "Process ID: $$"
@@ -35,8 +31,8 @@ python sonnet_generation_justin.py \
   --batch_size 8 \
   --lr 2e-5 \
   --model_size gpt2-medium \
-  --apply_lora_to_attention \
+  --fine_tune_mode lora_attention \
   --lora_rank 8 \
   --lora_alpha 8 \
-  --lora_dropout 0.1
-  #--use_flash_attention 
+  --lora_dropout 0.1 \
+  --use_flash_attention

@@ -42,6 +42,72 @@ paraphrase of another as well as its ability to generate sonnets.
 
 Follow `setup.sh` to properly setup a conda environment and install dependencies.
 
+## Data Augmentation
+
+We construct augmented training data for paraphrase detection using several negative-mining strategies. The pipeline lives in `data_processing/paraphase/` and produces the following additional datasets:
+
+| Strategy | Description |
+|---|---|
+| Random positives / negatives | Sampled from the Quora split (150k positives, 20k negatives) |
+| NLI negatives | Near-miss negatives via adjective/adverb antonym flipping + negation |
+| Embedding negatives | Hard negatives via FAISS nearest-neighbor search on sentence embeddings (GPU required) |
+| Clustering negatives | Same-topic negatives via KMeans clustering + within-cluster nearest neighbor (GPU required) |
+| Balancing positives | Extra positives to balance the augmented set |
+
+The combined output files (`data/augmented_additional.csv` ~350 MB, `data/augmented_train.csv` ~400 MB) are too large for git. To regenerate:
+
+```bash
+python data_processing/paraphase/paraphasing_processing.py
+```
+
+This loads the pre-built splits from HuggingFace (`zetianli/*`), combines them, and merges with `data/quora-train.csv`. See `data_processing/paraphase/README.md` for full details.
+
+For sonnet generation, we also include `data/diffused_sonnets.txt` (AI-generated sonnet variations) and `data/sonnets_merged.txt` (original + diffused sonnets merged).
+
+### External Datasets Used
+
+| Dataset | Used In | Purpose |
+|---|---|---|
+| [`ltg/en-wiki-paraphrased`](https://huggingface.co/datasets/ltg/en-wiki-paraphrased) | Paraphrase augmentation | Source corpus for constructing paraphrase pairs; sampled and split into `zetianli/en-wiki-paraphrased_split_*` |
+| [`redis/llm-paraphrases`](https://huggingface.co/datasets/redis/llm-paraphrases) | Paraphrase augmentation | LLM-generated paraphrase pairs (label=1 subset) used for balancing positives |
+| [`Lambent/shakespeare_sonnets_diffused`](https://huggingface.co/datasets/Lambent/shakespeare_sonnets_diffused) | Sonnet generation | AI-generated sonnet variations used to augment the original Shakespeare sonnets |
+
+## Extensions
+
+### Parameter-Efficient Fine-Tuning (PEFT)
+
+We implement several LoRA variants for parameter-efficient fine-tuning, all available via `--fine_tune_mode`:
+
+- **LoRA** — low-rank adaptation applied to attention, MLP, or both (`lora`, `lora_attention`, `lora_mlp`)
+- **AdaLoRA** — adaptive rank allocation that prunes less important ranks during training (`adalora`)
+- **rsLoRA** — rank-stabilized LoRA scaling (`alpha / sqrt(rank)`) via `--use_rslora`
+- **DoRA** — weight-decomposed LoRA with magnitude/direction separation (`dora`, `dora_attention`, `dora_mlp`)
+
+Additional LoRA controls: `--lora_rank`, `--lora_alpha`, `--lora_dropout`, and `--rank_pattern` for per-layer rank schedules.
+
+### Flash Attention
+
+Pass `--use_flash_attention` to enable Flash Attention for faster training and inference with reduced memory usage.
+
+### Distributed Training
+
+The `*_justin.py` scripts are GPU-cluster-ready variants that support distributed data-parallel training:
+
+- `paraphrase_detection_justin.py` — supports multi-GPU training via `torchrun` (NCCL backend, `DistributedDataParallel`)
+- `sonnet_generation_justin.py` — single-GPU training script
+
+### Running
+
+The `.sh` scripts are SLURM job examples for launching training on a cluster:
+
+```bash
+# Paraphrase detection — multi-GPU with torchrun
+sbatch run_paraphrase.sh
+
+# Sonnet generation — single-GPU
+sbatch run_sonnet.sh
+```
+
 ## Acknowledgement
 
 This project is adapted from a prior year's CS 224N
