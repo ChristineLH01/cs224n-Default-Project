@@ -128,6 +128,64 @@ sbatch run_sonnet.sh
 
 See `test_sub_record.txt` for full details and file paths.
 
+## Repository Structure
+
+```
+224n_sub/
+├── models/
+│   ├── base_gpt.py                # Base GPT model class
+│   └── gpt2.py                    # GPT-2 model loading and forward pass
+├── modules/
+│   ├── attention.py               # Causal self-attention with optional Flash Attention
+│   ├── gpt2_layer.py              # GPT-2 transformer block (pre-norm)
+│   ├── lora.py                    # LoRA / rsLoRA adapter
+│   ├── dora.py                    # DoRA adapter (magnitude + direction)
+│   └── adalora.py                 # AdaLoRA adapter with rank scheduler
+├── data/
+│   ├── quora-train.csv            # Original Quora paraphrase train set
+│   ├── quora-dev.csv              # Original Quora paraphrase dev set
+│   ├── sonnets.txt                # Original Shakespeare sonnets
+│   ├── diffused_sonnets.txt       # AI-generated sonnet variations
+│   ├── sonnets_merged.txt         # Original + diffused sonnets merged
+│   └── sonnets_held_out*.txt      # Held-out sonnet splits for evaluation
+├── data_processing/
+│   ├── paraphase/                 # Paraphrase augmentation pipeline
+│   │   ├── paraphasing_construct.py
+│   │   ├── paraphasing_processing.py
+│   │   ├── random_negatives_positive.py
+│   │   ├── nli_negatives.py
+│   │   ├── embedding_negatives.py
+│   │   └── clustering_negatives.py
+│   └── sonnet/
+│       └── sonnet_processing.py   # Sonnet data augmentation
+├── experiments_tables/
+│   ├── build_tables.py            # Build combined CSVs from experiment logs
+│   ├── add_to_combined.py         # Incrementally add new results
+│   ├── generate_paper_tables.py   # Generate LaTeX tables
+│   ├── generate_paper_plots.py    # Generate tradeoff plots
+│   ├── generate_paper_ablation_plots.py  # Generate ablation plots
+│   └── paper_tables/              # Generated .tex tables and .png plots
+├── predictions/
+│   ├── para-dev-output.csv        # Paraphrase dev predictions
+│   ├── para-test-output.csv       # Paraphrase test predictions
+│   ├── generated_sonnets.txt      # Generated sonnet test output
+│   └── generated_sonnets_dev.txt  # Generated sonnet dev output
+├── paraphase_detection.py         # Paraphrase detection (base)
+├── paraphrase_detection_justin.py # Paraphrase detection (DDP + extensions)
+├── sonnet_generation.py           # Sonnet generation (base)
+├── sonnet_generation_justin.py    # Sonnet generation (extensions)
+├── classifier.py                  # Sentiment classification
+├── optimizer.py                   # AdamW optimizer implementation
+├── datasets.py                    # Dataset loading utilities
+├── evaluation.py                  # Evaluation metrics
+├── utils.py                       # Shared utilities
+├── run_paraphrase.sh              # SLURM script for paraphrase (multi-GPU)
+├── run_sonnet.sh                  # SLURM script for sonnet (single-GPU)
+├── test_sub_record.txt            # Test submission record
+├── setup.sh                       # Environment setup
+└── env.yml                        # Conda environment spec
+```
+
 ## Acknowledgement
 
 This project is adapted from a prior year's CS 224N
