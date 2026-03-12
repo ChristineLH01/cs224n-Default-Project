@@ -115,11 +115,12 @@ def plot_module_ablation(csv_path, metric_col, metric_label, output_filename, is
                     offset_x, offset_y = 0, 10
                     ha, va = 'center', 'bottom'
                     if target == "Both":
-                        offset_x, offset_y = 12, 0
-                        ha, va = 'left', 'center'
+                        # Move text below the point to prevent right-edge overlap with legend/margins
+                        offset_x, offset_y = 0, -12
+                        ha, va = 'center', 'top'
                     elif target == "MLP":
-                        offset_x, offset_y = -12, 0
-                        ha, va = 'right', 'center'
+                        offset_x, offset_y = 0, -12
+                        ha, va = 'center', 'top'
                         
                     ax.annotate(
                         target, 
