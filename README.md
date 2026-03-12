@@ -108,6 +108,26 @@ sbatch run_paraphrase.sh
 sbatch run_sonnet.sh
 ```
 
+## Test Submission Results
+
+**Paraphrase Detection** (accuracy)
+
+| Sub | Test | Dev | Model | Method | Key Params |
+|---|---|---|---|---|---|
+| #1 | 0.877 | 0.9077 | gpt2-medium | Full fine-tune | lr=1e-4, ep=13, aug=True |
+| #2 | 0.868 | 0.9092 | gpt2-medium | Full fine-tune | lr=8e-5, ep=14, aug=False |
+| #3 | **0.897** | 0.9080 | gpt2-medium | rsLoRA r=32 a=11.2 | lr=5e-4, ep=25, aug=True |
+
+**Sonnet Generation** (chrF)
+
+| Sub | Test | Dev | Model | Method | Key Params |
+|---|---|---|---|---|---|
+| #1 | 43.362 | 45.17 | gpt2-medium | Full fine-tune | lr=1e-3, ep=30, bs=4, aug=True |
+| #2 | **44.99** | 46.45 | gpt2-medium | rsLoRA r=32 a=11.2 | lr=1e-3, ep=40, bs=4, aug=True |
+| #3 | 43.364 | 46.38 | gpt2-medium | DoRA r=16 a=32 | lr=1e-3, ep=40, bs=4, aug=True |
+
+See `test_sub_record.txt` for full details and file paths.
+
 ## Acknowledgement
 
 This project is adapted from a prior year's CS 224N
