@@ -91,10 +91,12 @@ For sonnet generation, we also include `data/diffused_sonnets.txt` (AI-generated
 
 ### Distributed Training
 
-The `*_justin.py` scripts are GPU-cluster-ready variants that support distributed data-parallel training:
+The `*_justin.py` scripts are the primary training scripts used for all experiments. They extend the base scripts with PEFT support, Flash Attention, and cluster-level features:
 
-- `paraphrase_detection_justin.py` — supports multi-GPU training via `torchrun` (NCCL backend, `DistributedDataParallel`)
+- `paraphrase_detection_justin.py` — supports multi-GPU distributed training via `torchrun` (NCCL backend, `DistributedDataParallel`)
 - `sonnet_generation_justin.py` — single-GPU training script
+
+The base `paraphrase_detection.py` and `sonnet_generation.py` are the original starter code; all experiment results were produced using the `*_justin.py` variants.
 
 ### Running
 
