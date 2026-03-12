@@ -1,20 +1,20 @@
 # Test Set Submission Record
-# Format: Sub# | Task | Test Score | Dev Score | Model | Mode | Key Params
+# Format: Sub# | Task | Test Score | Model | Mode | Key Params
 
 # ══════════════════════════════════════════════════════════════════
 #  PARAPHRASE DETECTION
 # ══════════════════════════════════════════════════════════════════
 
-Sub#1 | paraphrase | test=0.877 | dev=0.9077 | gpt2-medium | full-finetune      | lr=1e-4 ep=13 aug=True
-Sub#2 | paraphrase | test=0.868 | dev=0.9092 | gpt2-medium | full-finetune      | lr=8e-5 ep=14 aug=False
-Sub#3 | paraphrase | test=0.897 | dev=0.9080 | gpt2-medium | rslora r=32 a=11.2 | lr=5e-4 ep=25 aug=True
+Sub#1 | paraphrase | test=0.877 | gpt2-medium | full-finetune      | lr=1e-4 ep=13 aug=True
+Sub#2 | paraphrase | test=0.868 | gpt2-medium | full-finetune      | lr=8e-5 ep=14 aug=False
+Sub#3 | paraphrase | test=0.897 | gpt2-medium | rslora r=32 a=11.2 | lr=5e-4 ep=25 aug=True
 
 # ══════════════════════════════════════════════════════════════════
 #  SONNET GENERATION
 # ══════════════════════════════════════════════════════════════════
 
-Sub#1 | sonnet | test=43.362 | dev=45.17 | gpt2-medium | full-finetune      | lr=1e-3 ep=30 bs=4 temp=1.2 top_p=0.9 aug=True
-Sub#2 | sonnet | test=44.99  | dev=46.45 | gpt2-medium | rslora r=32 a=11.2 | lr=1e-3 ep=40 bs=4 temp=1.2 top_p=0.9 aug=True
-Sub#3 | sonnet | test=43.364 | dev=46.38 | gpt2-medium | dora r=16 a=32     | lr=1e-3 ep=40 bs=4 temp=1.2 top_p=0.9 aug=True
+Sub#1 | sonnet | test=43.362 | gpt2-medium | full-finetune      | lr=1e-3 ep=30 bs=4 temp=1.2 top_p=0.9 aug=True
+Sub#2 | sonnet | test=44.99  | gpt2-medium | rslora r=32 a=11.2 | lr=1e-3 ep=40 bs=4 temp=1.2 top_p=0.9 aug=True
+Sub#3 | sonnet | test=43.364 | gpt2-medium | dora r=16 a=32     | lr=1e-3 ep=40 bs=4 temp=1.2 top_p=0.9 aug=True
 
 
