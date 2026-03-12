@@ -9,6 +9,13 @@ def compute_gpu_metrics(df):
         df['gpu_hours'] = df['train_meta.total_train_time_sec'] * df['num_gpus'] / 3600.0
     else:
         df['gpu_hours'] = 0.0
+        
+    # Average inference time in seconds
+    if 'train_meta.avg_dev_inference_time_per_epoch_sec' in df.columns:
+        df['infer_time'] = df['train_meta.avg_dev_inference_time_per_epoch_sec']
+    else:
+        df['infer_time'] = 0.0
+        
     return df
 
 def write_formats(df, output_dir, filename_prefix, name):
@@ -20,14 +27,16 @@ def write_formats(df, output_dir, filename_prefix, name):
 def generate_main_table(df, metric_col, metric_name, output_dir, filename_prefix):
     grouped = df.groupby(['model_size', 'additional_data_used', 'method']).agg({
         metric_col: ['mean', 'std', 'max'],
-        'gpu_hours': 'mean'
+        'gpu_hours': 'mean',
+        'infer_time': 'mean'
     }).reset_index()
     
-    grouped.columns = ['Model', 'Augmentation', 'Method', f'{metric_name}_Mean', f'{metric_name}_Std', f'{metric_name}_Max', 'GPU_Hours']
+    grouped.columns = ['Model', 'Augmentation', 'Method', f'{metric_name}_Mean', f'{metric_name}_Std', f'{metric_name}_Max', 'GPU_Hrs', 'Infer_Sec']
     grouped[f'{metric_name}_Mean'] = grouped[f'{metric_name}_Mean'].round(4)
     grouped[f'{metric_name}_Std'] = grouped[f'{metric_name}_Std'].round(4)
     grouped[f'{metric_name}_Max'] = grouped[f'{metric_name}_Max'].round(4)
-    grouped['GPU_Hours'] = grouped['GPU_Hours'].round(2)
+    grouped['GPU_Hrs'] = grouped['GPU_Hrs'].round(2)
+    grouped['Infer_Sec'] = grouped['Infer_Sec'].round(1)
     grouped['Augmentation'] = grouped['Augmentation'].replace({True: 'Yes', False: 'No'})
     grouped['Method'] = grouped['Method'].str.capitalize()
     grouped = grouped.sort_values(by=['Model', 'Augmentation', 'Method'])
@@ -47,14 +56,16 @@ def generate_lora_ablation_table(df, metric_col, metric_name, output_dir, filena
     
     grouped = lora_df.groupby(['model_size', 'lora_rank', 'lora_alpha', 'Target']).agg({
         metric_col: ['mean', 'max'],
-        'gpu_hours': 'mean'
+        'gpu_hours': 'mean',
+        'infer_time': 'mean'
     }).reset_index()
     
-    grouped.columns = ['Model', 'Rank', 'Alpha', 'Target', f'{metric_name}_Mean', f'{metric_name}_Max', 'GPU_Hours']
+    grouped.columns = ['Model', 'Rank', 'Alpha', 'Target', f'{metric_name}_Mean', f'{metric_name}_Max', 'GPU_Hrs', 'Infer_Sec']
     grouped = grouped[grouped['Target'] != 'Unknown']
     grouped[f'{metric_name}_Mean'] = grouped[f'{metric_name}_Mean'].round(4)
     grouped[f'{metric_name}_Max'] = grouped[f'{metric_name}_Max'].round(4)
-    grouped['GPU_Hours'] = grouped['GPU_Hours'].round(2)
+    grouped['GPU_Hrs'] = grouped['GPU_Hrs'].round(2)
+    grouped['Infer_Sec'] = grouped['Infer_Sec'].round(1)
     grouped = grouped.sort_values(by=['Model', 'Rank', 'Alpha', 'Target'])
     write_formats(grouped, output_dir, filename_prefix, 'lora_ablation')
 
@@ -75,7 +86,7 @@ def generate_comprehensive_table(df, metric_col, metric_name, output_dir, filena
     cols_to_keep = [
         'model_size', 'additional_data_used', 'method', 'lr', 'epochs', 'batch_size', 
         'lora_rank', 'lora_alpha', 'lora_dropout', 'apply_lora_to_attention', 'apply_lora_to_mlp',
-        'adalora_target_r', metric_col, 'gpu_hours'
+        'adalora_target_r', metric_col, 'gpu_hours', 'infer_time'
     ]
     cols_present = [c for c in cols_to_keep if c in df.columns]
     comp_df = df[cols_present].copy()
@@ -85,6 +96,7 @@ def generate_comprehensive_table(df, metric_col, metric_name, output_dir, filena
     if metric_col in comp_df.columns:
         comp_df[metric_col] = pd.to_numeric(comp_df[metric_col], errors='coerce').round(4)
     comp_df['gpu_hours'] = pd.to_numeric(comp_df['gpu_hours'], errors='coerce').round(2)
+    comp_df['infer_time'] = pd.to_numeric(comp_df['infer_time'], errors='coerce').round(2)
     comp_df = comp_df.sort_values(by=['model_size', 'method', metric_col], ascending=[True, True, False])
     
     # Rename columns for presentation
@@ -93,7 +105,7 @@ def generate_comprehensive_table(df, metric_col, metric_name, output_dir, filena
         'lr': 'LR', 'epochs': 'Epochs', 'batch_size': 'BS', 'lora_rank': 'Rank', 
         'lora_alpha': 'Alpha', 'lora_dropout': 'Dropout', 'apply_lora_to_attention': 'Attn', 
         'apply_lora_to_mlp': 'MLP', 'adalora_target_r': 'Ada_Target_R',
-        metric_col: metric_name, 'gpu_hours': 'GPU_Hours'
+        metric_col: metric_name, 'gpu_hours': 'GPU_Hrs', 'infer_time': 'Infer_Sec'
     }
     comp_df = comp_df.rename(columns=rename_map)
     write_formats(comp_df, output_dir, filename_prefix, 'comprehensive')

@@ -1,30 +1,30 @@
-\begin{tabular}{lllrrrr}
+\begin{tabular}{lllrrrrr}
 \toprule
-Model & Augmentation & Method & Best_ChrF_Mean & Best_ChrF_Std & Best_ChrF_Max & GPU_Hours \\
+Model & Augmentation & Method & Best_ChrF_Mean & Best_ChrF_Std & Best_ChrF_Max & GPU_Hrs & Infer_Sec \\
 \midrule
-gpt2 & No & Adalora & 41.0163 & 0.8980 & 42.2857 & 0.0200 \\
-gpt2 & No & Dora & 41.8066 & 0.2465 & 42.1623 & 0.0200 \\
-gpt2 & No & Dora_mlp & 41.1494 & 0.9012 & 41.7866 & 0.0100 \\
-gpt2 & No & Full & 41.8990 & 0.1718 & 42.1919 & 0.0200 \\
-gpt2 & No & Lora & 42.0685 & 0.2257 & 42.8675 & 0.0200 \\
-gpt2 & No & Rslora & 41.9883 & 0.1875 & 42.3742 & 0.0100 \\
-gpt2 & Yes & Adalora & 41.8486 & 0.2409 & 42.2283 & 0.2500 \\
-gpt2 & Yes & Dora & 42.8238 & 0.7803 & 44.3154 & 0.2600 \\
-gpt2 & Yes & Dora_mlp & 42.0166 & 0.1555 & 42.1266 & 0.1800 \\
-gpt2 & Yes & Full & 44.2236 & 1.6231 & 46.8388 & 0.1800 \\
-gpt2 & Yes & Lora & 42.6331 & 1.0448 & 45.4034 & 0.1800 \\
-gpt2 & Yes & Rslora & 43.9413 & 1.3972 & 46.6770 & 0.2100 \\
-gpt2-medium & No & Adalora & 40.9943 & 0.8975 & 42.0710 & 0.0200 \\
-gpt2-medium & No & Dora & 42.2163 & 0.2736 & 42.5212 & 0.0200 \\
-gpt2-medium & No & Dora_mlp & 41.6329 & 0.4512 & 41.9520 & 0.0200 \\
-gpt2-medium & No & Full & 41.9737 & 0.3033 & 42.7017 & 0.0300 \\
-gpt2-medium & No & Lora & 42.1459 & 0.2596 & 42.7975 & 0.0300 \\
-gpt2-medium & No & Rslora & 42.0259 & 0.2382 & 42.5017 & 0.0200 \\
-gpt2-medium & Yes & Adalora & 42.2459 & 0.3939 & 43.3954 & 0.3500 \\
-gpt2-medium & Yes & Dora & 44.8469 & 1.9783 & 47.8265 & 0.4100 \\
-gpt2-medium & Yes & Dora_mlp & 43.9632 & 1.2737 & 44.9025 & 0.2900 \\
-gpt2-medium & Yes & Full & 44.3919 & 1.7176 & 47.0809 & 0.2800 \\
-gpt2-medium & Yes & Lora & 43.3734 & 1.2338 & 46.7045 & 0.2600 \\
-gpt2-medium & Yes & Rslora & 44.5314 & 1.6286 & 47.1849 & 0.2900 \\
+gpt2 & No & Adalora & 41.0529 & 0.8783 & 42.2857 & 0.0200 & 10.5000 \\
+gpt2 & No & Dora & 41.8066 & 0.2465 & 42.1623 & 0.0200 & 13.0000 \\
+gpt2 & No & Dora_mlp & 41.1494 & 0.9012 & 41.7866 & 0.0100 & 8.6000 \\
+gpt2 & No & Full & 41.8990 & 0.1718 & 42.1919 & 0.0200 & 8.8000 \\
+gpt2 & No & Lora & 42.0685 & 0.2257 & 42.8675 & 0.0200 & 10.1000 \\
+gpt2 & No & Rslora & 41.9883 & 0.1875 & 42.3742 & 0.0100 & 12.1000 \\
+gpt2 & Yes & Adalora & 41.9058 & 0.2600 & 42.4160 & 0.2700 & 13.0000 \\
+gpt2 & Yes & Dora & 42.8238 & 0.7803 & 44.3154 & 0.2600 & 15.2000 \\
+gpt2 & Yes & Dora_mlp & 42.0166 & 0.1555 & 42.1266 & 0.1800 & 11.1000 \\
+gpt2 & Yes & Full & 44.2236 & 1.6231 & 46.8388 & 0.1800 & 9.6000 \\
+gpt2 & Yes & Lora & 42.6331 & 1.0448 & 45.4034 & 0.1800 & 11.7000 \\
+gpt2 & Yes & Rslora & 43.9413 & 1.3972 & 46.6770 & 0.2100 & 12.7000 \\
+gpt2-medium & No & Adalora & 40.9943 & 0.8975 & 42.0710 & 0.0200 & 18.8000 \\
+gpt2-medium & No & Dora & 42.2163 & 0.2736 & 42.5212 & 0.0200 & 27.1000 \\
+gpt2-medium & No & Dora_mlp & 41.6329 & 0.4512 & 41.9520 & 0.0200 & 17.1000 \\
+gpt2-medium & No & Full & 41.9737 & 0.3033 & 42.7017 & 0.0300 & 13.1000 \\
+gpt2-medium & No & Lora & 42.1459 & 0.2596 & 42.7975 & 0.0300 & 17.0000 \\
+gpt2-medium & No & Rslora & 42.0384 & 0.2334 & 42.5017 & 0.0200 & 17.7000 \\
+gpt2-medium & Yes & Adalora & 42.3463 & 0.5025 & 44.1076 & 0.4100 & 21.9000 \\
+gpt2-medium & Yes & Dora & 44.8469 & 1.9783 & 47.8265 & 0.4100 & 27.8000 \\
+gpt2-medium & Yes & Dora_mlp & 43.9632 & 1.2737 & 44.9025 & 0.2900 & 19.7000 \\
+gpt2-medium & Yes & Full & 44.3919 & 1.7176 & 47.0809 & 0.2800 & 13.0000 \\
+gpt2-medium & Yes & Lora & 43.3734 & 1.2338 & 46.7045 & 0.2600 & 17.5000 \\
+gpt2-medium & Yes & Rslora & 44.4281 & 1.6267 & 47.1849 & 0.2800 & 17.8000 \\
 \bottomrule
 \end{tabular}

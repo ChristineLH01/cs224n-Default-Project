@@ -38,7 +38,7 @@ def create_tradeoff_plot(csv_path, metric_col, metric_label, condition_col, cond
     # We want to plot the Max metrics over LR, epoch, etc per Method/Model group
     grouped = df.groupby(['Model', 'Method']).agg({
         metric_col: 'max',
-        'GPU_Hours': 'max'
+        'GPU_Hours': 'mean'
     }).reset_index()
     
     methods_order = ["Full", "Lora", "Rslora", "Adalora", "Dora"]

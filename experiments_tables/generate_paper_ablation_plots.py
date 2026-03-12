@@ -310,6 +310,53 @@ def plot_rank_scaling(csv_path, metric_col, metric_label, output_filename, is_ch
     print(f"Saved {output_filename}")
 
 
+def plot_rslora_rank_sweep(csv_path, metric_col, metric_label, output_filename):
+    if not os.path.exists(csv_path):
+        return
+        
+    df = pd.read_csv(csv_path)
+    # Filter to only rsLoRA and gpt2-medium
+    df = df[(df['method'] == 'rslora') & (df['lora_rank'] > 0) & (df['model_size'] == 'gpt2-medium')]
+    df = df.dropna(subset=['lora_rank'])
+    
+    # Map data type
+    df['Data'] = df['additional_data_used'].map({False: 'Original Data', True: 'Augmented Data'})
+    
+    agg_df = df.groupby(['Data', 'lora_rank'])[metric_col].max().reset_index()
+    
+    fig, ax = plt.subplots(figsize=(7, 4.5))
+    
+    sns.lineplot(
+        data=agg_df,
+        x='lora_rank',
+        y=metric_col,
+        hue='Data',
+        style='Data',
+        markers=['o', 's'],
+        dashes=False,
+        ax=ax,
+        palette='Set1',
+        linewidth=2.5,
+        markersize=9
+    )
+    
+    # Linear scale with explicit ticks
+    ranks = sorted(agg_df['lora_rank'].unique())
+    ax.set_xticks(ranks)
+    ax.set_xticklabels([f"{int(r)}" for r in ranks])
+    
+    ax.set_title('rsLoRA Rank Sweep (GPT-2 Medium)', pad=15, fontweight='bold')
+    ax.set_xlabel('rsLoRA Rank ($r$)', labelpad=10)
+    ax.set_ylabel(metric_label, labelpad=10)
+    ax.grid(True, linestyle='--', alpha=0.6)
+    ax.legend(title='Dataset', loc='best', framealpha=0.9)
+        
+    plt.tight_layout()
+    plt.savefig(output_filename, bbox_inches="tight", dpi=300)
+    print(f"Saved {output_filename}")
+
+
+
 def main():
     out_dir = 'paper_tables'
     os.makedirs(out_dir, exist_ok=True)
@@ -360,6 +407,14 @@ def main():
         'Validation chrF',
         f'{out_dir}/sonnet_rank_scaling.png',
         is_chrf=True
+    )
+    
+    print("Generating rsLoRA Rank Sweep for Sonnets...")
+    plot_rslora_rank_sweep(
+        'sonnet_combined.csv',
+        'best_chrf_max' if 'best_chrf_max' in pd.read_csv('sonnet_combined.csv').columns else 'best_chrf',
+        'Validation chrF',
+        f'{out_dir}/sonnet_rslora_sweep.png'
     )
 
 if __name__ == '__main__':
